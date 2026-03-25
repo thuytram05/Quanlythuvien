@@ -1,0 +1,137 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Tham gia Thư Viện - Đăng ký{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+        <div class="col-12 col-md-8 col-lg-5">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate__animated animate__zoomIn">
+
+                <div class="card-header bg-primary text-white text-center py-4 border-0">
+                    <div class="mb-2">
+                        <i class="fas fa-user-plus fa-4x shadow-sm rounded-circle"></i>
+                    </div>
+                    <h4 class="fw-bold mb-0">TẠO TÀI KHOẢN MỚI</h4>
+                    <p class="small mb-0 opacity-75">Tham gia để mượn hàng ngàn cuốn sách miễn phí</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+
+                    {% if err_msg %}
+                    <div class="alert alert-danger border-0 small py-2 animate__animated animate__shakeX" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i> {{ err_msg }}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" action="/register">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Họ và tên</label>
+                            <div class="input-group border rounded-3 p-1 shadow-sm bg-light custom-focus">
+                                <span class="input-group-text bg-transparent border-0 text-primary">
+                                    <i class="fas fa-id-card"></i>
+                                </span>
+                                <input type="text" name="name" class="form-control border-0 bg-transparent shadow-none"
+                                       placeholder="Nhập họ tên đầy đủ..." required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Tên tài khoản</label>
+                            <div class="input-group border rounded-3 p-1 shadow-sm bg-light custom-focus">
+                                <span class="input-group-text bg-transparent border-0 text-primary">
+                                    <i class="fas fa-user-tag"></i>
+                                </span>
+                                <input type="text" name="username" class="form-control border-0 bg-transparent shadow-none"
+                                       placeholder="Tên đăng nhập..." required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-muted">Mật khẩu</label>
+                                <div class="input-group border rounded-3 p-1 shadow-sm bg-light custom-focus">
+                                    <span class="input-group-text bg-transparent border-0 text-primary">
+                                        <i class="fas fa-key"></i>
+                                    </span>
+                                    <input type="password" name="password" class="form-control border-0 bg-transparent shadow-none"
+                                           placeholder="••••••" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-muted">Xác nhận</label>
+                                <div class="input-group border rounded-3 p-1 shadow-sm bg-light custom-focus">
+                                    <span class="input-group-text bg-transparent border-0 text-primary">
+                                        <i class="fas fa-check-circle"></i>
+                                    </span>
+                                    <input type="password" name="confirm" class="form-control border-0 bg-transparent shadow-none"
+                                           placeholder="••••••" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow mt-3 btn-animate">
+                            ĐĂNG KÝ THÀNH VIÊN <i class="fas fa-rocket ms-2"></i>
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">Đã có tài khoản?
+                            <a href="/login" class="text-primary fw-bold text-decoration-none border-bottom border-primary pb-1">Đăng nhập ngay</a>
+                        </p>
+                        <hr class="opacity-10 my-4">
+                        <a href="/" class="text-secondary small text-decoration-none transition-link">
+                            <i class="fas fa-chevron-left me-1"></i> Trở về trang chủ
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* CSS ĐỒNG BỘ VỚI LOGIN */
+    body {
+        background: #f0f2f5; /* Nền xám nhạt chuyên nghiệp */
+    }
+
+    /* Hiệu ứng bo góc Card */
+    .rounded-4 {
+        border-radius: 1.5rem !important;
+    }
+
+    /* Hiệu ứng Focus Input mượt mà */
+    .custom-focus:focus-within {
+        border-color: #0d6efd !important;
+        background: #ffffff !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1) !important;
+    }
+
+    /* Hiệu ứng nút bấm bay lên */
+    .btn-animate {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-animate:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(13, 110, 253, 0.3) !important;
+    }
+
+    /* Hiệu ứng link quay lại */
+    .transition-link {
+        transition: color 0.3s ease;
+    }
+    .transition-link:hover {
+        color: #0d6efd !important;
+    }
+
+    /* Làm cho các ô input text đều nhau */
+    .form-control::placeholder {
+        color: #adb5bd;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}

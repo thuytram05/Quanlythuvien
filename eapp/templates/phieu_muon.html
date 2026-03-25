@@ -1,0 +1,184 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Giỏ sách của Bạn{% endblock %}
+
+{% block content %}
+<div class="container py-5 animate__animated animate__fadeIn">
+
+    <div class="d-flex align-items-center justify-content-between mb-5 border-bottom pb-4">
+        <div>
+            <h1 class="fw-bold text-dark mb-1" style="letter-spacing: -2px;">Túi sách của bạn.</h1>
+            <p class="text-muted mb-0">Bạn đang chọn <span class="text-primary fw-bold">{{ session['borrow_cart']|length }}</span> cuốn sách tri thức.</p>
+        </div>
+        <a href="/" class="btn btn-light rounded-pill px-4 fw-bold border">
+            <i class="fas fa-plus me-2"></i>Chọn thêm
+        </a>
+    </div>
+
+    {% if 'borrow_cart' in session and session['borrow_cart'] %}
+    <div class="row g-5">
+
+        <div class="col-lg-8">
+            <div class="d-flex flex-column gap-4">
+                {% for item in session['borrow_cart'].values() %}
+                <div id="book-item-{{ item.id }}" class="book-glass-card d-flex align-items-center p-4">
+                    <div class="book-cover-mini me-4 shadow-sm d-flex align-items-center justify-content-center text-white">
+                        <i class="fas fa-book-open fa-2x"></i>
+                    </div>
+
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold text-dark mb-2">{{ item.ten_sach }}</h5>
+                        <div class="d-flex gap-3 align-items-center">
+                            <span class="badge bg-light text-secondary border fw-normal">ID: #{{ item.id }}</span>
+                            <span class="text-primary fw-bold small"><i class="fas fa-check-circle me-1"></i>Sẵn sàng mượn</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-delete-circle" onclick="xoaSachThat('{{ item.id }}')">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 100px;">
+                <div class="summary-box p-5 rounded-5 shadow-lg border-0 bg-white">
+                    <h4 class="fw-bold mb-4 text-dark">Tóm tắt</h4>
+
+                    <div class="d-flex justify-content-between mb-3 fs-5">
+                        <span class="text-muted">Số lượng</span>
+                        <span class="fw-bold">{{ session['borrow_cart']|length }} cuốn</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-4 fs-5 border-bottom pb-3">
+                        <span class="text-muted">Hạn trả</span>
+                        <span class="text-info fw-bold">14 Ngày</span>
+                    </div>
+
+                    <div class="p-3 bg-primary bg-opacity-10 rounded-4 mb-4 text-primary small">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Bạn hãy bảo quản sách thật tốt để tránh bị phạt nhé!
+                    </div>
+
+                    <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-lg mb-3" onclick="xacNhanMuon()">
+                        XÁC NHẬN LẬP PHIẾU
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <div class="display-1 text-light mb-4"><i class="fas fa-ghost"></i></div>
+        <h2 class="fw-bold text-dark">Chưa có sách nào ở đây.</h2>
+        <p class="text-muted">Bạn hãy quay lại trang chủ và chọn những cuốn sách yêu thích.</p>
+        <a href="/" class="btn btn-dark px-5 py-3 rounded-pill fw-bold mt-4 shadow">Khám phá ngay</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    body { background-color: #f8f9fa; }
+
+    /* Book Card Glassmorphism */
+    .book-glass-card {
+        background: #ffffff;
+        border-radius: 30px;
+        border: 1px solid rgba(255,255,255,0.8);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .book-glass-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    }
+
+    .book-cover-mini {
+        width: 90px; height: 120px;
+        background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        border-radius: 20px;
+    }
+
+    /* Nút xóa hình tròn */
+    .btn-delete-circle {
+        width: 45px; height: 45px;
+        border-radius: 50%;
+        border: none;
+        background: #fff5f5;
+        color: #ff6b6b;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.3s;
+    }
+    .btn-delete-circle:hover {
+        background: #ff6b6b;
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    .summary-box {
+        transition: all 0.3s;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+    }
+</style>
+
+<script>
+    // HÀM XÓA THẬT (GỌI API)
+    function xoaSachThat(id) {
+        Swal.fire({
+            title: 'Bạn muốn xóa sách?',
+            text: "Cuốn sách này sẽ bị gỡ khỏi túi mượn.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff6b6b',
+            confirmButtonText: 'Xóa ngay',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // GỌI API DELETE LÊN SERVER
+                fetch(`/api/borrow-cart/${id}`, {
+                    method: 'delete'
+                }).then(res => res.json()).then(data => {
+                    if (data.status === 'success') {
+                        // Hiệu ứng biến mất
+                        const item = document.getElementById('book-item-' + id);
+                        item.classList.add('animate__animated', 'animate__zoomOutLeft');
+                        setTimeout(() => {
+                            location.reload(); // Tải lại để cập nhật số lượng
+                        }, 500);
+                    }
+                });
+            }
+        });
+    }
+
+    function xacNhanMuon() {
+        Swal.fire({
+            title: 'Xác nhận mượn?',
+            text: 'Bạn có chắc chắn muốn lập phiếu mượn này?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Mượn ngay'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/api/xac-nhan-muon', { method: 'post' })
+                .then(res => res.json()).then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('Thành công!', data.msg, 'success').then(() => {
+                            location.href = '/';
+                        });
+                    } else {
+                        Swal.fire('Lỗi', data.msg, 'error');
+                    }
+                });
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,57 +1,127 @@
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow">
-  <div class="container-fluid">
-    <a class="navbar-brand font-weight-bold" href="/">Quản Lý Thư Viện</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm border-bottom border-secondary">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-uppercase d-flex align-items-center animate__animated animate__fadeInLeft" href="/">
+      <div class="bg-info text-dark rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <i class="fas fa-book-open"></i>
+      </div>
+      <span style="letter-spacing: 1px;">Admin <span class="text-info">Library</span></span>
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
-      <ul class="navbar-nav me-auto align-items-center">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
         <li class="nav-item">
-          <a class="nav-link active" href="/">Trang chủ</a>
+          <a class="nav-link active px-3" href="/"><i class="fas fa-home me-1"></i>Trang chủ</a>
         </li>
 
-        {% for c in categories %}
-        <li class="nav-item">
-          <a class="nav-link" href="/?category_id={{ c.id }}">{{ c.ten_the_loai }}</a>
-        </li>
-        {% endfor %}
-
-        {% if current_user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link text-warning" href="/profile">
-            <img src="{{ current_user.anh_dai_dien }}" class="rounded-circle" width="30" height="30" style="object-fit: cover;" />
-            Chào {{ current_user.ten }}!
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-layer-group me-1"></i>Khám phá
           </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-danger" href="/logout">Đăng xuất</a>
-        </li>
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link text-info" href="/login">Đăng nhập</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-success" href="/register">Đăng ký</a>
-        </li>
-        {% endif %}
-
-        <li class="nav-item ms-2">
-          <a class="nav-link text-light btn btn-outline-secondary border-0" href="/phieu-muon">
-            &#128218; Sách chờ mượn
-            <span class="badge bg-danger cart-counter">{{ cart_stats.total_quantity }} / 5</span>
-          </a>
+          <ul class="dropdown-menu shadow-lg border-0 animate__animated animate__fadeInUp mt-2">
+            <li><a class="dropdown-item py-2" href="/"><i class="fas fa-border-all me-2 opacity-50"></i>Tất cả sách</a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% for c in categories %}
+            <li><a class="dropdown-item py-2" href="/?category_id={{ c.id }}">
+              <i class="fas fa-chevron-right me-2 small opacity-50"></i>{{ c.ten_the_loai }}
+            </a></li>
+            {% endfor %}
+          </ul>
         </li>
       </ul>
 
-      <form class="d-flex" method="get" action="/">
-        <input class="form-control me-2" type="text"
-               placeholder="Tìm tên sách, tác giả..."
-               name="kw"
-               minlength="2"
-               title="Vui lòng nhập ít nhất 2 ký tự để tìm kiếm" required />
-        <button class="btn btn-primary" type="submit">Tìm</button>
+      <form class="d-flex mx-lg-4 my-2 my-lg-0" style="max-width: 350px; width: 100%;" method="get" action="/">
+        <div class="input-group input-group-sm rounded-pill overflow-hidden bg-white px-2 py-1">
+          <input class="form-control border-0 shadow-none bg-transparent"
+                 type="text" name="kw" placeholder="Tìm tên sách, tác giả..."
+                 minlength="2" required>
+          <button class="btn btn-link text-secondary p-0 px-2" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
       </form>
+
+      <ul class="navbar-nav align-items-center">
+        <li class="nav-item me-lg-3 position-relative">
+          <a class="nav-link btn btn-dark rounded-circle position-relative" href="/phieu-muon" style="width: 40px; height: 40px; padding: 8px;">
+            <i class="fas fa-shopping-bag text-warning fs-5"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-counter shadow-sm" style="font-size: 0.6rem;">
+              {{ cart_stats.total_quantity }}
+            </span>
+          </a>
+        </li>
+
+        {% if current_user.is_authenticated %}
+        <li class="nav-item dropdown ms-lg-2">
+          <a class="nav-link dropdown-toggle d-flex align-items-center p-1 bg-secondary bg-opacity-25 rounded-pill pe-3"
+             href="#" data-bs-toggle="dropdown">
+            <img src="{{ current_user.anh_dai_dien }}" class="rounded-circle me-2 border border-2 border-info shadow-sm"
+                 width="32" height="32" style="object-fit: cover;" />
+            <span class="text-white small fw-bold">{{ current_user.ten }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 animate__animated animate__fadeInRight">
+            <li><a class="dropdown-item py-2" href="/profile"><i class="fas fa-id-badge me-2 text-info"></i>Hồ sơ cá nhân</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item py-2 text-danger" href="/logout"><i class="fas fa-power-off me-2"></i>Thoát hệ thống</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item d-flex gap-2">
+          <a class="btn btn-outline-info btn-sm px-3 border-0" href="/login">Đăng nhập</a>
+          <a class="btn btn-info btn-sm px-3 text-dark fw-bold rounded-pill" href="/register">Đăng ký</a>
+        </li>
+        {% endif %}
+      </ul>
     </div>
   </div>
 </nav>
+
+<style>
+    /* Nâng cấp Header tinh tế hơn */
+    .navbar {
+        backdrop-filter: blur(10px); /* Hiệu ứng kính mờ (nếu trình duyệt hỗ trợ) */
+        background-color: rgba(33, 37, 41, 0.95) !important;
+    }
+
+    .nav-link {
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: rgba(255,255,255,0.8) !important;
+        transition: all 0.3s;
+    }
+
+    .nav-link:hover {
+        color: #0dcaf0 !important;
+        transform: translateY(-1px);
+    }
+
+    .dropdown-menu {
+        border-radius: 12px;
+        min-width: 200px;
+    }
+
+    .dropdown-item {
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #0dcaf0;
+        padding-left: 1.5rem;
+    }
+
+    /* Hiệu ứng badge sách */
+    .cart-counter {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.1); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+</style>

@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow">
+  <div class="container-fluid">
+    <a class="navbar-brand font-weight-bold" href="/">Quản Lý Thư Viện</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+      <ul class="navbar-nav me-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link active" href="/">Trang chủ</a>
+        </li>
+
+        {% for c in categories %}
+        <li class="nav-item">
+          <a class="nav-link" href="/?category_id={{ c.id }}">{{ c.ten_the_loai }}</a>
+        </li>
+        {% endfor %}
+
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link text-warning" href="/profile">
+            <img src="{{ current_user.anh_dai_dien }}" class="rounded-circle" width="30" height="30" style="object-fit: cover;" />
+            Chào {{ current_user.ten }}!
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="/logout">Đăng xuất</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link text-info" href="/login">Đăng nhập</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success" href="/register">Đăng ký</a>
+        </li>
+        {% endif %}
+
+        <li class="nav-item ms-2">
+          <a class="nav-link text-light btn btn-outline-secondary border-0" href="/phieu-muon">
+            &#128218; Sách chờ mượn
+            <span class="badge bg-danger cart-counter">{{ cart_stats.total_quantity }} / 5</span>
+          </a>
+        </li>
+      </ul>
+
+      <form class="d-flex" method="get" action="/">
+        <input class="form-control me-2" type="text"
+               placeholder="Tìm tên sách, tác giả..."
+               name="kw"
+               minlength="2"
+               title="Vui lòng nhập ít nhất 2 ký tự để tìm kiếm" required />
+        <button class="btn btn-primary" type="submit">Tìm</button>
+      </form>
+    </div>
+  </div>
+</nav>

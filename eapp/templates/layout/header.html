@@ -1,29 +1,32 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm border-bottom border-secondary">
-  <div class="container">
-    <a class="navbar-brand fw-bold text-uppercase d-flex align-items-center animate__animated animate__fadeInLeft" href="/">
-      <div class="bg-info text-dark rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-        <i class="fas fa-book-open"></i>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top main-nav shadow-lg border-0">
+  <div class="container py-1">
+    <a class="navbar-brand d-flex align-items-center animate__animated animate__fadeInLeft" href="/">
+      <div class="logo-box me-3">
+        <i class="fas fa-book-reader"></i>
       </div>
-      <span style="letter-spacing: 1px;">Admin <span class="text-info">Library</span></span>
+      <div class="logo-text">
+        <span class="brand-top">ADMIN</span>
+        <span class="brand-bottom text-info">LIBRARY</span>
+      </div>
     </a>
 
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
         <li class="nav-item">
-          <a class="nav-link active px-3" href="/"><i class="fas fa-home me-1"></i>Trang chủ</a>
+          <a class="nav-link nav-link-custom px-3 active" href="/"><i class="fas fa-home-alt me-1"></i> Trang chủ</a>
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown">
-            <i class="fas fa-layer-group me-1"></i>Khám phá
+          <a class="nav-link nav-link-custom dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-grid-2 me-1"></i> Khám phá
           </a>
-          <ul class="dropdown-menu shadow-lg border-0 animate__animated animate__fadeInUp mt-2">
-            <li><a class="dropdown-item py-2" href="/"><i class="fas fa-border-all me-2 opacity-50"></i>Tất cả sách</a></li>
-            <li><hr class="dropdown-divider"></li>
+          <ul class="dropdown-menu custom-dropdown shadow-2xl animate__animated animate__fadeInUp">
+            <li><a class="dropdown-item py-2" href="/"><i class="fas fa-layer-group me-2 opacity-50"></i>Tất cả sách</a></li>
+            <li><hr class="dropdown-divider opacity-10"></li>
             {% for c in categories %}
             <li><a class="dropdown-item py-2" href="/?category_id={{ c.id }}">
               <i class="fas fa-chevron-right me-2 small opacity-50"></i>{{ c.ten_the_loai }}
@@ -33,48 +36,48 @@
         </li>
       </ul>
 
-      <form class="d-flex mx-lg-4 my-2 my-lg-0 flex-grow-1" style="max-width: 450px;" method="get" action="/">
-        <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white px-2">
-            <input class="form-control border-0 shadow-none py-2"
-                type="text"
-                name="kw"
-                value="{{ current_kw if current_kw }}"
-                placeholder="Tìm tên sách hoặc tác giả..."
-                required>
-            <button class="btn btn-link text-primary p-0 px-3" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
+      <form class="d-flex mx-lg-4 my-2 my-lg-0 search-container flex-grow-1" style="max-width: 450px;" method="get" action="/">
+        <div class="search-box">
+            <input type="text" name="kw" value="{{ current_kw if current_kw }}" placeholder="Tìm tên sách, tác giả..." required>
+            <button type="submit"><i class="fas fa-search"></i></button>
         </div>
       </form>
 
       <ul class="navbar-nav align-items-center">
         <li class="nav-item me-lg-3 position-relative">
-          <a class="nav-link btn btn-dark rounded-circle position-relative" href="/phieu-muon" style="width: 40px; height: 40px; padding: 8px;">
-            <i class="fas fa-shopping-bag text-warning fs-5"></i>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-counter shadow-sm" style="font-size: 0.6rem;">
-              {{ cart_stats.total_quantity }}
-            </span>
-          </a>
+          {% if current_user.is_authenticated %}
+            <a class="nav-link cart-btn position-relative" href="/phieu-muon">
+              <i class="fas fa-shopping-basket fs-5"></i>
+              <span class="badge-custom cart-counter">{{ cart_stats.total_quantity }}</span>
+            </a>
+          {% else %}
+            <a class="nav-link cart-btn-disabled position-relative"
+               href="javascript:void(0)"
+               onclick="alert('Vui lòng đăng nhập để sử dụng tính năng mượn sách!')">
+              <i class="fas fa-shopping-basket fs-5 opacity-40"></i>
+            </a>
+          {% endif %}
         </li>
 
         {% if current_user.is_authenticated %}
         <li class="nav-item dropdown ms-lg-2">
-          <a class="nav-link dropdown-toggle d-flex align-items-center p-1 bg-secondary bg-opacity-25 rounded-pill pe-3"
-             href="#" data-bs-toggle="dropdown">
-            <img src="{{ current_user.anh_dai_dien }}" class="rounded-circle me-2 border border-2 border-info shadow-sm"
-                 width="32" height="32" style="object-fit: cover;" />
-            <span class="text-white small fw-bold">{{ current_user.ten }}</span>
+          <a class="nav-link user-pill d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+            <div class="avatar-ring">
+              <img src="{{ current_user.anh_dai_dien }}" alt="avatar" />
+            </div>
+            <span class="ms-2 d-none d-xl-block">{{ current_user.ten }}</span>
+            <i class="fas fa-chevron-down ms-2 small opacity-50"></i>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 animate__animated animate__fadeInRight">
-            <li><a class="dropdown-item py-2" href="/profile"><i class="fas fa-id-badge me-2 text-info"></i>Hồ sơ cá nhân</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item py-2 text-danger" href="/logout"><i class="fas fa-power-off me-2"></i>Thoát hệ thống</a></li>
+          <ul class="dropdown-menu dropdown-menu-end custom-dropdown shadow-2xl mt-3 animate__animated animate__fadeInRight">
+            <li><a class="dropdown-item py-2" href="/profile"><i class="fas fa-user-circle me-2 text-info"></i>Hồ sơ cá nhân</a></li>
+            <li><hr class="dropdown-divider opacity-10"></li>
+            <li><a class="dropdown-item py-2 text-danger" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Thoát hệ thống</a></li>
           </ul>
         </li>
         {% else %}
         <li class="nav-item d-flex gap-2">
-          <a class="btn btn-outline-info btn-sm px-3 border-0" href="/login">Đăng nhập</a>
-          <a class="btn btn-info btn-sm px-3 text-dark fw-bold rounded-pill" href="/register">Đăng ký</a>
+          <a class="btn btn-login px-4" href="/login">Đăng nhập</a>
+          <a class="btn btn-register shadow-sm px-4" href="/register">Đăng ký</a>
         </li>
         {% endif %}
       </ul>
@@ -83,48 +86,81 @@
 </nav>
 
 <style>
-    /* Nâng cấp Header tinh tế hơn */
-    .navbar {
-        backdrop-filter: blur(10px); /* Hiệu ứng kính mờ (nếu trình duyệt hỗ trợ) */
-        background-color: rgba(33, 37, 41, 0.95) !important;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --nav-bg: rgba(28, 31, 35, 0.95);
+        --accent-color: #0dcaf0;
     }
 
-    .nav-link {
-        font-weight: 500;
-        font-size: 0.95rem;
-        color: rgba(255,255,255,0.8) !important;
-        transition: all 0.3s;
+    .main-nav {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--nav-bg) !important;
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
 
-    .nav-link:hover {
-        color: #0dcaf0 !important;
-        transform: translateY(-1px);
+    /* LOGO */
+    .logo-box {
+        background: linear-gradient(135deg, #0dcaf0, #0099ff);
+        color: #1a1a1a; width: 40px; height: 40px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);
+    }
+    .logo-text { display: flex; flex-direction: column; line-height: 1; }
+    .brand-top { font-size: 1.1rem; font-weight: 800; letter-spacing: 1.5px; color: #fff; }
+    .brand-bottom { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; }
+
+    /* SEARCH BOX */
+    .search-box {
+        display: flex; width: 100%; background: rgba(255, 255, 255, 0.08);
+        border-radius: 50px; padding: 4px 6px 4px 20px; border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: 0.4s;
+    }
+    .search-box:focus-within { background: #fff; border-color: var(--accent-color); }
+    .search-box input { border: none; background: transparent; color: #fff; width: 100%; outline: none; }
+    .search-box:focus-within input { color: #1a1a1a; }
+    .search-box button { background: var(--accent-color); border: none; width: 34px; height: 34px; border-radius: 50%; }
+
+    /* CART BUTTON */
+    .cart-btn:hover { color: var(--accent-color) !important; transform: rotate(-10deg); transition: 0.3s; }
+    .cart-btn-disabled { cursor: not-allowed !important; color: rgba(255,255,255,0.2) !important; }
+    .cart-btn-disabled:hover { color: #ff4757 !important; animation: shake 0.4s ease-in-out; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
     }
 
-    .dropdown-menu {
-        border-radius: 12px;
-        min-width: 200px;
+    .badge-custom {
+        position: absolute; top: 0; right: 0; background: #ff4757; color: white;
+        font-size: 0.65rem; padding: 2px 6px; border-radius: 50px; border: 2px solid var(--nav-bg);
     }
 
-    .dropdown-item {
-        font-size: 0.9rem;
-        transition: all 0.2s;
+    /* USER & AVATAR */
+    .user-pill {
+        background: rgba(255, 255, 255, 0.05); border-radius: 50px;
+        padding: 5px 15px 5px 6px !important; color: #fff !important; transition: 0.3s;
     }
+    .avatar-ring {
+        width: 32px; height: 32px; border-radius: 50%; padding: 2px;
+        background: linear-gradient(45deg, #0dcaf0, #0099ff);
+    }
+    .avatar-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-    .dropdown-item:hover {
-        background-color: #f8f9fa;
-        color: #0dcaf0;
-        padding-left: 1.5rem;
+    /* DROPDOWN */
+    .custom-dropdown {
+        background: rgba(33, 37, 41, 0.98); border-radius: 16px; padding: 8px;
+        backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
     }
+    .dropdown-item { color: rgba(255,255,255,0.8); border-radius: 10px; transition: 0.2s; }
+    .dropdown-item:hover { background: rgba(13, 202, 240, 0.1); color: var(--accent-color); padding-left: 1.5rem; }
 
-    /* Hiệu ứng badge sách */
-    .cart-counter {
-        animation: pulse 2s infinite;
-    }
+    /* BUTTONS */
+    .btn-login { color: var(--accent-color); font-weight: 600; text-decoration: none; }
+    .btn-register { background: var(--accent-color); color: #1a1a1a; font-weight: 700; border-radius: 50px; }
+    .btn-register:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(13, 202, 240, 0.3); }
 
-    @keyframes pulse {
-        0% { transform: translate(-50%, -50%) scale(1); }
-        50% { transform: translate(-50%, -50%) scale(1.1); }
-        100% { transform: translate(-50%, -50%) scale(1); }
-    }
+    .opacity-40 { opacity: 0.4; }
 </style>

@@ -1,0 +1,161 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Hồ Sơ Độc Giả | {{ current_user.ten }}{% endblock %}
+
+{% block content %}
+<div class="premium-profile-master-wrapper animate__animated animate__fadeIn">
+
+    <style>
+        /* TRIỆT TIÊU KHOẢNG TRỐNG FOOTER TUYỆT ĐỐI */
+        .premium-profile-master-wrapper {
+            /* Margin âm ở đáy (-50px hoặc hơn) để triệt tiêu padding của base.html */
+            margin: -24px -15px -60px -15px !important;
+            /* Padding bottom lớn để nội dung không bị dính sát vào Footer */
+            padding: 60px 20px 100px 20px;
+            color: #fff;
+            min-height: 100vh;
+            /* Ảnh nền sáng rõ (brightness 0.6) */
+            background: linear-gradient(180deg, rgba(5,7,10,0.4) 0%, rgba(5,7,10,0.9) 100%),
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000') no-repeat center center/cover;
+            background-attachment: scroll;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Đảm bảo các thẻ bọc ngoài của Bootstrap không tạo khoảng hở */
+        .container, .main-content {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* CARD VÀ TIÊU ĐỀ */
+        .glass-main-card {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+        }
+
+        .stat-card-premium {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 4px solid #ffffff;
+        }
+
+        .fw-black { font-weight: 800; }
+        .avatar-glow-wrapper { position: relative; width: 180px; height: 180px; margin: 0 auto; }
+        .profile-img-main { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.1); position: relative; z-index: 2;}
+
+        .verified-star {
+            position: absolute; bottom: 5px; right: 15px; background: #ffc107;
+            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: #000; border: 3px solid #000; z-index: 5;
+        }
+
+        .info-glass-tile { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
+        .info-glass-tile:hover { transform: translateX(10px); background: rgba(255,255,255,0.08); border-color: #ffc107; }
+
+        .btn-warning { background: #ffc107; color: #000; border: none; font-weight: 800; }
+        .btn-warning:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4); }
+
+        /* ĐẨY NỘI DUNG */
+        .footer-pusher { flex-grow: 1; }
+    </style>
+
+    <div class="container position-relative z-10">
+        <div class="row g-5 justify-content-center">
+
+            <div class="col-lg-5">
+                <div class="glass-main-card text-center p-5 animate__animated animate__zoomIn">
+                    <div class="avatar-glow-wrapper mb-4">
+                        <img src="{{ current_user.anh_dai_dien }}" alt="Avatar" class="profile-img-main shadow-2xl">
+                        <div class="verified-star"><i class="fas fa-crown"></i></div>
+                    </div>
+
+                    <div class="identity-section">
+                        <h1 class="fw-black text-white mb-1 display-5">{{ current_user.ten }}</h1>
+                        <div class="badge bg-warning text-dark px-3 rounded-pill fw-bold">Độc giả Tinh hoa</div>
+                    </div>
+
+                    <div class="stats-glow-row mt-4">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="stat-card-premium">
+                                    {% set borrowing_count = namespace(total=0) %}
+                                    {% for phieu in phieu_muon_list %}
+                                        {% if phieu.trang_thai.name in ['DANG_MUON', 'CHO_XAC_NHAN'] %}
+                                            {% set borrowing_count.total = borrowing_count.total + phieu.chi_tiet|length %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <div class="stat-value text-white h2 fw-black mb-0">{{ borrowing_count.total }}</div>
+                                    <div class="stat-label text-white-50 fw-bold x-small">ĐANG MƯỢN</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-card-premium">
+                                    <div class="stat-value text-white h2 fw-black mb-0">{{ phieu_muon_list|length }}</div>
+                                    <div class="stat-label text-white-50 fw-bold x-small">TỔNG PHIẾU</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="details-glass-stack animate__animated animate__fadeInRight">
+
+                    <div class="info-glass-tile mb-4 p-4 rounded-5 transition-all">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-glow bg-primary p-3 rounded-4 me-4"><i class="fas fa-at text-white"></i></div>
+                            <div>
+                                <label class="text-white-50 small fw-bold text-uppercase">Tên định danh</label>
+                                <div class="fs-4 fw-black text-white">@{{ current_user.ten_dang_nhap }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-glass-tile mb-4 p-4 rounded-5 transition-all">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-glow bg-info p-3 rounded-4 me-4"><i class="fas fa-id-card-alt text-white"></i></div>
+                            <div class="flex-grow-1">
+                                <label class="text-white-50 small fw-bold text-uppercase">Cấp bậc</label>
+                                <div class="fs-4 fw-black text-white">Thành viên Bạc</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-glass-tile mb-4 p-4 rounded-5 transition-all">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-glow bg-success p-3 rounded-4 me-4"><i class="fas fa-signal text-white"></i></div>
+                            <div>
+                                <label class="text-white-50 small fw-bold text-uppercase">Trạng thái thẻ</label>
+                                <div class="status-box">
+                                    {% if current_user.bi_khoa %}
+                                        <span class="text-danger fw-black fs-4">BỊ KHÓA</span>
+                                    {% else %}
+                                        <span class="text-success fw-black fs-4">ĐANG HOẠT ĐỘNG</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-flex gap-3">
+                        <a href="/lich-su-muon" class="btn btn-warning flex-grow-1 py-4 rounded-4 text-decoration-none shadow-gold">
+                            XEM CHI TIẾT LỊCH SỬ <i class="fas fa-history ms-2"></i>
+                        </a>
+                        <button class="btn btn-outline-light p-4 rounded-4"><i class="fas fa-user-cog"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-pusher"></div>
+</div>
+{% endblock %}

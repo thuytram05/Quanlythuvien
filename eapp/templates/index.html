@@ -1,204 +1,245 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Trang Chủ | Thư Viện Hiện Đại{% endblock %}
+{% block title %}Trang Chủ | Thư Viện Tri Thức Số Premium{% endblock %}
 
 {% block content %}
-<div class="container mt-4 mb-5 animate__animated animate__fadeIn">
-    <div class="row align-items-center bg-white rounded-4 shadow-sm border p-4 p-md-5" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
-        <div class="col-md-7 text-center text-md-start">
-            <h6 class="text-primary fw-bold text-uppercase mb-2" style="letter-spacing: 2px;"><i class="fas fa-book-open me-2"></i>Thư viện số</h6>
-            <h1 class="display-5 fw-bold text-dark mb-3">Khám phá tri thức,<br><span class="text-primary">Mở rộng</span> tương lai</h1>
-            <p class="text-muted fs-6 mb-4" style="line-height: 1.6;">Truy cập kho tài liệu khổng lồ với hàng ngàn đầu sách thuộc mọi lĩnh vực. Đọc sách hôm nay, dẫn đầu ngày mai.</p>
-            <a href="#book-list" class="btn btn-primary btn-lg rounded-pill px-5 py-2 shadow-sm fs-6">
-                Khám phá ngay <i class="fas fa-arrow-down ms-2"></i>
-            </a>
+<div class="premium-page-container">
+
+    <section class="cinema-hero">
+        <div class="cinema-bg-wrapper">
+            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000" alt="Library BG" class="bg-parallax">
+            <div class="cinema-overlay"></div>
         </div>
-        <div class="col-md-5 d-none d-md-flex justify-content-center mt-4 mt-md-0">
-        <img src="https://cdn-icons-png.flaticon.com/512/3145/3145765.png" alt="Library Illustration" class="img-fluid" style="max-height: 250px; object-fit: contain; opacity: 0.9;">        </div>
-    </div>
-</div>
 
-{% if current_kw %}
-<div class="container animate__animated animate__fadeIn">
-    <div class="alert alert-light border shadow-sm rounded-3 mb-4 d-flex justify-content-between align-items-center">
-        <span>
-            <i class="fas fa-search text-primary me-2"></i>
-            Tìm thấy <strong>{{ books|length }}</strong> kết quả cho: <span class="badge bg-primary px-2 py-1 fs-6">"{{ current_kw }}"</span>
-        </span>
-        <a href="/" class="btn btn-sm btn-outline-danger rounded-pill px-3">
-            <i class="fas fa-times me-1"></i> Hủy tìm kiếm
-        </a>
-    </div>
-</div>
-{% endif %}
-
-<div class="container" id="book-list">
-    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
-        <div>
-            <h3 class="fw-bold text-dark mb-0"><i class="fas fa-bookmark text-warning me-2"></i>Sách Mới Cập Nhật</h3>
-            <div class="bg-primary mt-2" style="height: 3px; width: 60px; border-radius: 2px;"></div>
-        </div>
-        <span class="text-muted small fw-medium">Đang hiển thị {{ books|length }} cuốn</span>
-    </div>
-
-    {% if books %}
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
-      {% for b in books %}
-        <div class="col">
-          <div class="card h-100 border-0 bg-white shadow-sm book-card rounded-4">
-
-            <div class="position-relative overflow-hidden rounded-top-4" style="padding: 15px; background-color: #f8f9fa;">
-                <div class="cover-wrapper shadow" style="border-radius: 8px; overflow: hidden; height: 320px;">
-                    <img src="{{ b.hinh_anh }}" class="w-100 h-100 book-cover" alt="{{ b.ten_sach }}" style="object-fit: cover; object-position: center;">
+        <div class="container h-100 position-relative z-10 d-flex align-items-center">
+            <div class="row w-100 g-5">
+                <div class="col-lg-8 animate__animated animate__fadeInLeft">
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="badge-premium-pill">NEW ERA OF LEARNING</span>
+                        <div class="line-glow ms-3"></div>
+                    </div>
+                    <h1 class="display-1 fw-black text-white mb-3">
+                        Khai mở <span class="text-gradient-azure">Tiềm năng</span> <br>
+                        Chạm tới <span class="text-gradient-gold">Vô tận</span>
+                    </h1>
+                    <p class="fs-5 text-white-50 mb-5 pe-lg-5 fw-medium">
+                        Hệ thống thư viện số chuẩn quốc tế. Khám phá hàng triệu tài liệu,
+                        sách điện tử và nghiên cứu khoa học ngay tại nhà.
+                    </p>
+                    <div class="hero-actions d-flex gap-3 align-items-center flex-wrap">
+                        <a href="#explore" class="btn-ultra-primary px-5 py-3 text-decoration-none">Bắt đầu đọc <i class="fas fa-arrow-right ms-2"></i></a>
+                        <div class="user-stack d-none d-md-flex align-items-center ms-4 text-white">
+                            <div class="avatar-group me-3">
+                                <img src="https://i.pravatar.cc/150?u=1" alt="u1">
+                                <img src="https://i.pravatar.cc/150?u=2" alt="u2">
+                                <img src="https://i.pravatar.cc/150?u=3" alt="u3">
+                            </div>
+                            <span class="small fw-bold">+2k bạn đọc đang trực tuyến</span>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <div class="book-overlay d-flex flex-column justify-content-center align-items-center">
-                    <a href="/sach/{{ b.id }}" class="btn btn-light rounded-pill px-4 mb-2 fw-bold text-dark shadow-sm w-75">
-                        <i class="fas fa-eye me-1"></i> Chi tiết
-                    </a>
-                    {% if b.so_luong_con > 0 %}
-                    <button onclick="muonSach({{ b.id }}, '{{ b.ten_sach }}')" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm w-75">
-                        <i class="fas fa-plus me-1"></i> Mượn
-                    </button>
-                    {% endif %}
+    <div class="search-floating-area container" id="explore">
+        <div class="search-master-card p-2 shadow-2xl animate__animated animate__fadeInUp">
+            <form action="/" method="get" class="d-flex flex-wrap flex-lg-nowrap align-items-center m-0 w-100">
+                <div class="flex-grow-1 border-end-lg p-2">
+                    <div class="search-input-box px-3">
+                        <i class="fas fa-search me-3 text-primary"></i>
+                        <input type="text" name="kw" value="{{ current_kw if current_kw else '' }}"
+                               class="form-control-minimal" placeholder="Tìm tên sách, tác giả hoặc ISBN...">
+                    </div>
                 </div>
-
-                {% if b.so_luong_con <= 0 %}
-                <span class="badge bg-danger position-absolute top-0 end-0 m-3 shadow-sm rounded-pill px-3 py-2"><i class="fas fa-exclamation-circle me-1"></i>Hết sách</span>
-                {% else %}
-                <span class="badge bg-success position-absolute top-0 end-0 m-3 shadow-sm rounded-pill px-3 py-2">Sẵn có: {{ b.so_luong_con }}</span>
-                {% endif %}
-            </div>
-
-            <div class="card-body d-flex flex-column pt-3 pb-4 px-3">
-              <h5 class="card-title fw-bold text-dark mb-1 book-title" title="{{ b.ten_sach }}">{{ b.ten_sach }}</h5>
-              <p class="card-text text-muted small mb-3"><i class="fas fa-feather-alt text-secondary me-1"></i>{{ b.tac_gia }}</p>
-
-              <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
-                  <span class="text-muted small"><i class="fas fa-layer-group me-1"></i>Tổng: {{ b.tong_so_luong }}</span>
-                  {% if b.so_luong_con > 0 %}
-                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" onclick="muonSach({{ b.id }}, '{{ b.ten_sach }}')">Mượn ngay</button>
-                  {% else %}
-                    <button class="btn btn-sm btn-secondary rounded-pill px-3 fw-bold" disabled>Tạm hết</button>
-                  {% endif %}
-              </div>
-            </div>
-          </div>
+                <div class="p-2 border-end-lg" style="min-width: 200px;">
+                    <div class="category-select-box px-3">
+                        <i class="fas fa-th-large me-2 text-muted"></i>
+                        <select class="form-select-minimal">
+                            <option selected>Tất cả danh mục</option>
+                            <option>Khoa học</option>
+                            <option>Kinh tế</option>
+                            <option>Văn học</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="p-2">
+                    <button type="submit" class="btn-search-mega px-5 py-3">Tìm kiếm</button>
+                </div>
+            </form>
         </div>
-      {% endfor %}
     </div>
 
-    {% if pages > 1 %}
-    <nav aria-label="Page navigation" class="mb-5">
-        <ul class="pagination justify-content-center pagination-lg">
-
-          <li class="page-item {{ 'disabled' if request.args.get('page', 1)|int == 1 else '' }}">
-              <a class="page-link rounded-start-pill shadow-sm" href="/?page={{ request.args.get('page', 1)|int - 1 }}" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
-          </li>
-
-          {% for i in range(1, pages + 1) %}
-          <li class="page-item {{ 'active' if i == request.args.get('page', 1)|int else '' }}">
-              <a class="page-link shadow-sm mx-1" href="/?page={{i}}">{{ i }}</a>
-          </li>
-          {% endfor %}
-
-          <li class="page-item {{ 'disabled' if request.args.get('page', 1)|int == pages else '' }}">
-              <a class="page-link rounded-end-pill shadow-sm" href="/?page={{ request.args.get('page', 1)|int + 1 }}"><i class="fas fa-chevron-right"></i></a>
-          </li>
-
-        </ul>
-    </nav>
-    {% endif %}
-
-    {% else %}
-    <div class="text-center py-5 my-5 bg-white rounded-4 border shadow-sm">
-        <div class="mb-4">
-            <i class="fas fa-book-dead fa-5x text-secondary opacity-50"></i>
+    <section class="container py-6">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-5 px-2 gap-4">
+            <div class="section-title-wrap">
+                <h6 class="text-primary fw-bold text-uppercase ls-3 small mb-2">Curated Collection</h6>
+                <h2 class="fw-black text-dark display-5 m-0">Tác Phẩm <span class="text-silver">Tinh Hoa</span></h2>
+            </div>
+            <div class="filter-pill-group d-flex flex-nowrap overflow-auto gap-2 pb-2">
+                <button class="pill-filter active">Mới nhất</button>
+                <button class="pill-filter">Phổ biến</button>
+                <button class="pill-filter">Đánh giá</button>
+                <button class="pill-filter">Cổ điển</button>
+            </div>
         </div>
-        <h4 class="text-dark fw-bold">Rất tiếc, chưa có sách nào!</h4>
-        <p class="text-muted">Thử tìm kiếm với từ khóa khác hoặc quay lại sau nhé.</p>
-        <a href="/" class="btn btn-primary rounded-pill px-4 py-2 mt-2"><i class="fas fa-home me-2"></i>Về trang chủ</a>
-    </div>
-    {% endif %}
+
+        {% if books %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-5">
+            {% for b in books %}
+            <div class="col animate__animated animate__fadeInUp" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                <div class="book-card-v3">
+                    <div class="card-media">
+                        <img src="{{ b.hinh_anh }}" class="book-cover-v3" alt="{{ b.ten_sach }}"
+                             onerror="this.src='https://via.placeholder.com/300x450?text=Premium+Book'">
+                        <div class="card-overlay-v3">
+                            <div class="meta-info">
+                                <span class="badge bg-blur small"><i class="fas fa-bookmark me-1"></i> #{{ b.id }}</span>
+                            </div>
+                            <div class="card-actions-v3">
+                                <a href="{{ url_for('chi_tiet_sach', sach_id=b.id) }}" class="action-circle" title="Xem nhanh"><i class="fas fa-expand-alt"></i></a>
+                                {% if b.so_luong_con > 0 %}
+                                <button onclick="muonSach({{ b.id }}, '{{ b.ten_sach }}')" class="action-circle featured" title="Thêm vào túi"><i class="fas fa-plus"></i></button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if b.so_luong_con <= 0 %}
+                            <div class="out-of-stock-label">Tạm hết</div>
+                        {% endif %}
+                    </div>
+                    <div class="card-content-v3 mt-3">
+                        <a href="{{ url_for('chi_tiet_sach', sach_id=b.id) }}" class="text-decoration-none">
+                            <h5 class="book-title-v3 text-dark fw-bold mb-1 transition-all">{{ b.ten_sach }}</h5>
+                        </a>
+                        <p class="text-muted small fw-medium mb-3">{{ b.tac_gia }}</p>
+                        <div class="d-flex align-items-center justify-content-between border-top pt-3">
+                            <span class="stock-pill {% if b.so_luong_con > 0 %}instock{% else %}outstock{% endif %}">
+                                <span class="dot"></span> {{ b.so_luong_con }} sẵn có
+                            </span>
+                            <div class="stars-mini text-warning small"><i class="fas fa-star"></i> 4.8</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if pages > 1 %}
+        <nav class="mt-7 d-flex justify-content-center">
+            <ul class="pagination-modern d-flex gap-2 list-unstyled">
+                <li class="{{ 'disabled' if request.args.get('page', 1)|int == 1 else '' }}">
+                    <a href="/?page={{ request.args.get('page', 1)|int - 1 }}" class="page-link-modern"><i class="fas fa-chevron-left"></i></a>
+                </li>
+                {% for i in range(1, pages + 1) %}
+                <li class="{{ 'active' if i == request.args.get('page', 1)|int else '' }}">
+                    <a href="/?page={{i}}" class="page-link-modern">{{ i }}</a>
+                </li>
+                {% endfor %}
+                <li class="{{ 'disabled' if request.args.get('page', 1)|int == pages else '' }}">
+                    <a href="/?page={{ request.args.get('page', 1)|int + 1 }}" class="page-link-modern"><i class="fas fa-chevron-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-6">
+            <i class="fas fa-search-minus fa-4x text-silver mb-4"></i>
+            <h3 class="fw-black text-dark">Không tìm thấy sách</h3>
+            <a href="/" class="btn btn-dark mt-3 px-5 py-3 rounded-pill">Quay lại</a>
+        </div>
+        {% endif %}
+    </section>
 </div>
 
 <style>
-    body {
-        background-color: #f4f6f9;
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    :root {
+        --primary-brand: #007bff;
+        --azure-grad: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        --gold-grad: linear-gradient(135deg, #f8d800 0%, #fdeb71 100%);
     }
 
-    /* Hiệu ứng thẻ sách */
-    .book-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .book-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
-    }
+    body { background-color: #f8f9fa; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .fw-black { font-weight: 800; }
+    .py-6 { padding-top: 6rem; padding-bottom: 6rem; }
+    .mt-7 { margin-top: 5rem; }
 
-    /* Hiệu ứng ảnh bìa */
-    .book-cover {
-        transition: transform 0.5s ease;
-    }
-    .book-card:hover .book-cover {
-        transform: scale(1.08);
-    }
+    /* HERO */
+    .cinema-hero { height: 80vh; position: relative; overflow: hidden; background: #000; }
+    .cinema-bg-wrapper { position: absolute; width: 100%; height: 100%; }
+    .bg-parallax { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5); }
+    .cinema-overlay { position: absolute; bottom: 0; width: 100%; height: 50%; background: linear-gradient(to top, #f8f9fa, transparent); }
+    .badge-premium-pill { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 8px 20px; border-radius: 50px; color: #fff; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; border: 1px solid rgba(255,255,255,0.2); }
+    .line-glow { width: 60px; height: 2px; background: var(--primary-brand); box-shadow: 0 0 10px var(--primary-brand); }
+    .text-gradient-azure { background: var(--azure-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .text-gradient-gold { background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* Overlay xuất hiện khi di chuột */
-    .book-overlay {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-color: rgba(33, 37, 41, 0.6);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        backdrop-filter: blur(2px);
-    }
-    .position-relative:hover .book-overlay {
-        opacity: 1;
-    }
+    /* SEARCH Master Card hàng ngang */
+    .search-floating-area { margin-top: -60px; position: relative; z-index: 100; }
+    .search-master-card { background: white; border-radius: 25px; border: 1px solid #edf2f7; display: flex; }
+    .search-input-box, .category-select-box { display: flex; align-items: center; height: 55px; }
+    .form-control-minimal, .form-select-minimal { border: none; width: 100%; font-size: 1rem; font-weight: 500; outline: none; background: transparent; }
+    .btn-search-mega { background: #000; color: #fff; border-radius: 18px; border: none; font-weight: 800; transition: 0.3s; }
+    .btn-search-mega:hover { background: var(--primary-brand); transform: translateY(-2px); }
 
-    /* Cắt bớt tên sách nếu quá dài (2 dòng) */
-    .book-title {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        min-height: 48px; /* Đảm bảo các thẻ cao bằng nhau */
-    }
+    /* FILTER PILLS hàng ngang */
+    .filter-pill-group::-webkit-scrollbar { display: none; }
+    .pill-filter { background: white; border: 1px solid #edf2f7; padding: 10px 25px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; white-space: nowrap; }
+    .pill-filter.active { background: #000; color: #fff; border-color: #000; }
 
-    /* Tùy chỉnh thanh phân trang */
-    .page-link {
-        color: #495057;
-        border: none;
-        background-color: #fff;
-        margin: 0 2px;
-        font-weight: 500;
-    }
-    .page-item.active .page-link {
-        background-color: #0d6efd;
-        color: #fff;
-        border-radius: 8px;
-    }
-    .page-link:hover {
-        background-color: #e9ecef;
-        color: #0d6efd;
-        border-radius: 8px;
-    }
-    .page-item.disabled .page-link {
-        background-color: #f8f9fa;
-        color: #6c757d;
-    }
+    /* BOOK CARD */
+    .book-card-v3 { transition: 0.4s; }
+    .card-media { position: relative; aspect-ratio: 2/3; border-radius: 22px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .book-cover-v3 { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
+    .book-card-v3:hover .book-cover-v3 { transform: scale(1.1); filter: brightness(0.7); }
+    .card-overlay-v3 { position: absolute; inset: 0; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; opacity: 0; transition: 0.3s; }
+    .book-card-v3:hover .card-overlay-v3 { opacity: 1; }
+    .badge-blur { background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 10px; color: #fff; font-weight: 800; }
+    .card-actions-v3 { display: flex; gap: 10px; justify-content: center; }
+    .action-circle { width: 45px; height: 45px; border-radius: 50%; background: #fff; color: #000; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; }
+    .action-circle.featured { background: var(--primary-brand); color: #fff; }
+    .book-title-v3 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; font-size: 1.1rem; }
+    .stock-pill { font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .stock-pill.instock { color: #28a745; }
+    .stock-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
+    .out-of-stock-label { position: absolute; bottom: 0; width: 100%; background: rgba(220, 53, 69, 0.9); color: #fff; text-align: center; padding: 6px; font-weight: 800; font-size: 0.75rem; }
+
+    /* PAGINATION hàng ngang */
+    .page-link-modern { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 12px; color: #000; font-weight: 800; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .active .page-link-modern { background: #000; color: #fff; }
+    .btn-ultra-primary { background: #000; color: #fff; border-radius: 15px; font-weight: 800; transition: 0.4s; }
+    .avatar-group img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #000; margin-right: -10px; }
+
+    @media (min-width: 992px) { .border-end-lg { border-right: 1px solid #edf2f7; } }
 </style>
 
 <script>
+    // Hàm mượn sách đồng bộ
     function muonSach(id, tenSach) {
-        // Cần tích hợp SweetAlert2 ở file base.html để dùng alert đẹp
-        if (confirm(`Bạn có chắc chắn muốn mượn cuốn sách "${tenSach}" không?`)) {
-            // Thêm logic gọi API mượn sách ở đây
-            alert('Chức năng mượn sách đang được xử lý!');
-        }
+        {% if not current_user.is_authenticated %}
+            Swal.fire({ title: 'Yêu cầu đăng nhập', text: 'Hãy đăng nhập để mượn sách bạn nhé!', icon: 'warning', confirmButtonColor: '#000', borderRadius: '20px' })
+            .then((result) => { if (result.isConfirmed) location.href = '/login'; });
+            return;
+        {% endif %}
+
+        Swal.fire({
+            title: 'Mượn sách?', text: `Cuốn: ${tenSach}`,
+            showCancelButton: true, confirmButtonColor: '#007bff', cancelButtonColor: '#000',
+            confirmButtonText: 'Đồng ý', borderRadius: '25px'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/api/muon-sach', { method: 'POST', body: JSON.stringify({ id: id, ten_sach: tenSach }), headers: {'Content-Type': 'application/json'} })
+                .then(res => res.json()).then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({ title: 'Thành công!', text: data.msg, icon: 'success', borderRadius: '25px' }).then(() => location.reload());
+                    } else {
+                        Swal.fire({ title: 'Lỗi!', text: data.msg, icon: 'error', borderRadius: '25px' });
+                    }
+                });
+            }
+        });
     }
 </script>
 {% endblock %}

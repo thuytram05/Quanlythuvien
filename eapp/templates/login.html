@@ -1,29 +1,56 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Đăng nhập Hệ thống - Thư Viện{% endblock %}
+{% block title %}Đăng nhập Hệ thống - Tinh Hoa Tri Thức{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
-        <div class="col-12 col-md-6 col-lg-4">
+<div class="login-page-wrapper animate__animated animate__fadeIn">
+    <div class="container-fluid p-0">
+        <div class="row g-0 min-vh-100">
 
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate__animated animate__zoomIn">
+            <div class="col-lg-7 d-none d-lg-flex login-artsy-side position-relative">
+                <div class="artsy-bg-overlay"></div>
+                <div class="artsy-content text-white p-5 position-relative z-3 animate__animated animate__fadeInLeft animate__delay-1s">
+                    <a href="/" class="artsy-logo text-white text-decoration-none d-flex align-items-center mb-5">
+                        <div class="bg-white text-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="fas fa-book-open fs-5"></i>
+                        </div>
+                        <span class="fw-bold fs-4 text-uppercase">Admin <span class="fw-light">Library</span></span>
+                    </a>
 
-                <div class="card-header bg-primary text-white text-center py-4 border-0">
-                    <div class="mb-2">
-                        <i class="fas fa-user-circle fa-4x shadow-sm rounded-circle"></i>
+                    <h1 class="display-3 fw-bold artsy-title mb-4">Chào mừng <br>bạn trở lại!</h1>
+                    <p class="lead artsy-subtitle opacity-75 mb-5">Hệ thống quản lý thư viện số tiên tiến, nơi hội tụ tri thức và công nghệ. Hãy đăng nhập để bắt đầu hành trình khám phá.</p>
+
+                    <div class="artsy-stats d-flex gap-4 p-4 rounded-4 bg-white bg-opacity-10" style="backdrop-filter: blur(10px);">
+                        <div class="stat-box">
+                            <span class="d-block fw-bold fs-3">50k+</span>
+                            <span class="small opacity-75">Cuốn sách</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-box">
+                            <span class="d-block fw-bold fs-3">10k+</span>
+                            <span class="small opacity-75">Bạn đọc</span>
+                        </div>
                     </div>
-                    <h4 class="fw-bold mb-0">THÀNH VIÊN ĐĂNG NHẬP</h4>
-                    <p class="small mb-0 opacity-75">Vui lòng nhập tài khoản để vào thư viện</p>
                 </div>
+            </div>
 
-                <div class="card-body p-4 p-md-5 bg-white">
+            <div class="col-lg-5 col-12 d-flex align-items-center justify-content-center p-4 p-md-5 bg-glass-right">
+
+                <div class="login-form-container p-4 p-md-5 rounded-5 shadow-glass animate__animated animate__fadeInUp animate__delay-1s">
+
+                    <div class="text-center mb-5">
+                        <div class="mb-3">
+                            <i class="fas fa-user-shield fa-3x text-primary-ultra"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark mb-1">Xác thực tài khoản</h2>
+                        <p class="text-muted small">Vui lòng nhập thông tin để truy cập hệ thống</p>
+                    </div>
 
                     {% with messages = get_flashed_messages(with_categories=true) %}
                       {% if messages %}
                         {% for category, message in messages %}
-                          <div class="alert alert-danger border-0 small py-2 animate__animated animate__shakeX" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i> {{ message }}
+                          <div class="alert alert-soft-danger border-0 small py-3 rounded-4 animate__animated animate__shakeX mb-4" role="alert">
+                            <i class="fas fa-shield-virus me-2"></i> {{ message }}
                           </div>
                         {% endfor %}
                       {% endif %}
@@ -31,80 +58,168 @@
 
                     <form method="post" action="/login">
                         <div class="mb-4">
-                            <label class="form-label small fw-bold text-muted">Tên tài khoản</label>
-                            <div class="input-group border rounded-3 p-1 shadow-sm bg-light">
-                                <span class="input-group-text bg-transparent border-0 text-primary">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                <input type="text" name="username" class="form-control border-0 bg-transparent shadow-none"
-                                       placeholder="Tên đăng nhập..." required>
+                            <label class="label-ultra">Tên tài khoản</label>
+                            <div class="input-group-ultra">
+                                <i class="fas fa-user icon-focus"></i>
+                                <input type="text" name="username" class="form-control-ultra"
+                                       placeholder="Nhập tên đăng nhập..." required>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label small fw-bold text-muted">Mật khẩu</label>
-                            <div class="input-group border rounded-3 p-1 shadow-sm bg-light">
-                                <span class="input-group-text bg-transparent border-0 text-primary">
-                                    <i class="fas fa-lock"></i>
-                                </span>
-                                <input type="password" name="password" class="form-control border-0 bg-transparent shadow-none"
-                                       placeholder="Mật khẩu..." required>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="label-ultra mb-0">Mật khẩu</label>
+                                <a href="#" class="text-primary-ultra small text-decoration-none fw-bold opacity-75 transition-link">Quên mật khẩu?</a>
+                            </div>
+                            <div class="input-group-ultra">
+                                <i class="fas fa-lock icon-focus"></i>
+                                <input type="password" name="password" class="form-control-ultra"
+                                       placeholder="••••••••" required>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow mt-2 transition-button">
-                            ĐĂNG NHẬP <i class="fas fa-sign-in-alt ms-2"></i>
+                        <div class="mb-4">
+                            <div class="form-check custom-check-ultra">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label small text-muted ms-1" for="rememberMe">
+                                    Ghi nhớ đăng nhập
+                                1</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-ultra w-100 py-3 rounded-pill fw-bold mt-2 shadow-blue">
+                            ĐĂNG NHẬP <i class="fas fa-chevron-right ms-2 small"></i>
                         </button>
                     </form>
 
-                    <div class="text-center mt-4">
-                        <p class="text-muted small">Chưa có tài khoản?
-                            <a href="/register" class="text-primary fw-bold text-decoration-none">Đăng ký ngay</a>
+                    <div class="text-center mt-5 pt-3 border-top">
+                        <p class="text-muted small mb-0">Bạn chưa có tài khoản thư viện?
+                            <a href="/register" class="text-primary-ultra fw-bold text-decoration-none link-hover-effect">Đăng ký thành viên mới</a>
                         </p>
-                        <hr class="opacity-10">
-                        <a href="/" class="text-secondary small text-decoration-none">
-                            <i class="fas fa-arrow-left me-1"></i> Quay lại trang chủ
-                        </a>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
 <style>
-    /* CSS TÙY CHỈNH ĐỂ KHÔNG BỊ "XẤU" */
-    body {
-        background: #f0f2f5; /* Màu nền trung tính cho chuyên nghiệp */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
+
+    .login-page-wrapper {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f4f8; /* Nền xám nhạt trung tính */
     }
 
-    /* Hiệu ứng cho nút bấm */
-    .transition-button {
-        transition: all 0.3s ease;
-        letter-spacing: 1px;
+    /* LEFT SIDE: ARTSY */
+    .login-artsy-side {
+        background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000');
+        background-size: cover;
+        background-position: center;
+        border-radius: 0 2rem 2rem 0; /* Bo góc phải */
     }
 
-    .transition-button:hover {
+    .artsy-bg-overlay {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.95), rgba(0, 210, 255, 0.85));
+        border-radius: 0 2rem 2rem 0;
+        z-index: 1;
+    }
+
+    .artsy-title { font-family: 'Playfair Display', serif; letter-spacing: -2px; }
+    .artsy-subtitle { line-height: 1.8; }
+
+    .stat-divider { width: 1px; height: 50px; background: rgba(255,255,255,0.2); }
+    .stat-box { display: flex; flex-direction: column; align-items: center; }
+
+    /* RIGHT SIDE: GLASSMORPHISM */
+    .bg-glass-right {
+        background-color: transparent; /* Nền trong suốt để hiện nền page */
+    }
+
+    .login-form-container {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        max-width: 480px; width: 100%;
+        transition: 0.3s;
+    }
+
+    .login-form-container:hover {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .shadow-glass {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ULTRA INPUT */
+    .label-ultra { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+    .text-primary-ultra { color: #0d6efd; }
+
+    .input-group-ultra {
+        background: rgba(241, 245, 249, 0.8);
+        border: 1px solid transparent;
+        border-radius: 14px;
+        padding: 6px 16px;
+        display: flex; align-items: center;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-group-ultra:focus-within {
+        background: white;
+        border-color: #0d6efd;
+        box-shadow: 0 10px 20px rgba(13, 110, 253, 0.1);
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3) !important;
     }
 
-    /* Bo góc cho Card */
-    .rounded-4 {
-        border-radius: 1.5rem !important;
+    .form-control-ultra {
+        border: none; background: transparent; box-shadow: none !important;
+        padding: 10px; font-size: 0.95rem; width: 100%; font-weight: 500;
+        color: #1a1a1a;
     }
 
-    /* Tùy chỉnh Input khi bấm vào (Focus) */
-    .input-group:focus-within {
-        border-color: #0d6efd !important;
-        background: #ffffff !important;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1) !important;
+    .icon-focus { color: #94a3b8; transition: 0.3s; }
+    .input-group-ultra:focus-within .icon-focus { color: #0d6efd; }
+
+    /* BUTTON ULTRA */
+    .btn-primary-ultra {
+        background: #1a1a1a; /* Màu tối sang trọng */
+        border: none; color: white;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Đảm bảo Font chữ đồng bộ */
-    .card-header h4 {
-        letter-spacing: -1px;
+    .btn-primary-ultra:hover {
+        background: #0d6efd; /* Màu xanh khi hover */
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px rgba(13, 110, 253, 0.2) !important;
+    }
+
+    .shadow-blue { box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+    /* CUSTOM CHECKBOX */
+    .custom-check-ultra .form-check-input {
+        border-radius: 4px; border-color: #dee2e6;
+    }
+    .custom-check-ultra .form-check-input:checked {
+        background-color: #0d6efd; border-color: #0d6efd;
+    }
+
+    /* LINKS EFFECTS */
+    .transition-link:hover { color: #1a1a1a !important; text-decoration: underline !important; }
+
+    .link-hover-effect { position: relative; }
+    .link-hover-effect::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; left: 0; background-color: #0d6efd; transition: 0.3s; }
+    .link-hover-effect:hover::after { width: 100%; }
+
+    .alert-soft-danger { background: #fef2f2; color: #b91c1c; }
+
+    /* MOBILE ADJUSTMENT */
+    @media (max-width: 991px) {
+        .artsy-bg-overlay, .login-artsy-side { border-radius: 0; }
+        .login-form-container { background: rgba(255, 255, 255, 0.9); }
     }
 </style>
 {% endblock %}

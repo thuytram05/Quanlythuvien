@@ -1,152 +1,204 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Thư Viện - Đọc Để Thay Đổi{% endblock %}
+{% block title %}Trang Chủ | Thư Viện Hiện Đại{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5 animate__animated animate__fadeIn">
+    <div class="row align-items-center bg-white rounded-4 shadow-sm border p-4 p-md-5" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+        <div class="col-md-7 text-center text-md-start">
+            <h6 class="text-primary fw-bold text-uppercase mb-2" style="letter-spacing: 2px;"><i class="fas fa-book-open me-2"></i>Thư viện số</h6>
+            <h1 class="display-5 fw-bold text-dark mb-3">Khám phá tri thức,<br><span class="text-primary">Mở rộng</span> tương lai</h1>
+            <p class="text-muted fs-6 mb-4" style="line-height: 1.6;">Truy cập kho tài liệu khổng lồ với hàng ngàn đầu sách thuộc mọi lĩnh vực. Đọc sách hôm nay, dẫn đầu ngày mai.</p>
+            <a href="#book-list" class="btn btn-primary btn-lg rounded-pill px-5 py-2 shadow-sm fs-6">
+                Khám phá ngay <i class="fas fa-arrow-down ms-2"></i>
+            </a>
+        </div>
+        <div class="col-md-5 d-none d-md-flex justify-content-center mt-4 mt-md-0">
+        <img src="https://cdn-icons-png.flaticon.com/512/3145/3145765.png" alt="Library Illustration" class="img-fluid" style="max-height: 250px; object-fit: contain; opacity: 0.9;">        </div>
+    </div>
+</div>
 
 {% if current_kw %}
-<div class="alert alert-light border-0 shadow-sm rounded-4 mb-4 d-flex justify-content-between align-items-center animate__animated animate__fadeIn">
-    <span>
-        <i class="fas fa-search text-primary me-2"></i>
-        Tìm thấy <strong>{{ books|length }}</strong> kết quả cho: <span class="badge bg-info text-dark">"{{ current_kw }}"</span>
-    </span>
-    <a href="/" class="btn btn-sm btn-outline-secondary rounded-pill border-0 text-decoration-none">
-        <i class="fas fa-times me-1"></i> Xóa tìm kiếm
-    </a>
+<div class="container animate__animated animate__fadeIn">
+    <div class="alert alert-light border shadow-sm rounded-3 mb-4 d-flex justify-content-between align-items-center">
+        <span>
+            <i class="fas fa-search text-primary me-2"></i>
+            Tìm thấy <strong>{{ books|length }}</strong> kết quả cho: <span class="badge bg-primary px-2 py-1 fs-6">"{{ current_kw }}"</span>
+        </span>
+        <a href="/" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+            <i class="fas fa-times me-1"></i> Hủy tìm kiếm
+        </a>
+    </div>
 </div>
 {% endif %}
 
-{% block content %}
-<div class="row mb-5 py-5 rounded-4 bg-white shadow-sm border animate__animated animate__fadeIn">
-    <div class="col-md-8 ps-md-5 d-flex flex-column justify-content-center">
-        <h6 class="text-primary fw-bold text-uppercase mb-2" style="letter-spacing: 2px;">Chào mừng Bạn quay trở lại</h6>
-        <h1 class="display-4 fw-bold text-dark mb-3">Hôm nay bạn muốn <span class="text-primary">mở mang</span> kiến thức gì?</h1>
-        <p class="text-muted fs-5 mb-4">Khám phá kho tri thức với hơn 5.000 đầu sách đa dạng thể loại tại Thư Viện Huy Học.</p>
+<div class="container" id="book-list">
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
         <div>
-            <a href="#book-list" class="btn btn-primary px-4 py-2 rounded-3 fw-bold shadow-sm">
-                Khám phá ngay <i class="fas fa-chevron-down ms-2"></i>
-            </a>
+            <h3 class="fw-bold text-dark mb-0"><i class="fas fa-bookmark text-warning me-2"></i>Sách Mới Cập Nhật</h3>
+            <div class="bg-primary mt-2" style="height: 3px; width: 60px; border-radius: 2px;"></div>
         </div>
+        <span class="text-muted small fw-medium">Đang hiển thị {{ books|length }} cuốn</span>
     </div>
-    <div class="col-md-4 d-none d-md-flex align-items-center justify-content-center">
-        <div class="p-4 bg-light rounded-circle shadow-inner">
-            <i class="fas fa-book-reader fa-8x text-primary opacity-25"></i>
-        </div>
-    </div>
-</div>
 
-<div id="book-list" class="d-flex justify-content-between align-items-end mb-4 px-1">
-    <div>
-        <h2 class="fw-bold text-dark mb-0">Tất Cả Sách</h2>
-        <div class="bg-primary rounded-pill mt-2" style="height: 4px; width: 40px;"></div>
-    </div>
-    <span class="text-muted small">Hiển thị {{ books|length }} cuốn sách</span>
-</div>
+    {% if books %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+      {% for b in books %}
+        <div class="col">
+          <div class="card h-100 border-0 bg-white shadow-sm book-card rounded-4">
 
-{% if books %}
-<div class="row g-4 px-1">
-  {% for b in books %}
-    <div class="col-xl-3 col-lg-4 col-sm-6">
-      <div class="card h-100 border-0 bg-transparent book-item">
+            <div class="position-relative overflow-hidden rounded-top-4" style="padding: 15px; background-color: #f8f9fa;">
+                <div class="cover-wrapper shadow" style="border-radius: 8px; overflow: hidden; height: 320px;">
+                    <img src="{{ b.hinh_anh }}" class="w-100 h-100 book-cover" alt="{{ b.ten_sach }}" style="object-fit: cover; object-position: center;">
+                </div>
 
-        <div class="position-relative mb-3 cover-wrapper shadow-sm">
-            <img src="{{ b.hinh_anh }}" class="w-100 rounded-3 shadow-hover"
-                 alt="{{ b.ten_sach }}" style="height: 380px; object-fit: cover;">
+                <div class="book-overlay d-flex flex-column justify-content-center align-items-center">
+                    <a href="/sach/{{ b.id }}" class="btn btn-light rounded-pill px-4 mb-2 fw-bold text-dark shadow-sm w-75">
+                        <i class="fas fa-eye me-1"></i> Chi tiết
+                    </a>
+                    {% if b.so_luong_con > 0 %}
+                    <button onclick="muonSach({{ b.id }}, '{{ b.ten_sach }}')" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm w-75">
+                        <i class="fas fa-plus me-1"></i> Mượn
+                    </button>
+                    {% endif %}
+                </div>
 
-            <div class="overlay-btns">
-                <a href="/sach/{{ b.id }}" class="btn btn-white btn-sm rounded-pill shadow-sm mb-2 w-75 fw-bold">Xem chi tiết</a>
-                {% if b.so_luong_con > 0 %}
-                <button onclick="muonSach({{ b.id }}, '{{ b.ten_sach }}')"
-                        class="btn btn-primary btn-sm rounded-pill shadow-sm w-75 fw-bold">Mượn ngay</button>
+                {% if b.so_luong_con <= 0 %}
+                <span class="badge bg-danger position-absolute top-0 end-0 m-3 shadow-sm rounded-pill px-3 py-2"><i class="fas fa-exclamation-circle me-1"></i>Hết sách</span>
+                {% else %}
+                <span class="badge bg-success position-absolute top-0 end-0 m-3 shadow-sm rounded-pill px-3 py-2">Sẵn có: {{ b.so_luong_con }}</span>
                 {% endif %}
             </div>
 
-            {% if b.so_luong_con <= 0 %}
-            <div class="out-of-stock-label">Hết sách</div>
-            {% endif %}
-        </div>
+            <div class="card-body d-flex flex-column pt-3 pb-4 px-3">
+              <h5 class="card-title fw-bold text-dark mb-1 book-title" title="{{ b.ten_sach }}">{{ b.ten_sach }}</h5>
+              <p class="card-text text-muted small mb-3"><i class="fas fa-feather-alt text-secondary me-1"></i>{{ b.tac_gia }}</p>
 
-        <div class="px-1 py-2">
-          <h6 class="fw-bold text-dark mb-1 text-truncate">{{ b.ten_sach }}</h6>
-          <p class="text-muted small mb-2"><i class="fas fa-user-edit me-1"></i> {{ b.tac_gia }}</p>
-
-          <div class="d-flex justify-content-between align-items-center">
-              <span class="badge bg-light text-dark fw-normal border">Còn {{ b.so_luong_con }} cuốn</span>
-              {% if b.so_luong_con > 0 %}
-                <button class="btn btn-link text-primary p-0 text-decoration-none fw-bold small"
-                        onclick="muonSach({{ b.id }}, '{{ b.ten_sach }}')">+ Mượn ngay</button>
-              {% endif %}
+              <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                  <span class="text-muted small"><i class="fas fa-layer-group me-1"></i>Tổng: {{ b.tong_so_luong }}</span>
+                  {% if b.so_luong_con > 0 %}
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" onclick="muonSach({{ b.id }}, '{{ b.ten_sach }}')">Mượn ngay</button>
+                  {% else %}
+                    <button class="btn btn-sm btn-secondary rounded-pill px-3 fw-bold" disabled>Tạm hết</button>
+                  {% endif %}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  {% endfor %}
-</div>
-
-{% if pages > 1 %}
-<nav class="mt-5 pb-5">
-    <ul class="pagination justify-content-center">
-      {% for i in range(1, pages + 1) %}
-      <li class="page-item {{ 'active' if i == request.args.get('page', 1)|int else '' }}">
-          <a class="page-link border-0 mx-1 rounded-3 shadow-sm" href="/?page={{i}}">{{ i }}</a>
-      </li>
       {% endfor %}
-    </ul>
-</nav>
-{% endif %}
-
-{% else %}
-<div class="text-center py-5">
-    <div class="mb-4">
-        <i class="fas fa-ghost fa-4x text-light"></i>
     </div>
-    <h4 class="text-muted fw-bold">Huy ơi, thư viện chưa có sách này!</h4>
-    <a href="/" class="btn btn-outline-primary rounded-pill px-4 mt-3">Quay lại trang chủ</a>
+
+    {% if pages > 1 %}
+    <nav aria-label="Page navigation" class="mb-5">
+        <ul class="pagination justify-content-center pagination-lg">
+
+          <li class="page-item {{ 'disabled' if request.args.get('page', 1)|int == 1 else '' }}">
+              <a class="page-link rounded-start-pill shadow-sm" href="/?page={{ request.args.get('page', 1)|int - 1 }}" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
+          </li>
+
+          {% for i in range(1, pages + 1) %}
+          <li class="page-item {{ 'active' if i == request.args.get('page', 1)|int else '' }}">
+              <a class="page-link shadow-sm mx-1" href="/?page={{i}}">{{ i }}</a>
+          </li>
+          {% endfor %}
+
+          <li class="page-item {{ 'disabled' if request.args.get('page', 1)|int == pages else '' }}">
+              <a class="page-link rounded-end-pill shadow-sm" href="/?page={{ request.args.get('page', 1)|int + 1 }}"><i class="fas fa-chevron-right"></i></a>
+          </li>
+
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-5 my-5 bg-white rounded-4 border shadow-sm">
+        <div class="mb-4">
+            <i class="fas fa-book-dead fa-5x text-secondary opacity-50"></i>
+        </div>
+        <h4 class="text-dark fw-bold">Rất tiếc, chưa có sách nào!</h4>
+        <p class="text-muted">Thử tìm kiếm với từ khóa khác hoặc quay lại sau nhé.</p>
+        <a href="/" class="btn btn-primary rounded-pill px-4 py-2 mt-2"><i class="fas fa-home me-2"></i>Về trang chủ</a>
+    </div>
+    {% endif %}
 </div>
-{% endif %}
 
 <style>
-    body { background-color: #f9fafb; }
-
-    .shadow-sm { box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important; }
-    .btn-white { background: white; color: #1a202c; border: 1px solid #e2e8f0; }
-    .btn-white:hover { background: #f8fafc; }
-
-    /* Hiệu ứng Book Item */
-    .book-item { transition: all 0.3s ease; }
-
-    .cover-wrapper { overflow: hidden; border-radius: 12px; }
-    .shadow-hover { transition: transform 0.4s ease, filter 0.4s ease; }
-
-    .book-item:hover .shadow-hover {
-        transform: scale(1.05);
-        filter: brightness(0.8);
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* Nút bấm ẩn hiện khi hover */
-    .overlay-btns {
+    /* Hiệu ứng thẻ sách */
+    .book-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Hiệu ứng ảnh bìa */
+    .book-cover {
+        transition: transform 0.5s ease;
+    }
+    .book-card:hover .book-cover {
+        transform: scale(1.08);
+    }
+
+    /* Overlay xuất hiện khi di chuột */
+    .book-overlay {
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        display: flex; flex-direction: column;
-        justify-content: center; align-items: center;
-        opacity: 0; transition: all 0.3s ease;
-        z-index: 10;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: rgba(33, 37, 41, 0.6);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(2px);
+    }
+    .position-relative:hover .book-overlay {
+        opacity: 1;
     }
 
-    .cover-wrapper:hover .overlay-btns { opacity: 1; }
-
-    /* Label Hết sách tinh tế */
-    .out-of-stock-label {
-        position: absolute;
-        bottom: 10px; right: 10px;
-        background: rgba(0,0,0,0.6);
-        color: white; font-size: 10px;
-        padding: 4px 10px; border-radius: 6px;
-        backdrop-filter: blur(4px);
+    /* Cắt bớt tên sách nếu quá dài (2 dòng) */
+    .book-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 48px; /* Đảm bảo các thẻ cao bằng nhau */
     }
 
-    /* Tùy chỉnh phân trang */
-    .page-link { color: #4a5568; padding: 10px 18px; }
-    .page-item.active .page-link { background-color: #007bff; color: white; }
-
-    .text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* Tùy chỉnh thanh phân trang */
+    .page-link {
+        color: #495057;
+        border: none;
+        background-color: #fff;
+        margin: 0 2px;
+        font-weight: 500;
+    }
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        color: #fff;
+        border-radius: 8px;
+    }
+    .page-link:hover {
+        background-color: #e9ecef;
+        color: #0d6efd;
+        border-radius: 8px;
+    }
+    .page-item.disabled .page-link {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
 </style>
+
+<script>
+    function muonSach(id, tenSach) {
+        // Cần tích hợp SweetAlert2 ở file base.html để dùng alert đẹp
+        if (confirm(`Bạn có chắc chắn muốn mượn cuốn sách "${tenSach}" không?`)) {
+            // Thêm logic gọi API mượn sách ở đây
+            alert('Chức năng mượn sách đang được xử lý!');
+        }
+    }
+</script>
 {% endblock %}

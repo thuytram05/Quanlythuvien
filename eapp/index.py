@@ -28,6 +28,9 @@ def common_data():
 
 
 # 3. Route Trang chủ (Hỗ trợ Tìm kiếm & Phân trang)
+import math # Nhớ đảm bảo bạn đã import math ở đầu file nhé
+from flask import request, render_template
+
 @app.route('/')
 def index():
     kw = request.args.get('kw')
@@ -44,14 +47,16 @@ def index():
     if category_id:
         query = query.filter(Sach.ma_the_loai == category_id)
 
-    # Ràng buộc: Tối đa 50 bản ghi/trang
-    page_size = app.config.get("PAGE_SIZE", 50)
+    # Đã sửa: Chỉnh số lượng sách hiển thị trên 1 trang thành 4
+    page_size = 4
     total = query.count()
     pages = math.ceil(total / page_size)
 
+    # Cắt dữ liệu (Slice) để lấy đúng 4 cuốn cho trang hiện tại
     books = query.slice((page - 1) * page_size, page * page_size).all()
 
-    return render_template('index.html', books=books, pages=pages)
+    # Truyền thêm current_kw=kw để giao diện hiển thị đúng từ khóa đang tìm kiếm
+    return render_template('index.html', books=books, pages=pages, current_kw=kw)
 
 
 # 4. Route Trang danh sách sách chờ mượn

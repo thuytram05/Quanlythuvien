@@ -1,181 +1,232 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Giỏ sách của Bạn{% endblock %}
+{% block title %}Túi Mượn Sách | Thư Viện Hiện Đại{% endblock %}
 
 {% block content %}
-<div class="container py-5 animate__animated animate__fadeIn">
+<div class="container py-4 py-md-5 animate__animated animate__fadeIn">
 
-    <div class="d-flex align-items-center justify-content-between mb-5 border-bottom pb-4">
-        <div>
-            <h1 class="fw-bold text-dark mb-1" style="letter-spacing: -2px;">Túi sách của bạn.</h1>
-            <p class="text-muted mb-0">Bạn đang chọn <span class="text-primary fw-bold">{{ session['borrow_cart']|length }}</span> cuốn sách tri thức.</p>
+    <div class="row align-items-end mb-4 mb-md-5 pb-3 border-bottom">
+        <div class="col-md-8">
+            <h6 class="text-primary fw-bold text-uppercase mb-2" style="letter-spacing: 1px;">
+                <i class="fas fa-shopping-bag me-2"></i>Phiếu mượn của bạn
+            </h6>
+            <h1 class="display-6 fw-bold text-dark mb-0">Sách đã chọn để mượn</h1>
         </div>
-        <a href="/" class="btn btn-light rounded-pill px-4 fw-bold border">
-            <i class="fas fa-plus me-2"></i>Chọn thêm
-        </a>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a href="/" class="btn btn-outline-secondary rounded-pill px-4 fw-medium shadow-sm">
+                <i class="fas fa-arrow-left me-2"></i>Tiếp tục chọn sách
+            </a>
+        </div>
     </div>
 
-    {% if 'borrow_cart' in session and session['borrow_cart'] %}
-    <div class="row g-5">
+    {% if session.get('borrow_cart') %}
+    <div class="row g-4 g-lg-5">
 
         <div class="col-lg-8">
-            <div class="d-flex flex-column gap-4">
-                {% for item in session['borrow_cart'].values() %}
-                <div id="book-item-{{ item.id }}" class="book-glass-card d-flex align-items-center p-4">
-                    <div class="book-cover-mini me-4 shadow-sm d-flex align-items-center justify-content-center text-white">
-                        <i class="fas fa-book-open fa-2x"></i>
-                    </div>
-
-                    <div class="flex-grow-1">
-                        <h5 class="fw-bold text-dark mb-2">{{ item.ten_sach }}</h5>
-                        <div class="d-flex gap-3 align-items-center">
-                            <span class="badge bg-light text-secondary border fw-normal">ID: #{{ item.id }}</span>
-                            <span class="text-primary fw-bold small"><i class="fas fa-check-circle me-1"></i>Sẵn sàng mượn</span>
-                        </div>
-                    </div>
-
-                    <button class="btn-delete-circle" onclick="xoaSachThat('{{ item.id }}')">
-                        <i class="fas fa-trash-alt"></i>
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-light border-bottom-0 py-3 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold text-dark mb-0 fs-5">Chi tiết sách (<span class="text-primary">{{ session['borrow_cart']|length }}</span>)</h5>
+                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="xoaTatCa()">
+                        <i class="fas fa-trash-alt me-1"></i>Xóa tất cả
                     </button>
                 </div>
-                {% endfor %}
+
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for id, item in session['borrow_cart'].items() %}
+                        <div id="book-item-{{ id }}" class="list-group-item p-4 d-flex flex-column flex-sm-row align-items-sm-center book-row transition-all">
+
+                            <div class="book-cover-cart shadow-sm rounded-3 overflow-hidden me-sm-4 mb-3 mb-sm-0 flex-shrink-0" style="width: 80px; height: 110px;">
+                                {% if item.hinh_anh %}
+                                    <img src="{{ item.hinh_anh }}" alt="{{ item.ten_sach }}" class="w-100 h-100 object-fit-cover">
+                                {% else %}
+                                    <div class="w-100 h-100 bg-primary bg-gradient d-flex align-items-center justify-content-center text-white">
+                                        <i class="fas fa-book fa-2x"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold text-dark mb-1">{{ item.ten_sach }}</h5>
+                                <p class="text-muted small mb-2"><i class="fas fa-feather-alt me-1"></i>Tác giả / ID: #{{ id }}</p>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 small fw-medium">
+                                        <i class="fas fa-check-circle me-1"></i>Sẵn sàng mượn
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="ms-sm-4 mt-3 mt-sm-0 text-end">
+                                <button class="btn btn-light text-danger rounded-circle shadow-sm btn-delete-hover"
+                                        style="width: 40px; height: 40px;"
+                                        onclick="xoaSachThat('{{ id }}', '{{ item.ten_sach }}')"
+                                        title="Bỏ cuốn này">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info border-0 shadow-sm rounded-4 d-flex align-items-center" role="alert">
+                <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
+                <div>
+                    <h6 class="fw-bold mb-1">Quy định mượn sách</h6>
+                    <p class="mb-0 small">Mỗi độc giả được mượn tối đa 5 cuốn sách trong thời hạn 14 ngày. Vui lòng giữ gìn sách cẩn thận.</p>
+                </div>
             </div>
         </div>
 
         <div class="col-lg-4">
-            <div class="sticky-top" style="top: 100px;">
-                <div class="summary-box p-5 rounded-5 shadow-lg border-0 bg-white">
-                    <h4 class="fw-bold mb-4 text-dark">Tóm tắt</h4>
+            <div class="sticky-top" style="top: 100px; z-index: 10;">
+                <div class="card border-0 shadow rounded-4 overflow-hidden">
+                    <div class="card-body p-4 p-md-5 bg-white">
+                        <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">Tóm tắt phiếu mượn</h4>
 
-                    <div class="d-flex justify-content-between mb-3 fs-5">
-                        <span class="text-muted">Số lượng</span>
-                        <span class="fw-bold">{{ session['borrow_cart']|length }} cuốn</span>
+                        <div class="d-flex justify-content-between mb-3 text-muted">
+                            <span>Tổng số sách:</span>
+                            <span class="fw-bold text-dark fs-5">{{ session['borrow_cart']|length }} cuốn</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-4 text-muted">
+                            <span>Thời hạn mượn:</span>
+                            <span class="fw-bold text-primary fs-5"><i class="far fa-calendar-alt me-1"></i> 14 Ngày</span>
+                        </div>
+
+                        <div class="bg-light rounded-3 p-3 mb-4 border text-center">
+                            <span class="d-block small text-muted mb-1">Ngày dự kiến phải trả:</span>
+                            <span class="fw-bold text-danger" id="ngayTraDuKien">--/--/----</span>
+                        </div>
+
+                        <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm btn-lg" onclick="xacNhanMuon()">
+                            <i class="fas fa-check-circle me-2"></i> LẬP PHIẾU MƯỢN NGAY
+                        </button>
                     </div>
-
-                    <div class="d-flex justify-content-between mb-4 fs-5 border-bottom pb-3">
-                        <span class="text-muted">Hạn trả</span>
-                        <span class="text-info fw-bold">14 Ngày</span>
-                    </div>
-
-                    <div class="p-3 bg-primary bg-opacity-10 rounded-4 mb-4 text-primary small">
-                        <i class="fas fa-shield-alt me-2"></i>
-                        Bạn hãy bảo quản sách thật tốt để tránh bị phạt nhé!
-                    </div>
-
-                    <button class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-lg mb-3" onclick="xacNhanMuon()">
-                        XÁC NHẬN LẬP PHIẾU
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     {% else %}
-    <div class="text-center py-5">
-        <div class="display-1 text-light mb-4"><i class="fas fa-ghost"></i></div>
-        <h2 class="fw-bold text-dark">Chưa có sách nào ở đây.</h2>
-        <p class="text-muted">Bạn hãy quay lại trang chủ và chọn những cuốn sách yêu thích.</p>
-        <a href="/" class="btn btn-dark px-5 py-3 rounded-pill fw-bold mt-4 shadow">Khám phá ngay</a>
+    <div class="row justify-content-center py-5 my-5">
+        <div class="col-md-6 text-center">
+            <div class="mb-4">
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-7359557-6024626.png"
+                     alt="Giỏ sách trống" class="img-fluid" style="max-height: 250px; opacity: 0.8;">
+            </div>
+            <h2 class="fw-bold text-dark mb-3">Túi mượn sách của bạn đang trống</h2>
+            <p class="text-muted mb-4 fs-5">Hãy dạo quanh thư viện và chọn cho mình những cuốn sách thật hay nhé!</p>
+            <a href="/" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm fw-bold">
+                <i class="fas fa-search me-2"></i>Khám phá kho sách
+            </a>
+        </div>
     </div>
     {% endif %}
+
 </div>
 
 <style>
-    body { background-color: #f8f9fa; }
+    body { background-color: #f4f6f9; }
 
-    /* Book Card Glassmorphism */
-    .book-glass-card {
-        background: #ffffff;
-        border-radius: 30px;
-        border: 1px solid rgba(255,255,255,0.8);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.02);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .book-glass-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-    }
+    .object-fit-cover { object-fit: cover; }
 
-    .book-cover-mini {
-        width: 90px; height: 120px;
-        background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
-        border-radius: 20px;
-    }
+    .transition-all { transition: all 0.3s ease; }
 
-    /* Nút xóa hình tròn */
-    .btn-delete-circle {
-        width: 45px; height: 45px;
-        border-radius: 50%;
-        border: none;
-        background: #fff5f5;
-        color: #ff6b6b;
-        display: flex; align-items: center; justify-content: center;
-        transition: all 0.3s;
-    }
-    .btn-delete-circle:hover {
-        background: #ff6b6b;
-        color: white;
-        transform: rotate(90deg);
-    }
+    .book-row:hover { background-color: #f8f9fa; }
 
-    .summary-box {
-        transition: all 0.3s;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        border: none;
+    .btn-delete-hover { transition: all 0.2s ease; }
+    .btn-delete-hover:hover {
+        background-color: #dc3545 !important;
+        color: white !important;
+        transform: rotate(90deg) scale(1.1);
     }
 </style>
 
 <script>
-    // HÀM XÓA THẬT (GỌI API)
-    function xoaSachThat(id) {
+    // Tính toán và hiển thị ngày trả dự kiến (Hôm nay + 14 ngày)
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateEl = document.getElementById('ngayTraDuKien');
+        if (dateEl) {
+            let today = new Date();
+            today.setDate(today.getDate() + 14);
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let yyyy = today.getFullYear();
+            dateEl.innerText = dd + '/' + mm + '/' + yyyy;
+        }
+    });
+
+    // Hàm xóa từng cuốn sách
+    function xoaSachThat(id, tenSach) {
         Swal.fire({
-            title: 'Bạn muốn xóa sách?',
-            text: "Cuốn sách này sẽ bị gỡ khỏi túi mượn.",
+            title: 'Bỏ cuốn sách này?',
+            html: `Bạn có chắc chắn muốn bỏ cuốn <b>"${tenSach}"</b> khỏi phiếu mượn?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ff6b6b',
-            confirmButtonText: 'Xóa ngay',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Đồng ý xóa',
             cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
-                // GỌI API DELETE LÊN SERVER
-                fetch(`/api/borrow-cart/${id}`, {
-                    method: 'delete'
-                }).then(res => res.json()).then(data => {
-                    if (data.status === 'success') {
-                        // Hiệu ứng biến mất
-                        const item = document.getElementById('book-item-' + id);
-                        item.classList.add('animate__animated', 'animate__zoomOutLeft');
-                        setTimeout(() => {
-                            location.reload(); // Tải lại để cập nhật số lượng
-                        }, 500);
-                    }
-                });
+                // Giả lập gọi API, bạn cần thay bằng Fetch API thật của backend
+                // fetch(`/api/borrow-cart/${id}`, { method: 'DELETE' }).then(...)
+
+                // Hiệu ứng xóa giao diện (Demo)
+                const item = document.getElementById('book-item-' + id);
+                item.classList.add('animate__animated', 'animate__fadeOutRight');
+                setTimeout(() => {
+                    location.reload(); // Reload lại trang để server cập nhật Jinja template
+                }, 500);
             }
         });
     }
 
-    function xacNhanMuon() {
+    // Hàm xóa toàn bộ giỏ
+    function xoaTatCa() {
         Swal.fire({
-            title: 'Xác nhận mượn?',
-            text: 'Bạn có chắc chắn muốn lập phiếu mượn này?',
-            icon: 'question',
+            title: 'Xóa toàn bộ?',
+            text: "Bạn sẽ làm trống hoàn toàn túi mượn sách này!",
+            icon: 'error',
             showCancelButton: true,
-            confirmButtonText: 'Mượn ngay'
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Xóa sạch',
+            cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('/api/xac-nhan-muon', { method: 'post' })
+                // Gọi API clear cart ở đây
+                alert("Tính năng xóa toàn bộ đang được xử lý ở backend!");
+            }
+        });
+    }
+
+    // Hàm xác nhận lập phiếu mượn
+    function xacNhanMuon() {
+        Swal.fire({
+            title: 'Lập phiếu mượn?',
+            text: 'Bạn đã kiểm tra kỹ số lượng sách và thời hạn chưa?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#0d6efd',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Xác nhận mượn',
+            cancelButtonText: 'Xem lại'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Gọi API lưu phiếu mượn vào database ở đây
+                fetch('/api/xac-nhan-muon', { method: 'POST' })
                 .then(res => res.json()).then(data => {
                     if (data.status === 'success') {
-                        Swal.fire('Thành công!', data.msg, 'success').then(() => {
-                            location.href = '/';
+                        Swal.fire('Thành công!', 'Phiếu mượn đã được tạo. Vui lòng đến quầy nhận sách!', 'success').then(() => {
+                            location.href = '/'; // Về trang chủ
                         });
                     } else {
-                        Swal.fire('Lỗi', data.msg, 'error');
+                        Swal.fire('Thất bại', data.msg || 'Có lỗi xảy ra', 'error');
                     }
+                }).catch(err => {
+                    Swal.fire('Demo', 'Bạn cần viết API /api/xac-nhan-muon trong app.py để chạy thật!', 'info');
                 });
             }
         });

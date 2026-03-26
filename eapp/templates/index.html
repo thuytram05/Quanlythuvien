@@ -2,6 +2,18 @@
 
 {% block title %}Thư Viện - Đọc Để Thay Đổi{% endblock %}
 
+{% if current_kw %}
+<div class="alert alert-light border-0 shadow-sm rounded-4 mb-4 d-flex justify-content-between align-items-center animate__animated animate__fadeIn">
+    <span>
+        <i class="fas fa-search text-primary me-2"></i>
+        Tìm thấy <strong>{{ books|length }}</strong> kết quả cho: <span class="badge bg-info text-dark">"{{ current_kw }}"</span>
+    </span>
+    <a href="/" class="btn btn-sm btn-outline-secondary rounded-pill border-0 text-decoration-none">
+        <i class="fas fa-times me-1"></i> Xóa tìm kiếm
+    </a>
+</div>
+{% endif %}
+
 {% block content %}
 <div class="row mb-5 py-5 rounded-4 bg-white shadow-sm border animate__animated animate__fadeIn">
     <div class="col-md-8 ps-md-5 d-flex flex-column justify-content-center">

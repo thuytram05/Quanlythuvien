@@ -33,14 +33,17 @@
         </li>
       </ul>
 
-      <form class="d-flex mx-lg-4 my-2 my-lg-0" style="max-width: 350px; width: 100%;" method="get" action="/">
-        <div class="input-group input-group-sm rounded-pill overflow-hidden bg-white px-2 py-1">
-          <input class="form-control border-0 shadow-none bg-transparent"
-                 type="text" name="kw" placeholder="Tìm tên sách, tác giả..."
-                 minlength="2" required>
-          <button class="btn btn-link text-secondary p-0 px-2" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
+      <form class="d-flex mx-lg-4 my-2 my-lg-0 flex-grow-1" style="max-width: 450px;" method="get" action="/">
+        <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white px-2">
+            <input class="form-control border-0 shadow-none py-2"
+                type="text"
+                name="kw"
+                value="{{ current_kw if current_kw }}"
+                placeholder="Tìm tên sách hoặc tác giả..."
+                required>
+            <button class="btn btn-link text-primary p-0 px-3" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
       </form>
 

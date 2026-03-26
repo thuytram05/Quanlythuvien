@@ -5,7 +5,8 @@ import cloudinary
 
 app = Flask(__name__)
 app.secret_key = '&(^&*^&*^U*HJBJKHJLHKJHK&*%^&5786985646858'
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Abc123@127.0.0.1:3307/qltvdb?charset=utf8mb4"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Abc123@127.0.0.1:3307/qltvdb?charset=utf8mb4"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:13112005@localhost/qltvdb?charset=utf8mb4"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"] = 8
 

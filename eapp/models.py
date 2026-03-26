@@ -3,15 +3,19 @@ from sqlalchemy.orm import relationship
 from eapp import db, app
 from flask_login import UserMixin
 from enum import Enum as UserEnum
-from datetime import datetime, timedelta
+from datetime import datetime
+import hashlib
 
 
+# ==========================================
+# 1. ĐỊNH NGHĨA CÁC BẢNG (MODELS)
+# ==========================================
 class MoHinhCoBan(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    ngay_tao = Column(DateTime, default=datetime.now())
-    hoat_dong = Column(Boolean, default=True)  # Có thể dùng để khóa sách hoặc khóa danh mục
+    ngay_tao = Column(DateTime, default=datetime.now)
+    hoat_dong = Column(Boolean, default=True)
 
 
 class VaiTro(UserEnum):
@@ -20,9 +24,9 @@ class VaiTro(UserEnum):
 
 
 class TrangThaiMuon(UserEnum):
-    DANG_MUON = 1  # Đang mượn
-    DA_TRA = 2  # Đã trả
-    QUA_HAN = 3  # Quá hạn
+    DANG_MUON = 1
+    DA_TRA = 2
+    QUA_HAN = 3
 
 
 class NguoiDung(MoHinhCoBan, UserMixin):
@@ -32,7 +36,7 @@ class NguoiDung(MoHinhCoBan, UserMixin):
     ten_dang_nhap = Column(String(50), nullable=False, unique=True)
     mat_khau = Column(String(50), nullable=False)
     vai_tro = Column(Enum(VaiTro), default=VaiTro.NGUOI_DUNG)
-    bi_khoa = Column(Boolean, default=False)  # Ràng buộc: "Không được mượn nếu tài khoản bị khóa"
+    bi_khoa = Column(Boolean, default=False)
 
     phieu_muon_sach = relationship('PhieuMuon', backref='nguoi_dung', lazy=True)
 
@@ -49,16 +53,16 @@ class TheLoai(MoHinhCoBan):
 
 
 class Sach(MoHinhCoBan):
-    ten_sach = Column(String(255), nullable=False)  # Tìm kiếm theo tên sách
-    tac_gia = Column(String(100), nullable=False)  # Tìm kiếm theo tác giả
+    ten_sach = Column(String(255), nullable=False)
+    tac_gia = Column(String(100), nullable=False)
     mo_ta = Column(Text, nullable=True)
     hinh_anh = Column(String(100),
                       default='https://res.cloudinary.com/dxxwcby8l/image/upload/v1647248722/r8sjly3st7estapvj19u.jpg')
 
-    tong_so_luong = Column(Integer, default=1)  # Tổng số bản sách có trong thư viện
-    so_luong_con = Column(Integer, default=1)  # Số bản sách còn sẵn. Ràng buộc: "Không mượn nếu sách hết bản"
+    tong_so_luong = Column(Integer, default=1)
+    so_luong_con = Column(Integer, default=1)
 
-    ma_the_loai = Column(Integer, ForeignKey(TheLoai.id), nullable=False)  # Tìm kiếm theo thể loại
+    ma_the_loai = Column(Integer, ForeignKey(TheLoai.id), nullable=False)
     chi_tiet_muon = relationship('ChiTietMuon', backref='sach', lazy=True)
 
     def __str__(self):
@@ -67,43 +71,81 @@ class Sach(MoHinhCoBan):
 
 class PhieuMuon(MoHinhCoBan):
     ma_nguoi_dung = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    ngay_muon = Column(DateTime, default=datetime.now())
-    han_tra = Column(DateTime, nullable=False)  # Ngày phải trả
+    ngay_muon = Column(DateTime, default=datetime.now)
+    han_tra = Column(DateTime, nullable=False)
     trang_thai = Column(Enum(TrangThaiMuon),
-                        default=TrangThaiMuon.DANG_MUON)  # Ràng buộc: "Cập nhật trạng thái overdue"
+                        default=TrangThaiMuon.DANG_MUON)
 
     chi_tiet = relationship('ChiTietMuon', backref='phieu_muon', lazy=True)
 
 
-class ChiTietMuon(db.Model):  # Chi tiết mỗi cuốn sách trong 1 lần mượn
+class ChiTietMuon(db.Model):
     ma_phieu = Column(Integer, ForeignKey(PhieuMuon.id), primary_key=True)
     ma_sach = Column(Integer, ForeignKey(Sach.id), primary_key=True)
 
-    ngay_tra_thuc_te = Column(DateTime, nullable=True)  # Ngày trả thực tế
-    tien_phat = Column(Float, default=0.0)  # Ràng buộc: "Nếu trả trễ tính phí phạt"
+    ngay_tra_thuc_te = Column(DateTime, nullable=True)
+    tien_phat = Column(Float, default=0.0)
 
 
-if __name__ == '__main__':
+# ==========================================
+# 2. HÀM TẠO DỮ LIỆU MẪU
+# ==========================================
+def add_data():
+    # 1. Thêm Admin (Bắt buộc vì db.drop_all đã xóa hết)
+    admin_user = NguoiDung(
+        ten='Quản trị viên',
+        ten_dang_nhap='admin',
+        mat_khau=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        vai_tro=VaiTro.QUAN_TRI
+    )
+    db.session.add(admin_user)
+    print("✅ Đã tạo tài khoản Admin (admin/123456)!")
+
+    # 2. Thêm Thể Loại
+    tl1 = TheLoai(ten_the_loai="Công nghệ thông tin")
+    tl2 = TheLoai(ten_the_loai="Kỹ năng sống")
+    tl3 = TheLoai(ten_the_loai="Ngoại ngữ")
+
+    db.session.add_all([tl1, tl2, tl3])
+    db.session.commit()  # Lưu xuống database trước để lấy ID
+    print("✅ Đã thêm các thể loại sách!")
+
+    # 3. Thêm Sách (Dùng ID từ thể loại vừa tạo ở trên)
+    s1 = Sach(
+        ten_sach="Công nghệ phần mềm",
+        tac_gia="Nguyễn Văn A",
+        so_luong_con=10,
+        tong_so_luong=10,
+        hinh_anh="https://thuquan.ou.edu.vn/cover//2024/03/08/I23-Congnghephanmem-01.jpg",
+        ma_the_loai=tl1.id  # Trỏ vào "Công nghệ thông tin"
+    )
+
+    s2 = Sach(
+        ten_sach="Đắc Nhân Tâm",
+        tac_gia="Dale Carnegie",
+        so_luong_con=5,
+        tong_so_luong=5,
+        hinh_anh="https://tiki.vn/blog/wp-content/uploads/2023/08/noi-dung-chinh-dac-nhan-tam-1024x682.jpg",
+        ma_the_loai=tl2.id  # Trỏ vào "Kỹ năng sống"
+    )
+
+    db.session.add_all([s1, s2])
+    db.session.commit()
+    print("✅ Đã thêm dữ liệu sách mẫu thành công!")
+
+
+# ==========================================
+# 3. KÍCH HOẠT CHẠY
+# ==========================================
+if __name__ == "__main__":
     with app.app_context():
-        # db.drop_all()
+        print("🗑️  Đang dọn dẹp database cũ...")
+        db.drop_all()
+
+        print("🛠️  Đang tạo lại các bảng...")
         db.create_all()
 
-        import hashlib
+        print("📦 Đang nạp dữ liệu mới...")
+        add_data()
 
-        u = NguoiDung(ten='Quản trị viên', ten_dang_nhap='admin',
-                      mat_khau=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
-                      vai_tro=VaiTro.QUAN_TRI)
-        db.session.add(u)
-
-        c1 = TheLoai(ten_the_loai='Công nghệ thông tin')
-        c2 = TheLoai(ten_the_loai='Văn học')
-        db.session.add_all([c1, c2])
-        db.session.commit()
-
-        # Thêm 1 cuốn sách mẫu
-        s1 = Sach(ten_sach="Clean Code", tac_gia="Robert C. Martin",
-                  tong_so_luong=5, so_luong_con=5, ma_the_loai=1)
-        db.session.add(s1)
-        db.session.commit()
-
-        print("Tạo cơ sở dữ liệu tiếng Việt thành công!")
+        print("🎉 XONG! Cơ sở dữ liệu đã sẵn sàng.")

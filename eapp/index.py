@@ -25,14 +25,23 @@ def index():
     kw = request.args.get('kw', '').strip()
     category_id = request.args.get('category_id')
     page = request.args.get('page', 1, type=int)
+    per_page = 50
 
     query = Sach.query
     if kw:
-        query = query.filter(Sach.ten_sach.contains(kw) | Sach.tac_gia.contains(kw))
+        if len(kw) < 2:
+            flash("Từ khóa tìm kiếm phải từ 2 ký tự trở lên!", "warning")
+        else:
+            from eapp.models import TheLoai
+            query = query.join(TheLoai).filter(
+                Sach.ten_sach.contains(kw) |
+                Sach.tac_gia.contains(kw) |
+                TheLoai.ten_the_loai.contains(kw)
+            )
     if category_id:
         query = query.filter(Sach.ma_the_loai == category_id)
 
-    pagination = query.order_by(Sach.id.desc()).paginate(page=page, per_page=app.config['PAGE_SIZE'], error_out=False)
+    pagination = query.order_by(Sach.id.desc()).paginate(page=page, per_page= 50, error_out=False)
 
     return render_template('index.html',
                            books=pagination.items,

@@ -6,7 +6,7 @@
 <div class="history-master-wrapper animate__animated animate__fadeIn">
 
     <style>
-        /* RESET & FIX KHOẢNG TRỐNG FOOTER TUYỆT ĐỐI */
+        /* GIỮ NGUYÊN PHẦN STYLE CỦA BẠN */
         .history-master-wrapper {
             margin: -24px -15px -50px -15px !important;
             padding: 20px 20px 80px 20px;
@@ -27,7 +27,6 @@
         }
         .back-home-btn:hover { color: #ffc107; transform: translateX(-5px); }
 
-        /* PHÂN TRANG GLASSMORPHISM */
         .glass-pagination .page-link {
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff; margin: 0 5px; border-radius: 10px !important; backdrop-filter: blur(10px);
@@ -40,7 +39,6 @@
             background: rgba(255, 255, 255, 0.08); padding: 15px 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* CARD CHI TIẾT */
         .premium-full-card {
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; transition: 0.3s; margin-bottom: 25px;
@@ -77,6 +75,9 @@
         {% if phieu_muon_list %}
             <div class="timeline-container">
                 {% for phieu in phieu_muon_list %}
+
+                {# RÀNG BUỘC: Chỉ hiển thị phiếu nếu có sách bên trong để tránh phiếu rác #}
+                {% if phieu.chi_tiet and phieu.chi_tiet|length > 0 %}
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="premium-full-card p-4">
@@ -95,12 +96,12 @@
                                 <div class="book-mini-list">
                                     {% for ct in phieu.chi_tiet %}
                                     <div class="d-flex align-items-center mb-3">
-                                        <div style="width: 45px; height: 65px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                                        <div style="width: 45px; height: 65px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;">
                                             <img src="{{ ct.sach.hinh_anh }}" style="width: 100%; height: 100%; object-fit: cover;"
                                                  onerror="this.src='https://via.placeholder.com/45x65?text=Book'">
                                         </div>
-                                        <div class="ms-3">
-                                            <div class="fw-bold text-white mb-0">{{ ct.sach.ten_sach }}</div>
+                                        <div class="ms-3 text-start">
+                                            <div class="fw-bold text-white mb-0" style="font-size: 0.95rem;">{{ ct.sach.ten_sach }}</div>
                                             <div class="small text-white-50">{{ ct.sach.tac_gia }}</div>
                                         </div>
                                     </div>
@@ -114,10 +115,19 @@
                                     {{ phieu.han_tra.strftime('%d/%m/%Y') if phieu.han_tra else '--/--/----' }}
                                 </div>
                                 <div class="small text-white-50">Ngày lập: {{ phieu.ngay_muon.strftime('%d/%m/%Y') }}</div>
+
+                                {# HIỂN THỊ THÔNG TIN NGƯỜI MƯỢN TỪ GHI CHÚ (NẾU CÓ) #}
+                                {% if phieu.ghi_chu %}
+                                <div class="mt-3 pt-2 border-top border-white border-opacity-10 small text-white-50 italic">
+                                    <i class="fas fa-user-tag me-1"></i> {{ phieu.ghi_chu }}
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endif %}
+
                 {% endfor %}
             </div>
 

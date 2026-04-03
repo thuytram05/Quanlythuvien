@@ -6,15 +6,13 @@
 <div class="checkout-master-wrapper animate__animated animate__fadeIn">
 
     <style>
-        /* 1. RESET TRIỆT ĐỂ KHOẢNG TRỐNG TỪ CÁC THÈ CHA (BASE.HTML) */
+        /* RESET KHOẢNG TRỐNG TỪ CÁC THÈ CHA */
         :host, .main-content, .container-fluid, .container, body, html {
             padding-bottom: 0 !important;
             margin-bottom: 0 !important;
         }
 
         .checkout-master-wrapper {
-            /* FIX CHÍNH: Margin âm ở đáy (-50px) để ép nền tối dính chặt vào Footer */
-            /* Padding bottom (80px) để nội dung không bị Footer đè lên chữ */
             margin: -24px -15px -50px -15px !important;
             padding: 0 0 80px 0;
             min-height: 100vh;
@@ -22,20 +20,17 @@
             color: #fff;
             position: relative;
             z-index: 1;
-            /* NỀN MỜ ẢO & SANG TRỌNG */
             background: linear-gradient(135deg, rgba(10, 12, 16, 0.45) 0%, rgba(10, 12, 16, 0.9) 100%),
                         url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000') no-repeat center center/cover;
             background-attachment: fixed;
         }
 
-        /* Đảm bảo Footer dính sát */
         footer, .site-footer {
             margin-top: 0 !important;
             position: relative;
             z-index: 10;
         }
 
-        /* SIDEBAR KÍNH MỜ */
         .summary-side {
             width: 420px;
             background: rgba(255, 255, 255, 0.02);
@@ -51,9 +46,9 @@
             flex-grow: 1;
             padding: 60px 80px;
             background: transparent;
+            text-align: left;
         }
 
-        /* CARD BIÊN LAI */
         .receipt-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -73,7 +68,6 @@
             margin: 20px 0;
         }
 
-        /* NÚT XÁC NHẬN VÀNG GOLD */
         .btn-confirm-mega {
             background: linear-gradient(90deg, #ffc107, #ffdb4d);
             color: #000; border: none; padding: 22px; border-radius: 20px;
@@ -81,13 +75,13 @@
             text-transform: uppercase; letter-spacing: 1px;
             transition: 0.3s;
             box-shadow: 0 15px 35px rgba(255, 193, 7, 0.3);
+            cursor: pointer;
         }
         .btn-confirm-mega:hover {
             background: #fff; transform: translateY(-5px);
             box-shadow: 0 20px 45px rgba(255, 255, 255, 0.2);
         }
 
-        /* CARD SÁCH */
         .modern-book-item {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
@@ -110,13 +104,13 @@
     </style>
 
     <div class="summary-side">
-        <div class="mb-5"><span class="fw-black text-warning ls-2 small opacity-75">PREMIUM CHECKOUT</span></div>
+        <div class="mb-5 text-start"><span class="fw-black text-warning ls-2 small opacity-75">PREMIUM CHECKOUT</span></div>
 
         <div class="receipt-card animate__animated animate__zoomIn">
             <span class="small fw-bold text-white-50 text-uppercase ls-2">Sách đã chọn</span>
-            <div class="total-badge">{{ total_count }}</div>
+            <div class="total-badge text-center">{{ total_count }}</div>
 
-            <div class="date-details my-4 py-3 border-top border-bottom border-white border-opacity-10">
+            <div class="date-details my-4 py-3 border-top border-bottom border-white border-opacity-10 text-start">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-white-50 small">Ngày lập phiếu:</span>
                     <span class="fw-bold">Hôm nay</span>
@@ -127,11 +121,15 @@
                 </div>
             </div>
 
-            <button class="btn-confirm-mega" onclick="xacNhanMuon()">Xác nhận mượn</button>
+            {% if cart_items %}
+                <button class="btn-confirm-mega" onclick="xacNhanMuon()">Xác nhận mượn</button>
+            {% else %}
+                <button class="btn btn-secondary w-100 py-4 rounded-4 fw-bold" disabled>TÚI TRỐNG</button>
+            {% endif %}
         </div>
 
         <div class="mt-auto d-flex gap-3">
-            <a href="/" class="btn btn-outline-light w-50 py-3 rounded-4 fw-bold small text-decoration-none text-center">TRANG CHỦ</a>
+            <a href="/" class="btn btn-outline-light w-50 py-3 rounded-4 fw-bold small text-decoration-none text-center d-flex align-items-center justify-content-center">TRANG CHỦ</a>
             <button class="btn btn-outline-danger w-50 py-3 rounded-4 fw-bold small" onclick="xoaTatCaPhieuMuon()">XÓA TÚI</button>
         </div>
     </div>
@@ -139,52 +137,130 @@
     <div class="list-side">
         <div class="d-flex justify-content-between align-items-end mb-5">
             <div>
-                <h2 class="fw-black text-white m-0 display-5">Danh sách <span class="text-warning">chờ duyệt</span></h2>
+                <h2 class="fw-black text-white m-0 display-5 text-start">Danh sách <span class="text-warning">chờ duyệt</span></h2>
             </div>
             {% if total_count < 5 %}
-            <a href="/#book-list" class="btn btn-outline-warning rounded-pill px-4 fw-bold">+ MƯỢN THÊM</a>
+            <a href="/#explore" class="btn btn-outline-warning rounded-pill px-4 fw-bold text-decoration-none">+ MƯỢN THÊM</a>
             {% endif %}
         </div>
 
+        <div id="cart-items-list">
         {% if cart_items %}
             {% for item in cart_items %}
             <div class="modern-book-item animate__animated animate__fadeInRight" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
                 <div class="text-white-50 fw-black me-4 fs-3 opacity-20">0{{ loop.index }}</div>
                 <div style="width: 75px; height: 110px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
-                    <img src="{{ item.sach.hinh_anh }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='https://via.placeholder.com/75x110'">
+                    <img src="{{ item.sach.hinh_anh }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='https://via.placeholder.com/75x110?text=Book'">
                 </div>
-                <div class="ms-4 flex-grow-1">
+                <div class="ms-4 flex-grow-1 text-start">
                     <h4 class="fw-bold text-white mb-1 h5">{{ item.sach.ten_sach }}</h4>
                     <p class="text-white-50 mb-0 small">{{ item.sach.tac_gia }}</p>
                 </div>
-                <button class="btn btn-link text-white-50" onclick="xoaMotCuonSach({{ item.book_id }}, '{{ item.sach.ten_sach }}')">
+                <button class="btn btn-link text-white-50 text-decoration-none" onclick="xoaMotCuonSach({{ item.book_id }}, '{{ item.sach.ten_sach }}')">
                     <i class="fas fa-times fs-5"></i>
                 </button>
             </div>
             {% endfor %}
+        {% else %}
+            <div class="text-center py-5 opacity-50">
+                <i class="fas fa-shopping-basket fa-4x mb-4"></i>
+                <h3 class="text-white">Túi mượn đang trống</h3>
+                <p>Hãy quay lại trang chủ để chọn những cuốn sách yêu thích nhé!</p>
+            </div>
         {% endif %}
+        </div>
     </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        let t = new Date(); t.setDate(t.getDate() + 14);
+        // Tự động tính ngày trả (14 ngày sau)
+        let t = new Date();
+        t.setDate(t.getDate() + 14);
         document.getElementById('ngayTraDuKien').innerText = t.toLocaleDateString('vi-VN');
     });
 
     function xoaMotCuonSach(id, ten) {
-        Swal.fire({ title: 'Gỡ khỏi túi?', text: ten, icon: 'warning', showCancelButton: true, confirmButtonColor: '#ffc107', confirmButtonText: 'Đồng ý', background: '#1a1a1a', color: '#fff' })
-        .then(r => { if (r.isConfirmed) fetch(`/api/borrow-cart/${id}`, { method: 'DELETE' }).then(res => res.json()).then(d => { if (d.status === 'success') location.reload(); }); });
+        Swal.fire({
+            title: 'Gỡ khỏi túi?',
+            text: `Bạn muốn bỏ cuốn "${ten}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ffc107',
+            confirmButtonText: 'Đồng ý',
+            background: '#1a1a1a',
+            color: '#fff'
+        }).then(r => {
+            if (r.isConfirmed) {
+                fetch(`/api/borrow-cart/${id}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(d => {
+                    if (d.status === 'success') location.reload();
+                });
+            }
+        });
     }
 
     function xoaTatCaPhieuMuon() {
-        Swal.fire({ title: 'Xóa túi?', icon: 'error', showCancelButton: true, confirmButtonColor: '#ff5252', confirmButtonText: 'Xác nhận', background: '#1a1a1a', color: '#fff' })
-        .then(r => { if (r.isConfirmed) fetch('/api/borrow-cart/clear', { method: 'POST' }).then(res => res.json()).then(d => { if (d.status === 'success') location.reload(); }); });
+        Swal.fire({
+            title: 'Xóa toàn bộ túi?',
+            text: 'Tất cả sách sẽ được gỡ khỏi danh sách chờ.',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#ff5252',
+            confirmButtonText: 'Xác nhận xóa',
+            background: '#1a1a1a',
+            color: '#fff'
+        }).then(r => {
+            if (r.isConfirmed) {
+                fetch('/api/borrow-cart/clear', { method: 'POST' })
+                .then(res => res.json())
+                .then(d => {
+                    if (d.status === 'success') location.reload();
+                });
+            }
+        });
     }
 
     function xacNhanMuon() {
-        Swal.fire({ title: 'Xác nhận mượn?', icon: 'question', showCancelButton: true, confirmButtonColor: '#ffc107', confirmButtonText: 'Đồng ý', background: '#1a1a1a', color: '#fff' })
-        .then(r => { if (r.isConfirmed) fetch('/api/xac-nhan-muon', { method: 'POST' }).then(res => res.json()).then(d => { if (d.status === 'success') { location.href = '/lich-su-muon'; } }); });
+        Swal.fire({
+            title: 'Xác nhận mượn?',
+            text: 'Vui lòng kiểm tra kỹ danh sách trước khi gửi yêu cầu.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ffc107',
+            confirmButtonText: 'Xác nhận gửi',
+            background: '#1a1a1a',
+            color: '#fff'
+        }).then(r => {
+            if (r.isConfirmed) {
+                fetch('/api/xac-nhan-muon', { method: 'POST' })
+                .then(res => res.json())
+                .then(d => {
+                    if (d.status === 'success') {
+                        Swal.fire({
+                            title: 'Thành công!',
+                            text: d.msg,
+                            icon: 'success',
+                            background: '#1a1a1a',
+                            color: '#fff',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.href = '/lich-su-muon';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Lỗi!',
+                            text: d.msg,
+                            icon: 'error',
+                            background: '#1a1a1a',
+                            color: '#fff'
+                        });
+                    }
+                });
+            }
+        });
     }
 </script>
 {% endblock %}

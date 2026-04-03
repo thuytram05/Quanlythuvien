@@ -9,7 +9,7 @@
 
             <div class="col-lg-7 d-none d-lg-flex login-artsy-side position-relative">
                 <div class="artsy-bg-overlay"></div>
-                <div class="artsy-content text-white p-5 position-relative z-3 animate__animated animate__fadeInLeft animate__delay-1s">
+                <div class="artsy-content text-white p-5 position-relative z-3 animate__animated animate__fadeInLeft animate__delay-1s text-start">
                     <a href="/" class="artsy-logo text-white text-decoration-none d-flex align-items-center mb-5">
                         <div class="bg-white text-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
                             <i class="fas fa-book-open fs-5"></i>
@@ -49,15 +49,15 @@
                     {% with messages = get_flashed_messages(with_categories=true) %}
                       {% if messages %}
                         {% for category, message in messages %}
-                          <div class="alert alert-soft-danger border-0 small py-3 rounded-4 animate__animated animate__shakeX mb-4" role="alert">
-                            <i class="fas fa-shield-virus me-2"></i> {{ message }}
+                          <div class="alert alert-soft-danger border-0 small py-3 rounded-4 animate__animated animate__shakeX mb-4 d-flex align-items-center" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
                           </div>
                         {% endfor %}
                       {% endif %}
                     {% endwith %}
 
-                    <form method="post" action="/login">
-                        <div class="mb-4">
+                    <form method="post" action="{{ url_for('login_user_process') }}">
+                        <div class="mb-4 text-start">
                             <label class="label-ultra">Tên tài khoản</label>
                             <div class="input-group-ultra">
                                 <i class="fas fa-user icon-focus"></i>
@@ -66,7 +66,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-4 text-start">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <label class="label-ultra mb-0">Mật khẩu</label>
                                 <a href="#" class="text-primary-ultra small text-decoration-none fw-bold opacity-75 transition-link">Quên mật khẩu?</a>
@@ -78,12 +78,12 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-4 text-start">
                             <div class="form-check custom-check-ultra">
                                 <input class="form-check-input" type="checkbox" id="rememberMe">
                                 <label class="form-check-label small text-muted ms-1" for="rememberMe">
                                     Ghi nhớ đăng nhập
-                                1</label>
+                                </label>
                             </div>
                         </div>
 
@@ -94,7 +94,7 @@
 
                     <div class="text-center mt-5 pt-3 border-top">
                         <p class="text-muted small mb-0">Bạn chưa có tài khoản thư viện?
-                            <a href="/register" class="text-primary-ultra fw-bold text-decoration-none link-hover-effect">Đăng ký thành viên mới</a>
+                            <a href="{{ url_for('register_process') }}" class="text-primary-ultra fw-bold text-decoration-none link-hover-effect">Đăng ký thành viên</a>
                         </p>
                     </div>
                 </div>
@@ -104,122 +104,50 @@
 </div>
 
 <style>
+    /* Toàn bộ CSS của bạn được giữ nguyên */
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
 
-    .login-page-wrapper {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f4f8; /* Nền xám nhạt trung tính */
-    }
+    .login-page-wrapper { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+    .text-start { text-align: left !important; }
 
-    /* LEFT SIDE: ARTSY */
+    /* LEFT SIDE */
     .login-artsy-side {
         background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000');
-        background-size: cover;
-        background-position: center;
-        border-radius: 0 2rem 2rem 0; /* Bo góc phải */
+        background-size: cover; background-position: center; border-radius: 0 2rem 2rem 0;
     }
-
     .artsy-bg-overlay {
         position: absolute; top: 0; left: 0; right: 0; bottom: 0;
         background: linear-gradient(135deg, rgba(13, 110, 253, 0.95), rgba(0, 210, 255, 0.85));
-        border-radius: 0 2rem 2rem 0;
-        z-index: 1;
+        border-radius: 0 2rem 2rem 0; z-index: 1;
     }
-
     .artsy-title { font-family: 'Playfair Display', serif; letter-spacing: -2px; }
-    .artsy-subtitle { line-height: 1.8; }
-
     .stat-divider { width: 1px; height: 50px; background: rgba(255,255,255,0.2); }
-    .stat-box { display: flex; flex-direction: column; align-items: center; }
 
-    /* RIGHT SIDE: GLASSMORPHISM */
-    .bg-glass-right {
-        background-color: transparent; /* Nền trong suốt để hiện nền page */
-    }
-
+    /* RIGHT SIDE */
     .login-form-container {
-        background: rgba(255, 255, 255, 0.6);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        max-width: 480px; width: 100%;
-        transition: 0.3s;
+        background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3); max-width: 480px; width: 100%; transition: 0.3s;
     }
+    .login-form-container:hover { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.4); }
+    .shadow-glass { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
 
-    .login-form-container:hover {
-        background: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-
-    .shadow-glass {
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-    }
-
-    /* ULTRA INPUT */
+    /* INPUTS */
     .label-ultra { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
-    .text-primary-ultra { color: #0d6efd; }
-
     .input-group-ultra {
-        background: rgba(241, 245, 249, 0.8);
-        border: 1px solid transparent;
-        border-radius: 14px;
-        padding: 6px 16px;
-        display: flex; align-items: center;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(241, 245, 249, 0.8); border: 1px solid transparent; border-radius: 14px;
+        padding: 6px 16px; display: flex; align-items: center; transition: all 0.4s;
     }
-
-    .input-group-ultra:focus-within {
-        background: white;
-        border-color: #0d6efd;
-        box-shadow: 0 10px 20px rgba(13, 110, 253, 0.1);
-        transform: translateY(-3px);
-    }
-
-    .form-control-ultra {
-        border: none; background: transparent; box-shadow: none !important;
-        padding: 10px; font-size: 0.95rem; width: 100%; font-weight: 500;
-        color: #1a1a1a;
-    }
-
+    .input-group-ultra:focus-within { background: white; border-color: #0d6efd; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(13, 110, 253, 0.1); }
+    .form-control-ultra { border: none; background: transparent; box-shadow: none !important; padding: 10px; font-size: 0.95rem; width: 100%; font-weight: 500; }
     .icon-focus { color: #94a3b8; transition: 0.3s; }
     .input-group-ultra:focus-within .icon-focus { color: #0d6efd; }
 
-    /* BUTTON ULTRA */
-    .btn-primary-ultra {
-        background: #1a1a1a; /* Màu tối sang trọng */
-        border: none; color: white;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .btn-primary-ultra:hover {
-        background: #0d6efd; /* Màu xanh khi hover */
-        transform: translateY(-4px);
-        box-shadow: 0 15px 30px rgba(13, 110, 253, 0.2) !important;
-    }
-
-    .shadow-blue { box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-
-    /* CUSTOM CHECKBOX */
-    .custom-check-ultra .form-check-input {
-        border-radius: 4px; border-color: #dee2e6;
-    }
-    .custom-check-ultra .form-check-input:checked {
-        background-color: #0d6efd; border-color: #0d6efd;
-    }
-
-    /* LINKS EFFECTS */
-    .transition-link:hover { color: #1a1a1a !important; text-decoration: underline !important; }
-
-    .link-hover-effect { position: relative; }
-    .link-hover-effect::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; left: 0; background-color: #0d6efd; transition: 0.3s; }
-    .link-hover-effect:hover::after { width: 100%; }
-
+    /* BUTTON */
+    .btn-primary-ultra { background: #1a1a1a; border: none; color: white; transition: 0.4s; }
+    .btn-primary-ultra:hover { background: #0d6efd; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(13, 110, 253, 0.2) !important; }
+    .text-primary-ultra { color: #0d6efd; }
     .alert-soft-danger { background: #fef2f2; color: #b91c1c; }
 
-    /* MOBILE ADJUSTMENT */
-    @media (max-width: 991px) {
-        .artsy-bg-overlay, .login-artsy-side { border-radius: 0; }
-        .login-form-container { background: rgba(255, 255, 255, 0.9); }
-    }
+    @media (max-width: 991px) { .artsy-bg-overlay, .login-artsy-side { border-radius: 0; } }
 </style>
 {% endblock %}

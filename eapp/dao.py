@@ -148,3 +148,19 @@ def create_borrow_receipt(user_id, cart_items, info=None):
 
 def get_borrow_history(user_id):
     return PhieuMuon.query.filter_by(ma_nguoi_dung=user_id).order_by(PhieuMuon.ngay_muon.desc()).all()
+
+
+def return_borrow_receipt(phieu_id):
+    phieu = PhieuMuon.query.get(phieu_id)
+    if phieu and phieu.trang_thai != TrangThaiMuon.DA_TRA:
+        # 1. Cập nhật trạng thái phiếu
+        phieu.trang_thai = TrangThaiMuon.DA_TRA
+        phieu.ngay_tra_thuc_te = datetime.now()
+
+        # 2. Hoàn số lượng sách vào kho
+        for ct in phieu.chi_tiet:
+            ct.sach.so_luong_con += 1
+
+        db.session.commit()
+        return True
+    return False

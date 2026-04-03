@@ -110,17 +110,42 @@
                             </div>
 
                             <div class="col-md-5 text-md-end border-start border-white border-opacity-10 ps-md-5 mt-3 mt-md-0">
-                                <div class="small text-white-50 text-uppercase ls-1">Hạn trả dự kiến</div>
-                                <div class="h3 fw-black text-warning my-1">
-                                    {{ phieu.han_tra.strftime('%d/%m/%Y') if phieu.han_tra else '--/--/----' }}
-                                </div>
-                                <div class="small text-white-50">Ngày lập: {{ phieu.ngay_muon.strftime('%d/%m/%Y') }}</div>
+                                {% if phieu.trang_thai.name == 'DA_TRA' %}
+                                    <div class="mb-2">
+                                        <span class="small text-white-50 text-uppercase ls-1 d-block" style="font-size: 0.65rem;">Ngày mượn</span>
+                                        <span class="fw-bold text-white">
+                                            {{ phieu.ngay_muon.strftime('%d/%m/%Y') }}
+                                        </span>
+                                    </div>
 
-                                {# HIỂN THỊ THÔNG TIN NGƯỜI MƯỢN TỪ GHI CHÚ (NẾU CÓ) #}
-                                {% if phieu.ghi_chu %}
-                                <div class="mt-3 pt-2 border-top border-white border-opacity-10 small text-white-50 italic">
-                                    <i class="fas fa-user-tag me-1"></i> {{ phieu.ghi_chu }}
-                                </div>
+                                    <div class="mb-1">
+                                        <span class="small text-success text-uppercase fw-bold ls-1 d-block" style="font-size: 0.7rem;">
+                                            <i class="fas fa-calendar-check me-1"></i> Đã trả vào ngày
+                                        </span>
+                                        <span class="h4 fw-black text-success">
+                                            {{ phieu.ngay_tra_thuc_te.strftime('%d/%m/%Y') if phieu.ngay_tra_thuc_te else now.strftime('%d/%m/%Y') }}
+                                        </span>
+                                    </div>
+
+                                {% else %}
+                                    <div class="small text-white-50 text-uppercase ls-1">HẠN TRẢ DỰ KIẾN</div>
+                                    <div class="h3 fw-black text-warning my-1">
+                                        {{ phieu.han_tra.strftime('%d/%m/%Y') }}
+                                    </div>
+
+                                    {# Cảnh báo quá hạn #}
+                                    {% if phieu.han_tra < now %}
+                                        <div class="small text-danger fw-bold mb-2 animate__animated animate__shakeX">
+                                            <i class="fas fa-exclamation-circle"></i> Quá hạn (Phạt: {{ "{:,.0f}".format((now - phieu.han_tra).days * 5000) }}đ)
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="mt-2">
+                                        <button class="btn btn-outline-success btn-sm rounded-pill px-4 fw-bold"
+                                                onclick="returnBook({{ phieu.id }})">
+                                            <i class="fas fa-undo-alt me-1"></i> XÁC NHẬN TRẢ
+                                        </button>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -169,4 +194,25 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+function returnBook(phieuId) {
+    if (confirm("Xác nhận bạn muốn trả toàn bộ sách trong phiếu này?")) {
+        fetch(`/api/tra-sach/${phieuId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.msg);
+                location.reload(); // Load lại để cập nhật trạng thái/số lượng sách
+            } else {
+                alert("Lỗi: " + data.msg);
+            }
+        });
+    }
+}
+</script>
+
 {% endblock %}

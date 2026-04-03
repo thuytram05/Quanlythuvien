@@ -104,7 +104,20 @@ def add_data():
         Sach(ten_sach="Hack Não 1500 Từ Tiếng Anh", tac_gia="Nguyễn Văn Hiệp", so_luong_con=5, tong_so_luong=5, hinh_anh="https://th.bing.com/th/id/R.c58c3fa1ef48e42bdafec69757cace96?rik=E99vzYUwKphjbQ&pid=ImgRaw&r=0", ma_the_loai=tl3.id)
     ]
     db.session.add_all(sach_list)
+
+    for i in range(1, 53):
+        fake_book = Sach(
+            ten_sach=f"Sách mẫu số {i}",
+            tac_gia=f"Tác giả mẫu {i}",
+            mo_ta=f"Đây là mô tả cho cuốn sách mẫu số {i}",
+            hinh_anh=f"https://via.placeholder.com/300x450?text=Book+Model+{i}",
+            tong_so_luong=10,
+            so_luong_con=10,
+            ma_the_loai=(tl1.id if i % 2 == 0 else tl2.id)  # Xen kẽ thể loại 1 và 2
+        )
+        db.session.add(fake_book)
     db.session.commit()
+    print("Đã khởi tạo thành công 60 cuốn sách!")
 
 if __name__ == "__main__":
     with app.app_context():

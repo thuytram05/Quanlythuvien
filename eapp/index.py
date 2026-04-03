@@ -41,7 +41,7 @@ def index():
     if category_id:
         query = query.filter(Sach.ma_the_loai == category_id)
 
-    pagination = query.order_by(Sach.id.desc()).paginate(page=page, per_page= 50, error_out=False)
+    pagination = query.order_by(Sach.id.asc()).paginate(page=page, per_page= 50, error_out=False)
 
     return render_template('index.html',
                            books=pagination.items,

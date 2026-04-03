@@ -3,67 +3,72 @@
 {% block title %}{{ sach.ten_sach }} | Tinh Hoa Tri Thức Premium{% endblock %}
 
 {% block content %}
-<div class="book-details-container animate__animated animate__fadeIn">
-    <div class="premium-detail-header" style="--bg-image: url('{{ sach.hinh_anh }}');">
-        <div class="header-overlay"></div>
+<div class="book-details-wrapper animate__animated animate__fadeIn">
+    <header class="premium-hero" style="--bg-hero: url('{{ sach.hinh_anh }}');">
+        <div class="hero-blur-bg"></div>
 
         <div class="container position-relative z-index-10">
-            <div class="mb-5">
-                <a href="/" class="btn-premium-back animate__animated animate__fadeInLeft">
-                    <i class="fas fa-chevron-left me-2"></i> Trở về kho sách
+            <nav class="mb-5">
+                <a href="/" class="btn-back-glass animate__animated animate__fadeInLeft text-decoration-none">
+                    <i class="fas fa-arrow-left me-2"></i> Trở về kho sách
                 </a>
-            </div>
+            </nav>
 
-            <div class="row g-5 align-items-start">
+            <div class="row g-5 align-items-center">
                 <div class="col-lg-5 text-center">
-                    <div class="premium-book-wrapper animate__animated animate__zoomIn">
-                        <div class="book-perspective-card">
-                            <img src="{{ sach.hinh_anh }}" alt="{{ sach.ten_sach }}" class="main-book-img shadow-2xl">
-                            <div class="book-edge"></div>
-                            <div class="book-lighting"></div>
+                    <div class="book-3d-container animate__animated animate__zoomIn">
+                        <div class="book-3d-canvas">
+                            <img src="{{ sach.hinh_anh }}" alt="{{ sach.ten_sach }}" class="book-3d-main"
+                                 onerror="this.src='https://via.placeholder.com/300x450?text=Premium+Book'">
+                            <div class="book-3d-spine"></div>
+                            <div class="book-3d-shadow"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-7 text-white">
-                    <div class="animate__animated animate__fadeInRight animate__delay-1s">
-                        <div class="category-pill mb-3">
-                            <span class="dot"></span> {{ sach.the_loai.ten_the_loai }}
+                <div class="col-lg-7 text-white text-start">
+                    <div class="info-hero-content animate__animated animate__fadeInRight">
+                        <div class="premium-badge mb-3">
+                            <span class="pulsating-dot"></span> {{ sach.the_loai.ten_the_loai }}
                         </div>
 
-                        <h1 class="premium-book-title mb-3">{{ sach.ten_sach }}</h1>
+                        <h1 class="book-main-title mb-3">{{ sach.ten_sach }}</h1>
 
-                        <div class="author-info-glass mb-4">
-                            <img src="https://ui-avatars.com/api/?name={{ sach.tac_gia }}&background=f8d800&color=121212" class="rounded-circle shadow-sm" width="40">
-                            <div class="ms-3">
-                                <span class="d-block small text-white-50 fw-bold text-uppercase ls-1">Tác giả</span>
-                                <span class="fw-black fs-5">{{ sach.tac_gia }}</span>
+                        <div class="author-glass-card mb-4">
+                            <div class="author-avatar">
+                                <img src="https://ui-avatars.com/api/?name={{ sach.tac_gia }}&background=f8d800&color=121212&bold=true" alt="author">
+                            </div>
+                            <div class="author-meta">
+                                <small>Tác giả bản in</small>
+                                <strong>{{ sach.tac_gia }}</strong>
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center gap-4 mb-5">
-                            <div class="status-glass-badge {% if sach.so_luong_con > 0 %}available{% else %}empty{% endif %}">
-                                <i class="fas {% if sach.so_luong_con > 0 %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %} me-2"></i>
-                                {% if sach.so_luong_con > 0 %}Sẵn có tại thư viện{% else %}Tạm thời hết bản{% endif %}
-                            </div>
-                            <div class="rating-glass">
+                        <div class="stats-row-glass mb-5 d-flex align-items-center gap-4">
+                            <div class="stat-item">
                                 <i class="fas fa-star text-warning"></i>
-                                <span class="ms-1 fw-bold">4.9</span>
-                                <span class="text-white-50 ms-1">(120 đánh giá)</span>
+                                <span>4.9 <small class="opacity-75">(120 reviews)</small></span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item {{ 'text-success' if sach.so_luong_con > 0 else 'text-danger' }}">
+                                <i class="fas {{ 'fa-check-circle' if sach.so_luong_con > 0 else 'fa-times-circle' }} me-1"></i>
+                                <span>{{ 'Sẵn sàng mượn' if sach.so_luong_con > 0 else 'Đã hết bản in' }}</span>
                             </div>
                         </div>
 
-                        <div class="action-bar-glass p-4 rounded-4 shadow-xl border border-white-10">
+                        <div class="action-glass-panel p-4">
                             <div class="row align-items-center">
                                 <div class="col-md-7">
-                                    <div class="small text-white-50 mb-1 fw-bold">Trạng thái tồn kho</div>
-                                    <h4 class="mb-0 fw-black">{{ sach.so_luong_con }} / {{ sach.tong_so_luong }} bản in sẵn sàng</h4>
+                                    <span class="d-block small opacity-75 fw-bold text-uppercase mb-1">Số lượng hiện có</span>
+                                    <h3 class="mb-0 fw-black text-white">{{ sach.so_luong_con }} / {{ sach.tong_so_luong }} bản</h3>
                                 </div>
                                 <div class="col-md-5 mt-3 mt-md-0 text-md-end">
                                     {% if sach.so_luong_con > 0 %}
-                                    <button onclick="muonSach({{ sach.id }}, '{{ sach.ten_sach }}')" class="btn-ultra-gold w-100 py-3 shadow-gold transition-hover">
-                                        MƯỢN NGAY <i class="fas fa-arrow-right ms-2"></i>
+                                    <button onclick="muonSach({{ sach.id }}, '{{ sach.ten_sach }}')" class="btn-borrow-ultra">
+                                        MƯỢN NGAY <i class="fas fa-paper-plane ms-2"></i>
                                     </button>
+                                    {% else %}
+                                    <button class="btn btn-secondary w-100 py-3 rounded-4 fw-bold" disabled>HẾT SÁCH</button>
                                     {% endif %}
                                 </div>
                             </div>
@@ -72,202 +77,152 @@
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="container py-6">
+    <main class="container py-6">
         <div class="row g-5">
-            <div class="col-lg-8 animate__animated animate__fadeInUp">
-                <div class="content-glass-card p-5 rounded-5 bg-white shadow-soft border border-light">
-                    <h3 class="fw-black text-dark mb-4 d-flex align-items-center">
-                        <i class="fas fa-quote-left text-primary me-3 opacity-25"></i>
-                        Về tác phẩm
-                    </h3>
-                    <div class="book-content-text text-muted">
+            <div class="col-lg-8">
+                <article class="content-main-card shadow-premium p-5 text-start">
+                    <div class="section-heading mb-4">
+                        <h3 class="fw-black text-dark"><i class="fas fa-book-open text-primary me-2"></i> Tóm lược nội dung</h3>
+                        <div class="h-line"></div>
+                    </div>
+                    <div class="book-long-desc">
                         {% if sach.mo_ta %}
                             {{ sach.mo_ta | safe }}
                         {% else %}
-                            <p class="fs-5 lh-lg">
-                                Cuốn sách <strong>{{ sach.ten_sach }}</strong> là một tác phẩm đặc sắc thuộc thể loại <strong>{{ sach.the_loai.ten_the_loai }}</strong>.
-                                Được viết bởi tác giả <strong>{{ sach.tac_gia }}</strong>, tác phẩm mang lại cái nhìn sâu sắc và truyền cảm hứng
-                                mạnh mẽ cho độc giả hiện đại. Đây là bản in chất lượng cao hiện đang có mặt tại kệ sách của chúng tôi.
+                            <p class="lead text-muted">
+                                Cuốn sách <strong>{{ sach.ten_sach }}</strong> là một kiệt tác thuộc dòng sách <strong>{{ sach.the_loai.ten_the_loai }}</strong>.
+                                Được chắt lọc từ những tri thức quý báu của tác giả <strong>{{ sach.tac_gia }}</strong>.
                             </p>
                         {% endif %}
                     </div>
-                </div>
+                </article>
             </div>
 
             <div class="col-lg-4">
-                <div class="sticky-top animate__animated animate__fadeInRight" style="top: 100px;">
-                    <div class="spec-card p-4 rounded-4 shadow-soft bg-white border">
-                        <h5 class="fw-black text-dark mb-4 border-bottom pb-2">Thông tin chi tiết</h5>
-                        <div class="spec-item d-flex justify-content-between mb-3">
-                            <span class="text-muted small">Mã định danh</span>
-                            <span class="fw-bold text-dark">#BK-00{{ sach.id }}</span>
-                        </div>
-                        <div class="spec-item d-flex justify-content-between mb-3">
-                            <span class="text-muted small">Năm xuất bản</span>
-                            <span class="fw-bold text-dark">2024</span>
-                        </div>
-                        <div class="spec-item d-flex justify-content-between mb-3">
-                            <span class="text-muted small">Ngôn ngữ</span>
-                            <span class="fw-bold text-dark">Tiếng Việt</span>
-                        </div>
-                        <div class="spec-item d-flex justify-content-between">
-                            <span class="text-muted small">Loại bìa</span>
-                            <span class="fw-bold text-dark">Bìa cứng Premium</span>
+                <aside class="sticky-top" style="top: 100px;">
+                    <div class="spec-sidebar-card shadow-premium p-4 bg-white">
+                        <h5 class="fw-black text-dark mb-4 border-bottom pb-2 text-start">Thông số kỹ thuật</h5>
+                        <div class="spec-list">
+                            <div class="spec-row">
+                                <span class="label">Mã sách</span>
+                                <span class="val">#BK-{{ 1000 + sach.id }}</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="label">Năm XB</span>
+                                <span class="val">2024</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="label">Định dạng</span>
+                                <span class="val">Bìa cứng Premium</span>
+                            </div>
                         </div>
 
-                        <div class="alert-premium-info mt-4 p-3 rounded-4 bg-light border-start border-4 border-primary">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="fas fa-info-circle text-primary me-2"></i>
-                                <span class="small fw-black text-dark">Quy định mượn trả</span>
+                        <div class="policy-notice mt-4 text-start">
+                            <div class="d-flex align-items-center mb-2 text-primary fw-bold">
+                                <i class="fas fa-shield-alt me-2"></i> Quy định mượn
                             </div>
-                            <p class="small text-muted mb-0">Hạn trả mặc định là 14 ngày kể từ ngày mượn. Vui lòng thanh toán phí trễ hạn nếu quá hạn.</p>
+                            <p class="small text-muted mb-0">Hạn trả: 14 ngày. Có thể gia hạn tối đa 1 lần qua hệ thống.</p>
                         </div>
                     </div>
-                </div>
+                </aside>
             </div>
         </div>
-    </div>
+    </main>
 </div>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap');
 
     :root {
-        --p-gold: #f8d800;
-        --p-blue: #0d6efd;
-        --p-dark: #121212;
-        --border-glass: rgba(255, 255, 255, 0.15);
+        --p-primary: #3b82f6;
+        --p-gold: #fbbf24;
+        --p-dark: #0f172a;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
     }
 
-    body { background-color: #f8f9fc; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: #f8fafc; font-family: 'Lexend', sans-serif; }
     .fw-black { font-weight: 800; }
-    .ls-1 { letter-spacing: 1.5px; }
+    .text-start { text-align: left !important; }
 
-    /* HEADER STYLE SANG TRỌNG */
-    .premium-detail-header {
-        position: relative;
-        padding: 80px 0 120px;
-        background: var(--p-dark);
-        overflow: hidden;
-    }
+    /* HERO SECTION */
+    .premium-hero { position: relative; padding: 100px 0 140px; background: var(--p-dark); overflow: hidden; }
+    .hero-blur-bg { position: absolute; inset: 0; background-image: var(--bg-hero); background-size: cover; background-position: center; filter: blur(80px) brightness(0.3); transform: scale(1.2); }
+    .z-index-10 { z-index: 10; }
 
-    .header-overlay {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background-image: var(--bg-image);
-        background-size: cover;
-        background-position: center;
-        filter: blur(80px) brightness(0.4);
-        opacity: 0.6;
-        transform: scale(1.1);
-    }
+    .btn-back-glass { position: relative; display: inline-block; padding: 12px 28px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 50px; color: white; font-weight: 600; transition: 0.3s; }
+    .btn-back-glass:hover { background: white; color: var(--p-dark); transform: translateX(-5px); }
 
-    .btn-premium-back {
-        position: relative;
-        z-index: 10;
-        background: rgba(255,255,255,0.1);
-        color: white;
-        padding: 12px 25px;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 700;
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--border-glass);
-        transition: 0.3s;
-    }
-    .btn-premium-back:hover { background: white; color: var(--p-dark); transform: translateX(-5px); }
+    .book-main-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
 
-    .premium-book-title { font-size: 3.8rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
+    /* BOOK 3D */
+    .book-3d-container { perspective: 1500px; padding: 20px; }
+    .book-3d-canvas { position: relative; width: 300px; margin: 0 auto; transform: rotateY(-25deg) rotateX(5deg); transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+    .book-3d-canvas:hover { transform: rotateY(-5deg) rotateX(0deg); }
+    .book-3d-main { width: 100%; height: 450px; object-fit: cover; border-radius: 3px 15px 15px 3px; box-shadow: 10px 20px 50px rgba(0,0,0,0.5); position: relative; z-index: 2; }
+    .book-3d-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 40px; background: #222; transform: rotateY(-90deg) translateX(-20px); transform-origin: left; }
 
-    /* BOOK 3D CARD */
-    .premium-book-wrapper { perspective: 2000px; }
-    .book-perspective-card {
-        position: relative;
-        display: inline-block;
-        transform: rotateY(-18deg) rotateX(10deg);
-        transform-style: preserve-3d;
-        transition: 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
-    .book-perspective-card:hover { transform: rotateY(-5deg) rotateX(2deg) scale(1.05); }
+    /* GLASS COMPONENTS */
+    .premium-badge { display: inline-flex; align-items: center; background: var(--p-primary); color: white; padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+    .pulsating-dot { width: 8px; height: 8px; background: white; border-radius: 50%; margin-right: 8px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    .main-book-img {
-        width: 350px;
-        height: 520px;
-        object-fit: cover;
-        border-radius: 4px 20px 20px 4px;
-        box-shadow: 25px 25px 50px rgba(0,0,0,0.5);
-        border-left: 2px solid rgba(255,255,255,0.2);
-    }
+    .author-glass-card { display: flex; align-items: center; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 10px 20px; border-radius: 20px; width: fit-content; }
+    .author-avatar img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--p-gold); margin-right: 15px; }
+    .author-meta small { display: block; opacity: 0.7; font-size: 0.7rem; text-transform: uppercase; }
 
-    /* BADGES & GLASSMORPHISM */
-    .author-info-glass { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 15px; width: fit-content; backdrop-filter: blur(5px); border: 1px solid var(--border-glass); }
-    .category-pill { display: inline-flex; align-items: center; background: var(--p-blue); color: white; padding: 6px 16px; border-radius: 50px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
-    .category-pill .dot { width: 8px; height: 8px; background: white; border-radius: 50%; margin-right: 8px; }
+    .stat-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
+    .action-glass-panel { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--glass-border); }
 
-    .status-glass-badge { background: rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 50px; font-weight: 700; border: 1px solid var(--border-glass); }
-    .status-glass-badge.available { color: #52ffaf; }
-    .status-glass-badge.empty { color: #ff5252; }
+    .btn-borrow-ultra { width: 100%; padding: 16px; background: var(--p-gold); color: var(--p-dark); border: none; border-radius: 18px; font-weight: 800; transition: 0.3s; box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); cursor: pointer; }
+    .btn-borrow-ultra:hover { transform: translateY(-3px); background: white; }
 
-    .action-bar-glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border: 1px solid var(--border-glass); }
-    .btn-ultra-gold { background: var(--p-gold); color: var(--p-dark); font-weight: 800; border: none; border-radius: 15px; transition: 0.3s; }
-    .btn-ultra-gold:hover { transform: translateY(-3px); background: #fff; box-shadow: 0 10px 30px rgba(248, 216, 0, 0.4); }
+    /* CONTENT */
+    .shadow-premium { box-shadow: 0 20px 40px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; border-radius: 30px; }
+    .h-line { width: 50px; height: 4px; background: var(--p-primary); border-radius: 2px; margin-top: 8px; }
+    .book-long-desc { line-height: 2; color: #475569; font-size: 1.1rem; }
 
-    /* CONTENT STYLE */
-    .py-6 { padding-top: 6rem; padding-bottom: 6rem; }
-    .content-glass-card { line-height: 1.8; }
-    .book-content-text { font-size: 1.15rem; text-align: justify; }
-    .shadow-soft { box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
-
-    @media (max-width: 991px) {
-        .premium-book-title { font-size: 2.5rem; }
-        .main-book-img { width: 280px; height: 420px; }
-    }
+    .spec-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .spec-row .label { color: #64748b; font-size: 0.9rem; }
+    .spec-row .val { font-weight: 700; color: var(--p-dark); }
+    .policy-notice { background: #eff6ff; padding: 15px; border-radius: 15px; border-left: 4px solid var(--p-primary); }
 </style>
 
 <script>
-    // Hàm xử lý mượn sách mượt mà (Tích hợp SweetAlert2)
     function muonSach(id, tenSach) {
         {% if not current_user.is_authenticated %}
             Swal.fire({
-                title: 'Chào bạn!',
-                text: 'Hãy đăng nhập để chúng mình ghi nhận phiếu mượn của bạn nhé.',
+                title: 'Yêu cầu đăng nhập',
+                text: 'Vui lòng đăng nhập để mượn sách bạn nhé!',
                 icon: 'info',
                 confirmButtonText: 'Đăng nhập ngay',
-                showCancelButton: true,
-                cancelButtonText: 'Để sau'
-            }).then((result) => {
-                if (result.isConfirmed) { location.href = '/login'; }
-            });
+                showCancelButton: true
+            }).then((result) => { if (result.isConfirmed) { location.href = "{{ url_for('login_user_process') }}"; } });
             return;
         {% endif %}
 
         Swal.fire({
-            title: 'Xác nhận mượn sách',
-            text: `Bạn muốn thêm cuốn "${tenSach}" vào danh sách mượn chứ?`,
+            title: 'Xác nhận mượn',
+            html: `Thêm cuốn <b>${tenSach}</b> vào túi mượn?`,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#0d6efd',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Đồng ý mượn'
+            confirmButtonColor: '#3b82f6',
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
                 fetch('/api/muon-sach', {
                     method: 'POST',
-                    body: JSON.stringify({ id: id, ten_sach: tenSach }),
+                    body: JSON.stringify({ id: id }),
                     headers: {'Content-Type': 'application/json'}
                 })
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        Swal.fire({
-                            title: 'Tuyệt vời!',
-                            text: data.msg,
-                            icon: 'success',
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then(() => location.reload());
+                        Swal.fire({ title: 'Thành công!', text: data.msg, icon: 'success', timer: 1500, showConfirmButton: false })
+                        .then(() => location.reload());
                     } else {
                         Swal.fire('Thông báo', data.msg, 'error');
                     }

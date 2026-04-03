@@ -1,0 +1,217 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div class="admin-library-dashboard animate__animated animate__fadeIn p-4">
+    {% if current_user.is_authenticated %}
+    
+    <div class="row align-items-center mb-5 text-start">
+        <div class="col-md-7">
+            <h1 class="fw-black text-dark display-5 mb-1">Hệ thống <span class="text-primary">Quản trị</span></h1>
+            <p class="text-muted">Xin chào, <span class="fw-bold text-primary">{{ current_user.ten }}</span>. Dưới đây là tình hình thư viện hôm nay.</p>
+        </div>
+        <div class="col-md-5 text-md-end">
+            <div class="d-inline-flex align-items-center bg-white border p-2 px-3 rounded-pill shadow-sm">
+                <div class="status-indicator-dot bg-success me-2"></div>
+                <span class="small fw-bold text-dark me-3">Máy chủ: Hoạt động</span>
+                <span id="live-clock" class="badge bg-dark rounded-pill">00:00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-box bg-soft-primary text-primary"><i class="fas fa-book"></i></div>
+                    <a href="/admin/sach" class="text-muted"><i class="fas fa-arrow-right"></i></a>
+                </div>
+                <h6 class="text-uppercase small fw-bold text-muted ls-1">Tổng đầu sách</h6>
+                <h2 class="fw-black m-0">1,420</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-box bg-soft-success text-success"><i class="fas fa-user-graduate"></i></div>
+                    <a href="/admin/nguoidung" class="text-muted"><i class="fas fa-arrow-right"></i></a>
+                </div>
+                <h6 class="text-uppercase small fw-bold text-muted ls-1">Độc giả đăng ký</h6>
+                <h2 class="fw-black m-0">856</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-box bg-soft-warning text-warning"><i class="fas fa-hand-holding-heart"></i></div>
+                    <span class="badge bg-soft-warning text-warning rounded-pill">Tuần này</span>
+                </div>
+                <h6 class="text-uppercase small fw-bold text-muted ls-1">Phiếu mượn mới</h6>
+                <h2 class="fw-black m-0">124</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white border-bottom border-danger border-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-box bg-soft-danger text-danger"><i class="fas fa-clock"></i></div>
+                    <span class="badge bg-danger text-white rounded-pill">Cảnh báo</span>
+                </div>
+                <h6 class="text-uppercase small fw-bold text-muted ls-1">Sách quá hạn</h6>
+                <h2 class="fw-black m-0 text-danger">18</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-5 overflow-hidden h-100">
+                <div class="card-header bg-white border-0 py-4 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-black text-dark m-0">Mật độ thể loại</h5>
+                    <button class="btn btn-sm btn-light rounded-pill px-3">Tải báo cáo</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 text-start">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4 py-3 border-0 small text-uppercase fw-bold text-muted">Mã</th>
+                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Thể loại</th>
+                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Số sách</th>
+                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Tỉ lệ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in cate_stats %}
+                                <tr>
+                                    <td class="ps-4 fw-bold text-primary">#{{ s[0] }}</td>
+                                    <td class="fw-semibold">{{ s[1] }}</td>
+                                    <td><span class="badge bg-soft-dark text-dark rounded-pill">{{ s[2] }}</span></td>
+                                    <td style="width: 150px;">
+                                        <div class="progress" style="height: 6px; border-radius: 10px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ (s[2]/10)|int if s[2] < 1000 else 100 }}%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-5 p-4 h-100">
+                <div class="text-start mb-4">
+                    <h5 class="fw-black text-dark m-0">Trực quan hóa dữ liệu</h5>
+                    <p class="small text-muted">Phân bổ sách theo các danh mục tri thức</p>
+                </div>
+                <div class="chart-area" style="height: 350px;">
+                    <canvas id="libraryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function renderLibraryChart(labels, data) {
+            const ctx = document.getElementById('libraryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'polarArea', // Kiểu Polar Area rất hợp cho dữ liệu phân bổ danh mục
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(236, 72, 153, 0.7)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: { ticks: { display: false }, grid: { color: '#f1f5f9' } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            // Live Clock
+            setInterval(() => {
+                document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('vi-VN');
+            }, 1000);
+
+            // Dữ liệu từ Backend
+            let labels = [];
+            let data = [];
+            {% for s in cate_stats %}
+                labels.push('{{ s[1] }}');
+                data.push({{ s[2] }});
+            {% endfor %}
+
+            renderLibraryChart(labels, data);
+        }
+    </script>
+
+    {% else %}
+    <div class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+        <div class="login-card p-5 bg-white shadow-lg rounded-5 text-center" style="max-width: 400px; width: 100%;">
+            <div class="icon-circle bg-primary text-white mb-4 mx-auto">
+                <i class="fas fa-lock fs-3"></i>
+            </div>
+            <h3 class="fw-black mb-1">Quản trị viên</h3>
+            <p class="text-muted mb-4">Vui lòng xác thực quyền truy cập</p>
+            <form method="post" action="/login?next=/admin">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control border-0 bg-light rounded-4" id="username" name="username" placeholder="Username" required>
+                    <label for="username">Tên đăng nhập</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control border-0 bg-light rounded-4" id="password" name="password" placeholder="Password" required>
+                    <label for="password">Mật khẩu</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">XÁC NHẬN VÀO HỆ THỐNG</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    
+    .admin-library-dashboard { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; min-height: 100vh; }
+    .fw-black { font-weight: 800; }
+    .text-start { text-align: left !important; }
+    .rounded-5 { border-radius: 2rem !important; }
+    .rounded-4 { border-radius: 1.25rem !important; }
+    .ls-1 { letter-spacing: 1px; }
+
+    /* STAT CARDS */
+    .icon-box { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 15px; font-size: 1.2rem; }
+    .bg-soft-primary { background: #eff6ff; }
+    .bg-soft-success { background: #ecfdf5; }
+    .bg-soft-warning { background: #fffbeb; }
+    .bg-soft-danger { background: #fef2f2; }
+    .bg-soft-dark { background: #f1f5f9; }
+
+    .stat-glass-card { transition: all 0.3s ease; }
+    .stat-glass-card:hover { transform: translateY(-7px); box-shadow: 0 15px 30px rgba(0,0,0,0.05) !important; }
+
+    .status-indicator-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; animation: blink 2s infinite; }
+    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    .icon-circle { width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+</style>
+{% endblock %}

@@ -37,10 +37,17 @@
       </ul>
 
       <form class="d-flex mx-lg-4 my-2 my-lg-0 search-container flex-grow-1" style="max-width: 450px;" method="get" action="/">
-        <div class="search-box">
-            <input type="text" name="kw" value="{{ current_kw if current_kw }}" placeholder="Tìm tên sách, tác giả..." required>
+          <div class="search-box">
+            <input type="text"
+                   name="kw"
+                   value="{{ current_kw if current_kw else '' }}"
+                   placeholder="Tìm tên sách, tác giả..."
+                   minlength="2"
+                   required
+                   oninvalid="this.setCustomValidity('Vui lòng nhập 2 kí tự trở lên!')"
+                   oninput="this.setCustomValidity">
             <button type="submit"><i class="fas fa-search"></i></button>
-        </div>
+            </div>
       </form>
 
       <ul class="navbar-nav align-items-center">

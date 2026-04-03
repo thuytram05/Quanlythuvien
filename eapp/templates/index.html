@@ -10,6 +10,18 @@
             <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000" alt="Library BG" class="bg-parallax">
             <div class="cinema-overlay"></div>
         </div>
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 15px;">
+                <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    </div>
 
         <div class="container h-100 position-relative z-10 d-flex align-items-center">
             <div class="row w-100 g-5">
@@ -41,7 +53,6 @@
             </div>
         </div>
     </section>
-
     <div class="search-floating-area container" id="explore">
         <div class="search-master-card p-2 shadow-2xl animate__animated animate__fadeInUp">
             <form action="/" method="get" class="d-flex flex-wrap flex-lg-nowrap align-items-center m-0 w-100">
@@ -49,7 +60,12 @@
                     <div class="search-input-box px-3">
                         <i class="fas fa-search me-3 text-primary"></i>
                         <input type="text" name="kw" value="{{ current_kw if current_kw else '' }}"
-                               class="form-control-minimal" placeholder="Tìm tên sách, tác giả hoặc ISBN...">
+                            class="form-control-minimal"
+                            placeholder="Tìm tên sách, tác giả (ít nhất 2 ký tự)..."
+                            minlength="2"
+                            required
+                            oninvalid="this.setCustomValidity('Vui lòng nhập 2 kí tự trở lên!')"
+                            oninput="this.setCustomValidity">
                     </div>
                 </div>
                 <div class="p-2 border-end-lg" style="min-width: 250px;">
@@ -183,7 +199,7 @@
     .text-gradient-gold { background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
     /* SEARCH Master Card hàng ngang */
-    .search-floating-area { margin-top: -60px; position: relative; z-index: 100; }
+    .search-floating-area { margin-top: -20px; position: relative; z-index: 100; }
     .search-master-card { background: white; border-radius: 25px; border: 1px solid #edf2f7; display: flex; }
     .search-input-box, .category-select-box { display: flex; align-items: center; height: 55px; }
     .form-control-minimal, .form-select-minimal { border: none; width: 100%; font-size: 1rem; font-weight: 500; outline: none; background: transparent; }

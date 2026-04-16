@@ -147,6 +147,22 @@ from eapp import app
 
 register_routes(app)
 
+@app.route('/api/tra-sach/<int:phieu_id>', methods=['POST'])
+@login_required
+def tra_sach(phieu_id):
+    # Kiểm tra quyền: Chỉ người mượn mới được trả (Ràng buộc Mục 2)
+    phieu = PhieuMuon.query.get(phieu_id)
+    if not phieu or phieu.ma_nguoi_dung != current_user.id:
+        return jsonify({'status': 'error', 'msg': 'Bạn không có quyền thực hiện thao tác này!'})
+
+    try:
+        if dao.return_borrow_receipt(phieu_id):
+            return jsonify({'status': 'success', 'msg': 'Đã trả sách thành công!'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'msg': str(e)})
+
+    return jsonify({'status': 'error', 'msg': 'Phiếu không tồn tại hoặc đã trả rồi!'})
+
 if __name__ == '__main__':
     from eapp import admin
 

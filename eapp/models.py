@@ -6,34 +6,38 @@ from enum import Enum as UserEnum
 from datetime import datetime
 import hashlib
 
+
+# 1. Mô hình cơ bản dùng chung
 class MoHinhCoBan(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
     ngay_tao = Column(DateTime, default=datetime.now)
     hoat_dong = Column(Boolean, default=True)
 
+
 class VaiTro(UserEnum):
-    NGUOI_DUNG = 1
-    QUAN_TRI = 2
+    QUAN_TRI = 1
+    NGUOI_DUNG = 2
+
 
 class TrangThaiMuon(UserEnum):
     DANG_MUON = 1
     DA_TRA = 2
     QUA_HAN = 3
 
+
 class NguoiDung(MoHinhCoBan, UserMixin):
     ten = Column(String(50), nullable=False)
-    anh_dai_dien = Column(String(200), default='https://i1.sndcdn.com/artworks-POzt1px8desduZHi-SGxkaw-t500x500.jpg')
+    anh_dai_dien = Column(String(200), default='https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg')
     ten_dang_nhap = Column(String(50), nullable=False, unique=True)
-    mat_khau = Column(String(50), nullable=False)
+    mat_khau = Column(String(100), nullable=False)
     vai_tro = Column(Enum(VaiTro), default=VaiTro.NGUOI_DUNG)
     bi_khoa = Column(Boolean, default=False)
-
     phieu_muon_sach = relationship('PhieuMuon', backref='nguoi_dung', lazy=True)
-    items_trong_gio = relationship('UserCart', backref='nguoi_dung', lazy=True)
 
     def __str__(self):
         return self.ten
+
 
 class TheLoai(MoHinhCoBan):
     ten_the_loai = Column(String(50), unique=True, nullable=False)
@@ -42,27 +46,31 @@ class TheLoai(MoHinhCoBan):
     def __str__(self):
         return self.ten_the_loai
 
+
 class Sach(MoHinhCoBan):
     ten_sach = Column(String(255), nullable=False)
     tac_gia = Column(String(100), nullable=False)
     mo_ta = Column(Text, nullable=True)
-    hinh_anh = Column(String(500), default='https://tse4.mm.bing.net/th/id/OIP.kSEAVEjy8eu6LrNQDycYhwHaHa?rs=1&pid=ImgDetMain')
-    tong_so_luong = Column(Integer, default=1)
-    so_luong_con = Column(Integer, default=1)
+    hinh_anh = Column(String(500), default='https://via.placeholder.com/300x450?text=Pages+Book')
+    tong_so_luong = Column(Integer, default=10)
+    so_luong_con = Column(Integer, default=10)
     ma_the_loai = Column(Integer, ForeignKey(TheLoai.id), nullable=False)
-
     chi_tiet_muon = relationship('ChiTietMuon', backref='sach', lazy=True)
 
     def __str__(self):
         return self.ten_sach
+
 
 class PhieuMuon(MoHinhCoBan):
     ma_nguoi_dung = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
     ngay_muon = Column(DateTime, default=datetime.now)
     han_tra = Column(DateTime, nullable=False)
     trang_thai = Column(Enum(TrangThaiMuon), default=TrangThaiMuon.DANG_MUON)
+    so_dien_thoai = Column(String(15), nullable=True)
+    dia_chi = Column(String(255), nullable=True)
+    ghi_chu = Column(Text, nullable=True)
+    chi_tiet = relationship('ChiTietMuon', backref='phieu_muon', lazy=True, cascade="all, delete-orphan")
 
-    chi_tiet = relationship('ChiTietMuon', backref='phieu_muon', lazy=True)
 
 class ChiTietMuon(db.Model):
     ma_phieu = Column(Integer, ForeignKey(PhieuMuon.id), primary_key=True)
@@ -70,57 +78,60 @@ class ChiTietMuon(db.Model):
     ngay_tra_thuc_te = Column(DateTime, nullable=True)
     tien_phat = Column(Float, default=0.0)
 
-class UserCart(db.Model):
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey(NguoiDung.id), nullable=False)
-    book_id = Column(Integer, ForeignKey(Sach.id), nullable=False)
-    created_date = Column(DateTime, default=datetime.now)
 
-    sach = relationship('Sach', backref='cart_items')
-
-def add_data():
-    admin_user = NguoiDung(
-        ten='Quản trị viên',
-        ten_dang_nhap='admin',
-        mat_khau=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
-        vai_tro=VaiTro.QUAN_TRI
-    )
-    db.session.add(admin_user)
-
-    tl1 = TheLoai(ten_the_loai="Công nghệ thông tin")
-    tl2 = TheLoai(ten_the_loai="Kỹ năng sống")
-    tl3 = TheLoai(ten_the_loai="Ngoại ngữ")
-    db.session.add_all([tl1, tl2, tl3])
-    db.session.commit()
-
-    sach_list = [
-        Sach(ten_sach="Công nghệ phần mềm", tac_gia="Nguyễn Văn A", so_luong_con=10, tong_so_luong=10, hinh_anh="https://thuquan.ou.edu.vn/cover//2024/03/08/I23-Congnghephanmem-01.jpg", ma_the_loai=tl1.id),
-        Sach(ten_sach="Cấu Trúc Dữ Liệu Và Giải Thuật", tac_gia="Nguyễn Đức Nghĩa", so_luong_con=15, tong_so_luong=15, hinh_anh="https://hvpnvn.edu.vn/wp-content/uploads/sites/63/2024/02/Giao-trinh-cau-truc-du-lieu-va-giai-thuat.jpg", ma_the_loai=tl1.id),
-        Sach(ten_sach="Lập Trình Python Cơ Bản", tac_gia="Nhiều Tác Giả", so_luong_con=8, tong_so_luong=10, hinh_anh="https://down-vn.img.susercontent.com/file/vn-11134201-7r98o-lu54jam92n4c98", ma_the_loai=tl1.id),
-        Sach(ten_sach="Đắc Nhân Tâm", tac_gia="Dale Carnegie", so_luong_con=5, tong_so_luong=5, hinh_anh="https://tiki.vn/blog/wp-content/uploads/2023/08/noi-dung-chinh-dac-nhan-tam-1024x682.jpg", ma_the_loai=tl2.id),
-        Sach(ten_sach="Nhà Giả Kim", tac_gia="Paulo Coelho", so_luong_con=20, tong_so_luong=20, hinh_anh="https://salt.tikicdn.com/cache/750x750/ts/product/45/3b/fc/aa81d0a534b45706ae1eee1e344e80d9.jpg", ma_the_loai=tl2.id),
-        Sach(ten_sach="Tuổi Trẻ Đáng Giá Bao Nhiêu", tac_gia="Rosie Nguyễn", so_luong_con=12, tong_so_luong=15, hinh_anh="https://www.vietbookalley.com.au/cdn/shop/products/tuoi-tre-dang-gia-bao-nhieu_1100x.webp?v=1665371089", ma_the_loai=tl2.id),
-        Sach(ten_sach="English Grammar in Use", tac_gia="Raymond Murphy", so_luong_con=25, tong_so_luong=30, hinh_anh="https://cf.shopee.vn/file/d2c41d6e53b7e420ef3129d705be78b7", ma_the_loai=tl3.id),
-        Sach(ten_sach="Hack Não 1500 Từ Tiếng Anh", tac_gia="Nguyễn Văn Hiệp", so_luong_con=5, tong_so_luong=5, hinh_anh="https://th.bing.com/th/id/R.c58c3fa1ef48e42bdafec69757cace96?rik=E99vzYUwKphjbQ&pid=ImgRaw&r=0", ma_the_loai=tl3.id)
-    ]
-    db.session.add_all(sach_list)
-
-    for i in range(1, 53):
-        fake_book = Sach(
-            ten_sach=f"Sách mẫu số {i}",
-            tac_gia=f"Tác giả mẫu {i}",
-            mo_ta=f"Đây là mô tả cho cuốn sách mẫu số {i}",
-            hinh_anh=f"https://via.placeholder.com/300x450?text=Book+Model+{i}",
-            tong_so_luong=10,
-            so_luong_con=10,
-            ma_the_loai=(tl1.id if i % 2 == 0 else tl2.id)  # Xen kẽ thể loại 1 và 2
-        )
-        db.session.add(fake_book)
-    db.session.commit()
-    print("Đã khởi tạo thành công 60 cuốn sách!")
-
+# --- HÀM NẠP DỮ LIỆU TỰ ĐỘNG (Chỉnh sửa: Chỉ 6 quyển) ---
 if __name__ == "__main__":
     with app.app_context():
-        db.drop_all()
+        # db.drop_all() # Mở comment nếu muốn làm sạch DB cũ
         db.create_all()
-        add_data()
+
+        # 1. Tạo Admin mặc định
+        if not NguoiDung.query.filter_by(ten_dang_nhap='admin').first():
+            admin_user = NguoiDung(
+                ten='Quản trị viên',
+                ten_dang_nhap='admin',
+                mat_khau=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+                vai_tro=VaiTro.QUAN_TRI
+            )
+            db.session.add(admin_user)
+
+        # 2. Tạo Thể loại và nạp đúng 6 cuốn sách
+        if not TheLoai.query.first():
+            tl1 = TheLoai(ten_the_loai="Công nghệ thông tin")
+            tl2 = TheLoai(ten_the_loai="Kỹ năng sống")
+            tl3 = TheLoai(ten_the_loai="Ngoại ngữ")
+            db.session.add_all([tl1, tl2, tl3])
+            db.session.commit()
+
+            # Danh sách 6 cuốn sách độc bản
+            danh_sach_sach = [
+                # Nhóm CNTT
+                Sach(ten_sach="Python Crash Course", tac_gia="Eric Matthes", ma_the_loai=tl1.id,
+                     hinh_anh="https://bizweb.dktcdn.net/100/197/269/products/python-crash-course.jpg",
+                     mo_ta="Cuốn sách bán chạy nhất thế giới về lập trình Python dành cho người mới bắt đầu."),
+                Sach(ten_sach="Clean Code", tac_gia="Robert C. Martin", ma_the_loai=tl1.id,
+                     hinh_anh="https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
+                     mo_ta="Cẩm nang về tư duy viết mã sạch và bảo trì phần mềm chuyên nghiệp."),
+
+                # Nhóm Kỹ năng
+                Sach(ten_sach="Đắc Nhân Tâm", tac_gia="Dale Carnegie", ma_the_loai=tl2.id,
+                     hinh_anh="https://salt.tikicdn.com/cache/w1200/ts/product/d1/20/d5/06fdc3004c7fd9d39999b1062991901a.jpg",
+                     mo_ta="Tác phẩm kinh điển về nghệ thuật giao tiếp và thu phục lòng người."),
+                Sach(ten_sach="Nhà Giả Kim", tac_gia="Paulo Coelho", ma_the_loai=tl2.id,
+                     hinh_anh="https://salt.tikicdn.com/ts/product/45/3d/81/8f8b2d436a94ec0ade3764459f4215f1.jpg",
+                     mo_ta="Hành trình theo đuổi vận mệnh và khám phá tâm hồn của chàng chăn cừu Santiago."),
+
+                # Nhóm Ngoại ngữ
+                Sach(ten_sach="English Grammar in Use", tac_gia="Raymond Murphy", ma_the_loai=tl3.id,
+                     hinh_anh="https://salt.tikicdn.com/ts/product/f4/78/39/3a8d46101c57e841285499292b35d8fc.jpg",
+                     mo_ta="Tài liệu tự học ngữ pháp tiếng Anh phổ biến nhất trên toàn thế giới."),
+                Sach(ten_sach="Hacking Your English", tac_gia="Hoàng Ngọc Quỳnh", ma_the_loai=tl3.id,
+                     hinh_anh="https://salt.tikicdn.com/ts/product/3e/26/51/9d53347c6e6443d07747e4b971a06901.jpg",
+                     mo_ta="Phương pháp đột phá để nghe nói tiếng Anh trôi chảy dành cho người bận rộn.")
+            ]
+
+            db.session.add_all(danh_sach_sach)
+            db.session.commit()
+            print(">>> Đã nạp thành công 06 cuốn sách tinh hoa.")
+
+        print(">>> Hệ thống database Pages+ đã sẵn sàng.")

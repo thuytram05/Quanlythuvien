@@ -6,96 +6,103 @@
 <div class="premium-profile-master-wrapper animate__animated animate__fadeIn">
 
     <style>
-        /* TRIỆT TIÊU KHOẢNG TRỐNG FOOTER TUYỆT ĐỐI */
+        /* Tối ưu nền và bố cục */
         .premium-profile-master-wrapper {
             margin: -24px -15px -60px -15px !important;
-            padding: 60px 20px 100px 20px;
+            padding: 80px 20px 100px 20px;
             color: #fff;
             min-height: 100vh;
-            background: linear-gradient(180deg, rgba(5,7,10,0.4) 0%, rgba(5,7,10,0.9) 100%),
+            background: linear-gradient(180deg, rgba(26, 19, 14, 0.85) 0%, rgba(26, 19, 14, 0.95) 100%),
                         url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000') no-repeat center center/cover;
-            background-attachment: scroll;
+            background-attachment: fixed;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
-        .container, .main-content {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        /* CARD VÀ TIÊU ĐỀ */
+        /* Glassmorphism Effect */
         .glass-main-card {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 40px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
         }
 
         .stat-card-premium {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(212, 163, 115, 0.1); /* Màu gold nhẹ */
             padding: 25px 10px;
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-bottom: 4px solid #ffffff;
+            border: 1px solid rgba(212, 163, 115, 0.2);
+            transition: 0.3s;
         }
+        .stat-card-premium:hover { transform: translateY(-5px); background: rgba(212, 163, 115, 0.15); }
 
         .fw-black { font-weight: 800; }
         .avatar-glow-wrapper { position: relative; width: 180px; height: 180px; margin: 0 auto; }
-        .profile-img-main { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.1); position: relative; z-index: 2;}
-
-        .verified-star {
-            position: absolute; bottom: 5px; right: 15px; background: #ffc107;
-            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; color: #000; border: 3px solid #000; z-index: 5;
+        .profile-img-main {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+            border: 5px solid #d4a373; position: relative; z-index: 2;
         }
 
-        .info-glass-tile { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
-        .info-glass-tile:hover { transform: translateX(10px); background: rgba(255,255,255,0.08); border-color: #ffc107; }
+        .verified-star {
+            position: absolute; bottom: 8px; right: 12px; background: #d4a373;
+            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: #3d2b1f; border: 4px solid #1a130e; z-index: 5;
+        }
 
-        .btn-warning { background: #ffc107; color: #000; border: none; font-weight: 800; }
-        .btn-warning:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4); }
+        .info-glass-tile {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s;
+            text-align: left !important;
+        }
+        .info-glass-tile:hover { transform: translateX(10px); background: rgba(212, 163, 115, 0.08); border-color: #d4a373; }
 
+        .btn-warning-premium {
+            background: #d4a373; color: #3d2b1f; border: none; font-weight: 800;
+            padding: 18px; border-radius: 15px; transition: 0.3s;
+        }
+        .btn-warning-premium:hover { background: #fff; transform: translateY(-3px); color: #3d2b1f; }
+
+        .text-gold { color: #d4a373 !important; }
         .footer-pusher { flex-grow: 1; }
-        .text-start { text-align: left !important; }
     </style>
 
-    <div class="container position-relative z-10">
+    <div class="container position-relative">
         <div class="row g-5 justify-content-center">
 
             <div class="col-lg-5">
                 <div class="glass-main-card text-center p-5 animate__animated animate__zoomIn">
                     <div class="avatar-glow-wrapper mb-4">
                         <img src="{{ current_user.anh_dai_dien }}" alt="Avatar" class="profile-img-main shadow-2xl"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ current_user.ten }}&background=f8d800&color=121212&bold=true'">
+                             onerror="this.src='https://ui-avatars.com/api/?name={{ current_user.ten }}&background=d4a373&color=3d2b1f&bold=true'">
                         <div class="verified-star"><i class="fas fa-crown"></i></div>
                     </div>
 
                     <div class="identity-section">
                         <h1 class="fw-black text-white mb-1 display-5">{{ current_user.ten }}</h1>
-                        <div class="badge bg-warning text-dark px-3 rounded-pill fw-bold">Độc giả Tinh hoa</div>
+                        <div class="badge bg-gold text-dark px-3 rounded-pill fw-bold text-uppercase">Thành viên Pages+</div>
                     </div>
 
                     <div class="stats-glow-row mt-4">
                         <div class="row g-3">
                             <div class="col-6">
                                 <div class="stat-card-premium">
-                                    {% set borrowing_count = namespace(total=0) %}
-                                    {% for phieu in phieu_muon_list %}
-                                        {% if phieu.trang_thai.name == 'DANG_MUON' %}
-                                            {% set borrowing_count.total = borrowing_count.total + phieu.chi_tiet|length %}
+                                    {# Logic đếm số cuốn đang chiếm dụng từ phieu_muon_sach của User model #}
+                                    {% set counting = namespace(books=0) %}
+                                    {% for p in current_user.phieu_muon_sach %}
+                                        {% if p.trang_thai.name != 'DA_TRA' %}
+                                            {% set counting.books = counting.books + p.chi_tiet|length %}
                                         {% endif %}
                                     {% endfor %}
-                                    <div class="stat-value text-white h2 fw-black mb-0">{{ borrowing_count.total }}</div>
-                                    <div class="stat-label text-white-50 fw-bold x-small">ĐANG MƯỢN</div>
+                                    <div class="stat-value text-gold h2 fw-black mb-0">{{ counting.books }}</div>
+                                    <div class="stat-label text-white-50 fw-bold small">ĐANG MƯỢN</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="stat-card-premium">
-                                    <div class="stat-value text-white h2 fw-black mb-0">{{ phieu_muon_list|length }}</div>
-                                    <div class="stat-label text-white-50 fw-bold x-small">TỔNG PHIẾU</div>
+                                    <div class="stat-value text-white h2 fw-black mb-0">{{ current_user.phieu_muon_sach|length }}</div>
+                                    <div class="stat-label text-white-50 fw-bold small">LƯỢT MƯỢN</div>
                                 </div>
                             </div>
                         </div>
@@ -104,36 +111,42 @@
             </div>
 
             <div class="col-lg-7">
-                <div class="details-glass-stack animate__animated animate__fadeInRight text-start">
+                <div class="details-glass-stack animate__animated animate__fadeInRight">
 
-                    <div class="info-glass-tile mb-4 p-4 rounded-5 transition-all">
+                    <div class="info-glass-tile mb-4 p-4 rounded-5">
                         <div class="d-flex align-items-center">
-                            <div class="icon-glow bg-primary p-3 rounded-4 me-4"><i class="fas fa-at text-white"></i></div>
+                            <div class="icon-glow bg-dark p-3 rounded-4 me-4 border border-secondary">
+                                <i class="fas fa-at text-gold"></i>
+                            </div>
                             <div>
-                                <label class="text-white-50 small fw-bold text-uppercase">Tên định danh</label>
+                                <label class="text-white-50 small fw-bold text-uppercase">Tên đăng nhập</label>
                                 <div class="fs-4 fw-black text-white">@{{ current_user.ten_dang_nhap }}</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="info-glass-tile mb-4 p-4 rounded-5 transition-all">
+                    <div class="info-glass-tile mb-4 p-4 rounded-5">
                         <div class="d-flex align-items-center">
-                            <div class="icon-glow bg-info p-3 rounded-4 me-4"><i class="fas fa-id-card-alt text-white"></i></div>
-                            <div class="flex-grow-1">
-                                <label class="text-white-50 small fw-bold text-uppercase">Vai trò hệ thống</label>
-                                <div class="fs-4 fw-black text-white">{{ current_user.vai_tro.name }}</div>
+                            <div class="icon-glow bg-dark p-3 rounded-4 me-4 border border-secondary">
+                                <i class="fas fa-calendar-alt text-gold"></i>
+                            </div>
+                            <div>
+                                <label class="text-white-50 small fw-bold text-uppercase">Ngày gia nhập</label>
+                                <div class="fs-4 fw-black text-white">{{ current_user.ngay_tao.strftime('%d/%m/%Y') }}</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="info-glass-tile mb-4 p-4 rounded-5 transition-all">
+                    <div class="info-glass-tile mb-4 p-4 rounded-5">
                         <div class="d-flex align-items-center">
-                            <div class="icon-glow bg-success p-3 rounded-4 me-4"><i class="fas fa-signal text-white"></i></div>
-                            <div>
-                                <label class="text-white-50 small fw-bold text-uppercase">Trạng thái thẻ</label>
-                                <div class="status-box">
+                            <div class="icon-glow bg-dark p-3 rounded-4 me-4 border border-secondary">
+                                <i class="fas fa-shield-alt text-gold"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="text-white-50 small fw-bold text-uppercase">Trạng thái thẻ độc giả</label>
+                                <div class="status-box mt-1">
                                     {% if current_user.bi_khoa %}
-                                        <span class="text-danger fw-black fs-4"><i class="fas fa-lock me-2"></i>BỊ KHÓA</span>
+                                        <span class="text-danger fw-black fs-4"><i class="fas fa-lock me-2"></i>TÀI KHOẢN BỊ KHÓA</span>
                                     {% else %}
                                         <span class="text-success fw-black fs-4"><i class="fas fa-check-circle me-2"></i>ĐANG HOẠT ĐỘNG</span>
                                     {% endif %}
@@ -143,12 +156,16 @@
                     </div>
 
                     <div class="mt-5 d-flex gap-3">
-                        <a href="{{ url_for('lich_su_muon') }}" class="btn btn-warning flex-grow-1 py-4 rounded-4 text-decoration-none shadow-gold d-flex align-items-center justify-content-center">
-                            XEM CHI TIẾT LỊCH SỬ <i class="fas fa-history ms-2"></i>
+                        <a href="{{ url_for('lich_su_muon') }}" class="btn btn-warning-premium flex-grow-1 text-decoration-none d-flex align-items-center justify-content-center shadow-lg">
+                            TRUY XUẤT LỊCH SỬ MƯỢN TRẢ <i class="fas fa-history ms-2"></i>
                         </a>
-                        <a href="/admin" class="btn btn-outline-light p-4 rounded-4 d-flex align-items-center justify-content-center">
-                            <i class="fas fa-user-cog"></i>
+
+                        {# Chỉ hiện nút Admin nếu là QUAN_TRI #}
+                        {% if current_user.vai_tro.name == 'QUAN_TRI' %}
+                        <a href="/admin" class="btn btn-outline-gold p-4 rounded-4 d-flex align-items-center justify-content-center border-gold" title="Trang quản trị">
+                            <i class="fas fa-user-cog text-gold"></i>
                         </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -157,4 +174,11 @@
 
     <div class="footer-pusher"></div>
 </div>
+
+<style>
+    .btn-outline-gold { border: 2px solid #d4a373; transition: 0.3s; }
+    .btn-outline-gold:hover { background: #d4a373; }
+    .btn-outline-gold:hover i { color: #3d2b1f !important; }
+    .border-gold { border-color: #d4a373 !important; }
+</style>
 {% endblock %}

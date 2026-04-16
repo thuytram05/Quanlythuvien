@@ -1,55 +1,57 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Đăng nhập Hệ thống - Tinh Hoa Tri Thức{% endblock %}
+{% block title %}Đăng nhập Hệ thống | Pages+ Premium{% endblock %}
 
 {% block content %}
-<div class="login-page-wrapper animate__animated animate__fadeIn">
+<div class="login-master-wrapper animate__animated animate__fadeIn">
     <div class="container-fluid p-0">
         <div class="row g-0 min-vh-100">
 
             <div class="col-lg-7 d-none d-lg-flex login-artsy-side position-relative">
                 <div class="artsy-bg-overlay"></div>
-                <div class="artsy-content text-white p-5 position-relative z-3 animate__animated animate__fadeInLeft animate__delay-1s text-start">
+                <div class="artsy-content text-white p-5 position-relative z-3 animate__animated animate__fadeInLeft text-start">
                     <a href="/" class="artsy-logo text-white text-decoration-none d-flex align-items-center mb-5">
-                        <div class="bg-white text-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                            <i class="fas fa-book-open fs-5"></i>
+                        <div class="bg-gold text-dark rounded-circle me-3 d-flex align-items-center justify-content-center shadow" style="width: 45px; height: 45px;">
+                            <i class="fas fa-feather-alt fs-5"></i>
                         </div>
-                        <span class="fw-bold fs-4 text-uppercase">Admin <span class="fw-light">Library</span></span>
+                        <span class="fw-bold fs-3 text-uppercase tracking-wider">Pages<span class="fw-light">+</span></span>
                     </a>
 
-                    <h1 class="display-3 fw-bold artsy-title mb-4">Chào mừng <br>bạn trở lại!</h1>
-                    <p class="lead artsy-subtitle opacity-75 mb-5">Hệ thống quản lý thư viện số tiên tiến, nơi hội tụ tri thức và công nghệ. Hãy đăng nhập để bắt đầu hành trình khám phá.</p>
+                    <h1 class="display-3 fw-bold artsy-title mb-4">Khám phá <br><span class="text-gold">Tâm hồn</span> sách</h1>
+                    <p class="lead artsy-subtitle opacity-75 mb-5 text-start">Hệ thống thư viện số Pages+ là nơi giao thoa giữa những giá trị tri thức cổ điển và công nghệ hiện đại. Hãy đăng nhập để tiếp tục hành trình của bạn.</p>
 
-                    <div class="artsy-stats d-flex gap-4 p-4 rounded-4 bg-white bg-opacity-10" style="backdrop-filter: blur(10px);">
+                    <div class="artsy-stats d-flex gap-5 p-4 rounded-4 bg-white bg-opacity-10 shadow-sm" style="backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);">
                         <div class="stat-box">
-                            <span class="d-block fw-bold fs-3">50k+</span>
-                            <span class="small opacity-75">Cuốn sách</span>
+                            <span class="d-block fw-bold fs-3 text-gold">60+</span>
+                            <span class="small opacity-75 text-uppercase fw-bold">Ấn bản Premium</span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat-box">
-                            <span class="d-block fw-bold fs-3">10k+</span>
-                            <span class="small opacity-75">Bạn đọc</span>
+                            <span class="d-block fw-bold fs-3 text-gold">10k+</span>
+                            <span class="small opacity-75 text-uppercase fw-bold">Bạn đọc tinh hoa</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-5 col-12 d-flex align-items-center justify-content-center p-4 p-md-5 bg-glass-right">
+            <div class="col-lg-5 col-12 d-flex align-items-center justify-content-center p-4 p-md-5 bg-cream">
 
-                <div class="login-form-container p-4 p-md-5 rounded-5 shadow-glass animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="login-form-container p-4 p-md-5 rounded-5 shadow-premium animate__animated animate__fadeInUp">
 
                     <div class="text-center mb-5">
                         <div class="mb-3">
-                            <i class="fas fa-user-shield fa-3x text-primary-ultra"></i>
+                            <div class="auth-icon-circle mx-auto shadow-sm">
+                                <i class="fas fa-user-shield fa-2x"></i>
+                            </div>
                         </div>
-                        <h2 class="fw-bold text-dark mb-1">Xác thực tài khoản</h2>
-                        <p class="text-muted small">Vui lòng nhập thông tin để truy cập hệ thống</p>
+                        <h2 class="fw-bold text-dark mb-1" style="font-family: 'Playfair Display';">Xác thực Hội viên</h2>
+                        <p class="text-muted small">Chào mừng bạn trở lại không gian tri thức Pages+</p>
                     </div>
 
                     {% with messages = get_flashed_messages(with_categories=true) %}
                       {% if messages %}
                         {% for category, message in messages %}
-                          <div class="alert alert-soft-danger border-0 small py-3 rounded-4 animate__animated animate__shakeX mb-4 d-flex align-items-center" role="alert">
+                          <div class="alert alert-premium border-0 small py-3 rounded-4 animate__animated animate__shakeX mb-4 d-flex align-items-center" role="alert">
                             <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
                           </div>
                         {% endfor %}
@@ -58,43 +60,43 @@
 
                     <form method="post" action="{{ url_for('login_user_process') }}">
                         <div class="mb-4 text-start">
-                            <label class="label-ultra">Tên tài khoản</label>
-                            <div class="input-group-ultra">
+                            <label class="label-premium">Tên tài khoản</label>
+                            <div class="input-group-premium">
                                 <i class="fas fa-user icon-focus"></i>
-                                <input type="text" name="username" class="form-control-ultra"
+                                <input type="text" name="username" class="form-control-premium"
                                        placeholder="Nhập tên đăng nhập..." required>
                             </div>
                         </div>
 
                         <div class="mb-4 text-start">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label class="label-ultra mb-0">Mật khẩu</label>
-                                <a href="#" class="text-primary-ultra small text-decoration-none fw-bold opacity-75 transition-link">Quên mật khẩu?</a>
+                                <label class="label-premium mb-0">Mật khẩu</label>
+                                <a href="#" class="text-gold small text-decoration-none fw-bold opacity-75">Quên mật khẩu?</a>
                             </div>
-                            <div class="input-group-ultra">
+                            <div class="input-group-premium">
                                 <i class="fas fa-lock icon-focus"></i>
-                                <input type="password" name="password" class="form-control-ultra"
+                                <input type="password" name="password" class="form-control-premium"
                                        placeholder="••••••••" required>
                             </div>
                         </div>
 
                         <div class="mb-4 text-start">
-                            <div class="form-check custom-check-ultra">
+                            <div class="form-check custom-check-premium">
                                 <input class="form-check-input" type="checkbox" id="rememberMe">
                                 <label class="form-check-label small text-muted ms-1" for="rememberMe">
-                                    Ghi nhớ đăng nhập
+                                    Ghi nhớ phiên đăng nhập
                                 </label>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary-ultra w-100 py-3 rounded-pill fw-bold mt-2 shadow-blue">
-                            ĐĂNG NHẬP <i class="fas fa-chevron-right ms-2 small"></i>
+                        <button type="submit" class="btn btn-dark-premium w-100 py-3 rounded-pill fw-bold mt-2 shadow">
+                            ĐĂNG NHẬP <i class="fas fa-arrow-right ms-2 small"></i>
                         </button>
                     </form>
 
                     <div class="text-center mt-5 pt-3 border-top">
                         <p class="text-muted small mb-0">Bạn chưa có tài khoản thư viện?
-                            <a href="{{ url_for('register_process') }}" class="text-primary-ultra fw-bold text-decoration-none link-hover-effect">Đăng ký thành viên</a>
+                            <a href="{{ url_for('register_process') }}" class="text-gold fw-bold text-decoration-none hover-underline">Gia nhập hội viên</a>
                         </p>
                     </div>
                 </div>
@@ -104,49 +106,56 @@
 </div>
 
 <style>
-    /* Toàn bộ CSS của bạn được giữ nguyên */
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lexend:wght@300;400;500;600;700&display=swap');
 
-    .login-page-wrapper { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
-    .text-start { text-align: left !important; }
+    .login-master-wrapper { font-family: 'Lexend', sans-serif; background-color: #fdfcf8; }
+    .bg-cream { background-color: #fdfcf8; }
+    .text-gold { color: #d4a373 !important; }
+    .bg-gold { background-color: #d4a373 !important; }
+    .tracking-wider { letter-spacing: 2px; }
 
     /* LEFT SIDE */
     .login-artsy-side {
-        background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000');
-        background-size: cover; background-position: center; border-radius: 0 2rem 2rem 0;
+        background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2000');
+        background-size: cover; background-position: center; border-radius: 0 40px 40px 0;
     }
     .artsy-bg-overlay {
         position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(135deg, rgba(13, 110, 253, 0.95), rgba(0, 210, 255, 0.85));
-        border-radius: 0 2rem 2rem 0; z-index: 1;
+        background: linear-gradient(135deg, rgba(61, 43, 31, 0.95), rgba(212, 163, 115, 0.8));
+        border-radius: 0 40px 40px 0; z-index: 1;
     }
-    .artsy-title { font-family: 'Playfair Display', serif; letter-spacing: -2px; }
+    .artsy-title { font-family: 'Playfair Display', serif; font-weight: 900; }
     .stat-divider { width: 1px; height: 50px; background: rgba(255,255,255,0.2); }
 
     /* RIGHT SIDE */
     .login-form-container {
-        background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.3); max-width: 480px; width: 100%; transition: 0.3s;
+        background: white; border: 1px solid #eee;
+        max-width: 480px; width: 100%; transition: 0.3s;
     }
-    .login-form-container:hover { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.4); }
-    .shadow-glass { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
+    .shadow-premium { box-shadow: 0 20px 60px rgba(61, 43, 31, 0.08); }
+
+    .auth-icon-circle {
+        width: 70px; height: 70px; background: #fdfcf8; color: #d4a373;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        border: 2px solid #d4a373;
+    }
 
     /* INPUTS */
-    .label-ultra { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
-    .input-group-ultra {
-        background: rgba(241, 245, 249, 0.8); border: 1px solid transparent; border-radius: 14px;
-        padding: 6px 16px; display: flex; align-items: center; transition: all 0.4s;
+    .label-premium { font-size: 0.75rem; font-weight: 700; color: #3d2b1f; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+    .input-group-premium {
+        background: #fdfcf8; border: 1px solid #eee; border-radius: 12px;
+        padding: 6px 16px; display: flex; align-items: center; transition: all 0.3s;
     }
-    .input-group-ultra:focus-within { background: white; border-color: #0d6efd; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(13, 110, 253, 0.1); }
-    .form-control-ultra { border: none; background: transparent; box-shadow: none !important; padding: 10px; font-size: 0.95rem; width: 100%; font-weight: 500; }
-    .icon-focus { color: #94a3b8; transition: 0.3s; }
-    .input-group-ultra:focus-within .icon-focus { color: #0d6efd; }
+    .input-group-premium:focus-within { border-color: #d4a373; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(212, 163, 115, 0.1); }
+    .form-control-premium { border: none; background: transparent; box-shadow: none !important; padding: 10px; font-size: 0.95rem; width: 100%; color: #3d2b1f; font-weight: 500; }
+    .icon-focus { color: #d4a373; opacity: 0.6; transition: 0.3s; }
 
     /* BUTTON */
-    .btn-primary-ultra { background: #1a1a1a; border: none; color: white; transition: 0.4s; }
-    .btn-primary-ultra:hover { background: #0d6efd; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(13, 110, 253, 0.2) !important; }
-    .text-primary-ultra { color: #0d6efd; }
-    .alert-soft-danger { background: #fef2f2; color: #b91c1c; }
+    .btn-dark-premium { background: #3d2b1f; border: none; color: #d4a373; transition: 0.4s; letter-spacing: 1px; }
+    .btn-dark-premium:hover { background: #1a1a1a; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important; color: #fff; }
+
+    .alert-premium { background: #fff5f5; color: #b91c1c; border-left: 4px solid #b91c1c; }
+    .hover-underline:hover { text-decoration: underline !important; }
 
     @media (max-width: 991px) { .artsy-bg-overlay, .login-artsy-side { border-radius: 0; } }
 </style>

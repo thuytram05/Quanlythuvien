@@ -1,104 +1,105 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Gia nhập Thư Viện - Tinh Hoa Tri Thức{% endblock %}
+{% block title %}Gia nhập Hội viên | Pages+ Premium Library{% endblock %}
 
 {% block content %}
-<div class="register-page-wrapper animate__animated animate__fadeIn">
+<div class="register-master-wrapper animate__animated animate__fadeIn">
     <div class="container-fluid p-0">
         <div class="row g-0 min-vh-100">
 
             <div class="col-lg-7 d-none d-lg-flex register-artsy-side position-relative">
                 <div class="artsy-bg-overlay"></div>
                 <div class="artsy-content text-white p-5 position-relative z-3 animate__animated animate__fadeInLeft text-start">
-                    <a href="/" class="artsy-logo text-white text-decoration-none d-flex align-items-center mb-5">
-                        <div class="bg-white text-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                            <i class="fas fa-book-open fs-5"></i>
+                    <a href="/" class="premium-brand text-decoration-none d-flex align-items-center mb-5">
+                        <div class="bg-gold text-dark rounded-circle me-3 d-flex align-items-center justify-content-center shadow" style="width: 45px; height: 45px;">
+                            <i class="fas fa-feather-alt fs-5"></i>
                         </div>
-                        <span class="fw-bold fs-4 text-uppercase">Admin <span class="fw-light">Library</span></span>
+                        <span class="fw-bold fs-3 text-uppercase tracking-widest">Pages<span class="fw-light">+</span></span>
                     </a>
 
-                    <h1 class="display-3 fw-bold artsy-title mb-4">Mở khóa <br>Tri Thức Mới</h1>
-                    <p class="lead artsy-subtitle opacity-75 mb-5">Tham gia cộng đồng hàng nghìn độc giả để tiếp cận kho tàng tri thức nhân loại. Chỉ mất chưa đầy 1 phút để bắt đầu hành trình của bạn.</p>
+                    <h1 class="display-3 fw-bold artsy-title mb-4">Ghi danh vào <br><span class="text-gold">Sử sách</span></h1>
+                    <p class="lead artsy-subtitle opacity-75 mb-5 text-start">Gia nhập cộng đồng độc giả tinh hoa để tiếp cận kho tàng tri thức nhân loại được chọn lọc khắt khe.</p>
 
-                    <div class="artsy-features">
-                        <div class="d-flex align-items-center mb-4 card bg-white bg-opacity-10 border-0 p-3 rounded-4" style="backdrop-filter: blur(10px);">
-                            <i class="fas fa-check-circle text-info me-3 fs-4"></i>
-                            <span>Truy cập miễn phí hơn 50,000 đầu sách số</span>
+                    <div class="artsy-benefits">
+                        <div class="benefit-item d-flex align-items-center mb-4">
+                            <div class="benefit-icon"><i class="fas fa-check"></i></div>
+                            <span>Độc quyền mượn hơn 60+ ấn bản Premium</span>
                         </div>
-                        <div class="d-flex align-items-center mb-4 card bg-white bg-opacity-10 border-0 p-3 rounded-4" style="backdrop-filter: blur(10px);">
-                            <i class="fas fa-check-circle text-info me-3 fs-4"></i>
-                            <span>Hệ thống mượn trả tự động, thông minh</span>
+                        <div class="benefit-item d-flex align-items-center mb-4">
+                            <div class="benefit-icon"><i class="fas fa-check"></i></div>
+                            <span>Hệ thống quản lý mượn trả thông minh</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-5 col-12 d-flex align-items-center justify-content-center p-4 p-md-5 bg-glass-right">
-
-                <div class="register-form-container p-4 p-md-5 rounded-5 shadow-glass animate__animated animate__fadeInUp">
+            <div class="col-lg-5 col-12 d-flex align-items-center justify-content-center p-4 p-md-5 bg-cream">
+                <div class="register-form-container p-4 p-md-5 rounded-5 shadow-premium animate__animated animate__fadeInUp">
 
                     <div class="text-center mb-5">
-                        <div class="mb-3">
-                            <i class="fas fa-user-plus fa-3x text-primary-ultra"></i>
+                        <div class="auth-icon-circle mx-auto shadow-sm">
+                            <i class="fas fa-user-plus fa-2x"></i>
                         </div>
-                        <h2 class="fw-bold text-dark mb-1">Đăng ký thành viên</h2>
-                        <p class="text-muted small">Bắt đầu trải nghiệm thư viện số ngay</p>
+                        <h2 class="fw-bold text-dark mt-3" style="font-family: 'Playfair Display';">Đăng ký Hội viên</h2>
+                        <p class="text-muted small">Khởi tạo thẻ thư viện số của bạn</p>
                     </div>
 
                     {% if err_msg %}
-                    <div class="alert alert-soft-danger border-0 small py-3 rounded-4 animate__animated animate__shakeX mb-4 d-flex align-items-center">
-                        <i class="fas fa-exclamation-triangle me-2"></i> {{ err_msg }}
+                    <div class="alert alert-premium border-0 small py-3 rounded-4 animate__animated animate__shakeX mb-4 d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Lỗi:</strong> {{ err_msg }}
                     </div>
                     {% endif %}
 
-                    <form method="post" action="{{ url_for('register_process') }}" enctype="multipart/form-data">
+                    <form method="post" action="{{ url_for('register_process') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
                         <div class="mb-4 text-start">
-                            <label class="label-ultra">Họ và tên</label>
-                            <div class="input-group-ultra">
-                                <i class="fas fa-id-card icon-focus"></i>
-                                <input type="text" name="name" class="form-control-ultra" placeholder="Nhập họ tên đầy đủ..." required>
+                            <label class="label-premium">Họ và tên độc giả</label>
+                            <div class="input-group-premium">
+                                <i class="fas fa-signature icon-focus"></i>
+                                <input type="text" name="name" class="form-control-premium" placeholder="Nhập họ tên đầy đủ..." required>
                             </div>
                         </div>
 
                         <div class="mb-4 text-start">
-                            <label class="label-ultra">Tên tài khoản</label>
-                            <div class="input-group-ultra">
-                                <i class="fas fa-user-tag icon-focus"></i>
-                                <input type="text" name="username" class="form-control-ultra" placeholder="Tên đăng nhập..." required>
+                            <label class="label-premium">Tên tài khoản</label>
+                            <div class="input-group-premium">
+                                <i class="fas fa-at icon-focus"></i>
+                                <input type="text" name="username" class="form-control-premium" placeholder="Tên đăng nhập (ít nhất 5 ký tự)..." required minlength="5">
                             </div>
                         </div>
 
                         <div class="mb-4 text-start">
-                            <label class="label-ultra">Ảnh đại diện (Avatar)</label>
-                            <div class="input-group-ultra py-2">
-                                <i class="fas fa-camera-retro icon-focus me-2"></i>
-                                <input type="file" name="avatar" class="form-control-ultra" accept="image/*">
+                            <label class="label-premium">Ảnh thẻ thành viên (Avatar)</label>
+                            <div class="input-group-premium py-2">
+                                <i class="fas fa-image icon-focus me-2"></i>
+                                <input type="file" name="avatar" id="avatar" class="form-control-premium custom-file-input" accept="image/*">
                             </div>
+                            <small id="file-name" class="text-muted mt-1 d-block" style="font-size: 11px;"></small>
                         </div>
 
                         <div class="row g-3 mb-4 text-start">
                             <div class="col-6">
-                                <label class="label-ultra">Mật khẩu</label>
-                                <div class="input-group-ultra">
-                                    <input type="password" name="password" class="form-control-ultra" placeholder="••••••" required>
+                                <label class="label-premium">Mật khẩu</label>
+                                <div class="input-group-premium">
+                                    <input type="password" id="password" name="password" class="form-control-premium" placeholder="••••••" required minlength="6">
                                 </div>
                             </div>
                             <div class="col-6">
-                                <label class="label-ultra">Xác nhận</label>
-                                <div class="input-group-ultra">
-                                    <input type="password" name="confirm" class="form-control-ultra" placeholder="••••••" required>
+                                <label class="label-premium">Xác thực</label>
+                                <div class="input-group-premium">
+                                    <input type="password" id="confirm" name="confirm" class="form-control-premium" placeholder="••••••" required>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary-ultra w-100 py-3 rounded-pill fw-bold mt-2 shadow-blue">
-                            TẠO TÀI KHOẢN <i class="fas fa-rocket ms-2 small"></i>
+                        <button type="submit" class="btn btn-dark-premium w-100 py-3 rounded-pill fw-bold mt-2 shadow">
+                            HOÀN TẤT ĐĂNG KÝ <i class="fas fa-scroll ms-2 small"></i>
                         </button>
                     </form>
 
                     <div class="text-center mt-5 pt-3 border-top">
-                        <p class="text-muted small mb-0">Đã là thành viên?
-                            <a href="{{ url_for('login_user_process') }}" class="text-primary-ultra fw-bold text-decoration-none link-hover-effect">Đăng nhập ngay</a>
+                        <p class="text-muted small mb-0">Đã có thẻ thư viện?
+                            <a href="{{ url_for('login_user_process') }}" class="text-gold fw-bold text-decoration-none hover-underline">Đăng nhập ngay</a>
                         </p>
                     </div>
                 </div>
@@ -108,49 +109,89 @@
 </div>
 
 <style>
-    /* CSS Giữ nguyên bản gốc của bạn, thêm class hỗ trợ căn lề */
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
-
-    .register-page-wrapper { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+    /* ... (Giữ nguyên phần Style của bạn, chỉ thêm/sửa các class dưới đây) ... */
+    html { scroll-behavior: smooth; }
+    .register-master-wrapper { font-family: 'Lexend', sans-serif; background-color: #fdfcf8; }
+    .text-gold { color: #d4a373 !important; }
+    .bg-gold { background-color: #d4a373 !important; }
     .text-start { text-align: left !important; }
 
+    /* LEFT SIDE */
     .register-artsy-side {
-        background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2000');
-        background-size: cover; background-position: center; border-radius: 0 2rem 2rem 0;
+        background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000');
+        background-size: cover; background-position: center; border-radius: 0 40px 40px 0;
     }
-
     .artsy-bg-overlay {
-        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(135deg, rgba(13, 110, 253, 0.92), rgba(99, 102, 241, 0.88));
-        border-radius: 0 2rem 2rem 0; z-index: 1;
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, rgba(61, 43, 31, 0.95), rgba(212, 163, 115, 0.85));
+        border-radius: 0 40px 40px 0; z-index: 1;
     }
+    .artsy-title { font-family: 'Playfair Display', serif; font-weight: 900; letter-spacing: -1px; }
 
-    .artsy-title { font-family: 'Playfair Display', serif; letter-spacing: -2px; }
-    .register-form-container {
-        background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.3); max-width: 520px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-    }
+    /* FORM & INPUTS */
+    .register-form-container { background: white; border: 1px solid #eee; max-width: 520px; width: 100%; box-shadow: 0 20px 60px rgba(61, 43, 31, 0.08); }
+    .label-premium { font-size: 0.75rem; font-weight: 700; color: #3d2b1f; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+    .input-group-premium { background: #fdfcf8; border: 1px solid #eee; border-radius: 12px; padding: 6px 16px; display: flex; align-items: center; transition: 0.3s; }
+    .input-group-premium:focus-within { border-color: #d4a373; transform: translateY(-2px); }
+    .form-control-premium { border: none; background: transparent; outline: none; padding: 10px; font-size: 0.95rem; width: 100%; color: #3d2b1f; }
 
-    .label-ultra { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
-    .input-group-ultra {
-        background: rgba(241, 245, 249, 0.8); border: 1px solid transparent; border-radius: 12px;
-        padding: 5px 15px; display: flex; align-items: center; transition: all 0.3s ease;
-    }
+    .btn-dark-premium { background: #3d2b1f; border: none; color: #d4a373; padding: 15px; transition: 0.4s; }
+    .btn-dark-premium:hover { background: #1a1a1a; color: #fff; transform: translateY(-3px); }
 
-    .input-group-ultra:focus-within {
-        background: white; border-color: #0d6efd; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(13, 110, 253, 0.05);
-    }
+    .alert-premium { background: #fff5f5; color: #b91c1c; border-left: 4px solid #b91c1c; }
 
-    .form-control-ultra { border: none; background: transparent; box-shadow: none !important; padding: 10px; font-size: 0.9rem; width: 100%; font-weight: 500; }
-    .icon-focus { color: #94a3b8; transition: 0.3s; }
-    .btn-primary-ultra { background: #1a1a1a; border: none; color: white; transition: 0.4s; }
-    .btn-primary-ultra:hover { background: #0d6efd; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(13, 110, 253, 0.2) !important; }
-    .text-primary-ultra { color: #0d6efd; }
-    .alert-soft-danger { background: #fef2f2; color: #b91c1c; }
-
-    @media (max-width: 991px) {
-        .artsy-bg-overlay, .register-artsy-side { border-radius: 0; }
-        .register-form-container { background: rgba(255, 255, 255, 0.95); }
+    /* Tùy chỉnh nút chọn file */
+    .custom-file-input::-webkit-file-upload-button { visibility: hidden; display: none; }
+    .custom-file-input::before {
+        content: 'Chọn ảnh đại diện';
+        display: inline-block; background: #d4a373; border-radius: 5px; padding: 5px 12px;
+        cursor: pointer; font-weight: 700; font-size: 12px; color: #3d2b1f; margin-right: 10px;
     }
 </style>
+
+<script>
+    // 1. Hiển thị tên file khi chọn ảnh
+    document.getElementById('avatar').addEventListener('change', function(e){
+        var fileName = e.target.files[0].name;
+        document.getElementById('file-name').innerText = "Đã chọn: " + fileName;
+    });
+
+    // 2. Validate mật khẩu phía Client
+    function validateForm() {
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm').value;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+
+        if (!passwordRegex.test(password)) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Mật khẩu yếu',
+                text: 'Mật khẩu phải có ít nhất 6 ký tự, bao gồm cả chữ và số!',
+                confirmButtonColor: '#3d2b1f'
+            });
+            return false;
+        }
+
+        if (password !== confirm) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Không khớp',
+                text: 'Mật khẩu xác nhận không trùng khớp!',
+                confirmButtonColor: '#3d2b1f'
+            });
+            return false;
+        }
+        return true;
+    }
+
+    // 3. Nếu có lỗi từ server (như trùng username), bắn SweetAlert cho đẹp
+    {% if err_msg %}
+        Swal.fire({
+            icon: 'error',
+            title: 'Thông báo lỗi',
+            text: '{{ err_msg }}',
+            confirmButtonColor: '#3d2b1f'
+        });
+    {% endif %}
+</script>
 {% endblock %}

@@ -1,55 +1,147 @@
-<footer class="mt-5 pb-4 bg-dark text-white shadow-lg">
-    <div class="container pt-5">
+<footer class="footer-library mt-5 shadow-lg">
+    <div class="container pt-5 pb-4">
         <div class="row">
             <div class="col-md-4 mb-4">
-                <h5 class="text-uppercase fw-bold text-info mb-3">
-                    <i class="fas fa-book-reader me-2"></i>Thư Viện
+                <h5 class="footer-title text-uppercase mb-4">
+                    Pages<span style="color: var(--lib-gold);">+</span> Trusted Books
                 </h5>
-                <p class="text-secondary" style="font-size: 0.9rem; line-height: 1.6;">
-                    Hệ thống quản lý thư viện hiện đại, giúp bạn tìm kiếm, mượn và trả sách một cách nhanh chóng và thuận tiện nhất.
+                <p class="footer-text">
+                    Hệ thống lưu trữ và quản lý tri thức cộng đồng. Chúng tôi cung cấp giải pháp tìm kiếm, mượn và bảo tồn sách theo phong cách chuyên nghiệp và tin cậy nhất.
                 </p>
-                <div class="mt-3">
-                    <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-github fa-lg"></i></a>
-                    <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                <div class="social-icons mt-4">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
                 </div>
             </div>
 
             <div class="col-md-4 mb-4 ps-md-5">
-                <h5 class="text-uppercase fw-bold mb-3">Danh Mục</h5>
+                <h5 class="footer-title text-uppercase mb-4">Danh Mục</h5>
                 <ul class="list-unstyled footer-links">
-                    <li class="mb-2"><a href="/" class="text-secondary text-decoration-none">🏠 Trang chủ</a></li>
-                    <li class="mb-2"><a href="/phieu-muon" class="text-secondary text-decoration-none">📚 Sách chờ mượn</a></li>
-                    <li class="mb-2"><a href="/login" class="text-secondary text-decoration-none">🔑 Đăng nhập</a></li>
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/about">Giới thiệu</a></li>
+                    <li><a href="/phieu-muon">Phòng mượn sách</a></li>
+                    {% if current_user.is_authenticated %}
+                    <li><a href="/lich-su-muon">Lịch sử của bạn</a></li>
+                    {% else %}
+                    <li><a href="/login">Đăng nhập hệ thống</a></li>
+                    {% endif %}
                 </ul>
             </div>
 
             <div class="col-md-4 mb-4">
-                <h5 class="text-uppercase fw-bold mb-3">Liên Hệ</h5>
-                <p class="text-secondary mb-2"><i class="fas fa-map-marker-alt me-2 text-info"></i> 371 Nguyễn Kiệm, Gò Vấp, TP.HCM</p>
-                <p class="text-secondary mb-2"><i class="fas fa-phone-alt me-2 text-info"></i> +84 123 456 789</p>
-                <p class="text-secondary"><i class="fas fa-envelope me-2 text-info"></i> support@thuvien.edu.vn</p>
+                <h5 class="footer-title text-uppercase mb-4">Liên Hệ</h5>
+                <div class="contact-info">
+                    <p><i class="fas fa-map-marker-alt"></i> 371 Nguyễn Kiệm, Gò Vấp, TP.HCM</p>
+                    <p><i class="fas fa-phone-alt"></i> +84 123 456 789</p>
+                    <p><i class="fas fa-envelope"></i> support@pagesplus.edu.vn</p>
+                    <p><i class="fas fa-clock"></i> Mon - Sat: 08:00 - 20:00</p>
+                </div>
             </div>
         </div>
 
-        <hr class="my-4 border-secondary">
+        <div class="footer-divider my-4"></div>
 
-        <div class="text-center text-secondary" style="font-size: 0.85rem;">
-            <p class="mb-0">&copy; 2026 <strong>Thư Viện </strong>. Tất cả quyền được bảo lưu.</p>
-            <p class="small mt-1">Phát triển bởi M với ❤️ và Flask</p>
+        <div class="text-center footer-bottom">
+            <p class="mb-0">&copy; 2026 <strong>PAGES+ TRUSTED BOOKS</strong>. All Rights Reserved.</p>
+            <p class="small mt-1 opacity-50">Designed with ❤️ for Library Management System</p>
         </div>
     </div>
 </footer>
 
 <style>
-    /* Hiệu ứng khi rê chuột vào các link ở footer */
-    .footer-links a:hover {
-        color: #0dcaf0 !important; /* Màu info của bootstrap */
-        padding-left: 5px;
-        transition: all 0.3s ease;
+    :root {
+        --lib-brown: #3d2b1f;
+        --lib-gold: #d4a373;
+        --footer-bg: #2c1f16; /* Nâu tối hơn cho footer */
     }
 
-    footer i {
-        width: 20px;
+    .footer-library {
+        background-color: var(--footer-bg);
+        color: #d1d1d1;
+        font-family: 'Montserrat', sans-serif;
+        border-top: 10px solid var(--lib-brown);
+    }
+
+    .footer-title {
+        color: #ffffff;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .footer-title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 40px;
+        height: 2px;
+        background-color: var(--lib-gold);
+    }
+
+    .footer-text {
+        font-size: 0.85rem;
+        line-height: 1.8;
+        color: #a8a8a8;
+    }
+
+    /* SOCIAL ICONS */
+    .social-icons a {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        background: rgba(255,255,255,0.05);
+        color: white;
+        text-align: center;
+        line-height: 35px;
+        border-radius: 50%;
+        margin-right: 10px;
+        transition: 0.3s;
+    }
+    .social-icons a:hover {
+        background: var(--lib-gold);
+        transform: translateY(-3px);
+    }
+
+    /* LINKS HOVER */
+    .footer-links li {
+        margin-bottom: 12px;
+    }
+    .footer-links a {
+        color: #a8a8a8;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+    .footer-links a:hover {
+        color: var(--lib-gold) !important;
+        padding-left: 8px;
+    }
+
+    /* CONTACT INFO */
+    .contact-info p {
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+        color: #a8a8a8;
+    }
+    .contact-info i {
+        color: var(--lib-gold);
+        margin-right: 12px;
+        width: 15px;
+    }
+
+    .footer-divider {
+        height: 1px;
+        background: rgba(255,255,255,0.05);
+    }
+
+    .footer-bottom {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
     }
 </style>

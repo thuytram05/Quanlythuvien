@@ -1,172 +1,234 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Hành Trình Tri Thức | Thư Viện Số Premium{% endblock %}
+{% block title %}Lịch Sử Mượn Trả Sách | Pages+{% endblock %}
 
 {% block content %}
-<div class="history-master-wrapper animate__animated animate__fadeIn">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        /* GIỮ NGUYÊN PHẦN STYLE CỦA BẠN */
-        .history-master-wrapper {
-            margin: -24px -15px -50px -15px !important;
-            padding: 20px 20px 80px 20px;
-            color: #fff;
-            min-height: 100vh;
-            background: linear-gradient(180deg, rgba(5,7,10,0.4) 0%, rgba(5,7,10,0.9) 100%),
-                        url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2000') no-repeat center center/cover;
-            background-attachment: scroll;
-            display: flex;
-            flex-direction: column;
-        }
+<style>
+    .history-container {
+        padding: 50px 0;
+        min-height: 70vh;
+        background-color: #fdfcf8; /* Màu nền giấy kem sang trọng */
+    }
+    .nav-tabs-premium {
+        border-bottom: 2px solid #e9ecef;
+        margin-bottom: 40px;
+    }
+    .nav-link-custom {
+        color: #6c757d;
+        font-weight: 700;
+        padding: 12px 30px;
+        text-decoration: none;
+        display: inline-block;
+        border-bottom: 3px solid transparent;
+        transition: 0.3s;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+    .nav-link-custom.active {
+        color: #3d2b1f;
+        border-bottom-color: #d4a373;
+    }
+    .receipt-card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 20px;
+        transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+    }
+    .receipt-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border-color: #d4a373;
+    }
+    .book-mini-img {
+        width: 60px;
+        height: 85px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 2px 4px 10px rgba(0,0,0,0.1);
+    }
+    .status-badge {
+        font-size: 10px;
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    /* Màu sắc trạng thái */
+    .bg-muon { background-color: #fff8e1; color: #f39c12; }
+    .bg-tra { background-color: #e8f5e9; color: #2ecc71; }
+    .bg-tre { background-color: #ffebee; color: #e74c3c; }
 
-        .container { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+    /* Phân trang */
+    .pagination .page-link {
+        color: #3d2b1f;
+        border: none;
+        margin: 0 5px;
+        border-radius: 8px !important;
+        font-weight: 600;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #d4a373;
+        color: #fff;
+    }
+</style>
 
-        .back-home-btn {
-            display: inline-flex; align-items: center; color: rgba(255,255,255,0.7);
-            text-decoration: none; font-weight: 600; font-size: 0.9rem; margin-bottom: 20px; transition: 0.3s;
-        }
-        .back-home-btn:hover { color: #ffc107; transform: translateX(-5px); }
-
-        .glass-pagination .page-link {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff; margin: 0 5px; border-radius: 10px !important; backdrop-filter: blur(10px);
-        }
-        .glass-pagination .page-item.active .page-link {
-            background: #ffc107; color: #000; border-color: #ffc107; box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
-        }
-
-        .stat-main-glass {
-            background: rgba(255, 255, 255, 0.08); padding: 15px 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .premium-full-card {
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; transition: 0.3s; margin-bottom: 25px;
-        }
-        .timeline-container { position: relative; padding-left: 30px; border-left: 2px solid rgba(255, 193, 7, 0.2); text-align: left; }
-        .timeline-dot { position: absolute; left: -9px; top: 40px; width: 16px; height: 16px; background: #ffc107; border-radius: 50%; box-shadow: 0 0 10px #ffc107; }
-
-        .status-badge { font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 50px; text-transform: uppercase; }
-        .status-active { background: rgba(0, 210, 255, 0.2); color: #00d2ff; }
-        .status-returned { background: rgba(82, 255, 175, 0.2); color: #52ffaf; }
-        .status-overdue { background: rgba(255, 82, 82, 0.2); color: #ff5252; }
-    </style>
-
-    <div class="container position-relative z-10">
-        <a href="/" class="back-home-btn text-decoration-none">
-            <i class="fas fa-arrow-left me-2"></i> Quay lại Trang chủ
-        </a>
-
-        <div class="row align-items-center mb-5 text-start">
-            <div class="col-md-8">
-                <h1 class="display-4 fw-black text-white mb-2">
-                    Lịch sử <span style="color: #ffc107;">Mượn sách</span>
-                </h1>
-                <p class="text-white-50 fs-6">Theo dõi hành trình tri thức và thời gian trả sách của bạn.</p>
-            </div>
-            <div class="col-md-4 text-md-end text-center">
-                <div class="stat-main-glass d-inline-block shadow-lg">
-                    <span class="small fw-bold text-white-50 d-block text-uppercase">Tổng phiếu</span>
-                    <span class="h2 fw-black text-warning mb-0">{{ pagination.total if pagination else 0 }}</span>
-                </div>
+<div class="history-container">
+    <div class="container text-start">
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold" style="font-family: 'Playfair Display'; color: #3d2b1f;">NHẬT KÝ <span style="color: #d4a373;">MƯỢN TRẢ</span></h2>
+                <p class="text-muted">Mỗi trang hiển thị tối đa 5 phiếu mượn gần nhất.</p>
             </div>
         </div>
 
-        {% if phieu_muon_list %}
-            <div class="timeline-container">
-                {% for phieu in phieu_muon_list %}
+        <div class="nav-tabs-premium text-center">
+            <a href="{{ url_for('lich_su_muon', tab='dang-muon') }}"
+               class="nav-link-custom {{ 'active' if active_tab != 'da-tra' }}">
+               SÁCH ĐANG MƯỢN
+            </a>
+            <a href="{{ url_for('lich_su_muon', tab='da-tra') }}"
+               class="nav-link-custom {{ 'active' if active_tab == 'da-tra' }}">
+               SÁCH ĐÃ TRẢ
+            </a>
+        </div>
 
-                {# RÀNG BUỘC: Chỉ hiển thị phiếu nếu có sách bên trong để tránh phiếu rác #}
-                {% if phieu.chi_tiet and phieu.chi_tiet|length > 0 %}
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="premium-full-card p-4">
+        <div class="row mt-4">
+            <div class="col-12">
+                {% if history %}
+                    {% for phieu in history %}
+                    <div class="receipt-card animate__animated animate__fadeInUp">
                         <div class="row align-items-center">
-                            <div class="col-md-7 text-start">
-                                <div class="d-flex align-items-center mb-4">
-                                    <span class="badge bg-white text-dark me-3 fw-bold">#{{ phieu.id }}</span>
+                            <div class="col-md-2 text-center border-end">
+                                <span class="text-muted small d-block mb-1">Mã Phiếu</span>
+                                <strong class="fs-5">#{{ phieu.id }}</strong>
+                                <div class="mt-2">
                                     <span class="status-badge
-                                        {% if phieu.trang_thai.name == 'QUA_HAN' %}status-overdue
-                                        {% elif phieu.trang_thai.name == 'DA_TRA' %}status-returned
-                                        {% else %}status-active{% endif %}">
+                                        {% if phieu.trang_thai.name == 'DA_TRA' %}bg-tra
+                                        {% elif phieu.trang_thai.name == 'QUA_HAN' %}bg-tre
+                                        {% else %}bg-muon{% endif %}">
                                         {{ phieu.trang_thai.value }}
                                     </span>
                                 </div>
-
-                                <div class="book-mini-list">
-                                    {% for ct in phieu.chi_tiet %}
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div style="width: 45px; height: 65px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;">
-                                            <img src="{{ ct.sach.hinh_anh }}" style="width: 100%; height: 100%; object-fit: cover;"
-                                                 onerror="this.src='https://via.placeholder.com/45x65?text=Book'">
-                                        </div>
-                                        <div class="ms-3 text-start">
-                                            <div class="fw-bold text-white mb-0" style="font-size: 0.95rem;">{{ ct.sach.ten_sach }}</div>
-                                            <div class="small text-white-50">{{ ct.sach.tac_gia }}</div>
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                </div>
                             </div>
 
-                            <div class="col-md-5 text-md-end border-start border-white border-opacity-10 ps-md-5 mt-3 mt-md-0">
-                                <div class="small text-white-50 text-uppercase ls-1">Hạn trả dự kiến</div>
-                                <div class="h3 fw-black text-warning my-1">
-                                    {{ phieu.han_tra.strftime('%d/%m/%Y') if phieu.han_tra else '--/--/----' }}
+                            <div class="col-md-6 px-4">
+                                {% for ct in phieu.chi_tiet %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ ct.sach.hinh_anh }}" class="book-mini-img me-3 border" onerror="this.src='https://via.placeholder.com/60x85?text=No+Cover'">
+                                    <div>
+                                        <div class="fw-bold mb-0" style="color: #3d2b1f;">{{ ct.sach.ten_sach }}</div>
+                                        <div class="small text-muted italic">{{ ct.sach.tac_gia }}</div>
+                                    </div>
                                 </div>
-                                <div class="small text-white-50">Ngày lập: {{ phieu.ngay_muon.strftime('%d/%m/%Y') }}</div>
+                                {% endfor %}
+                            </div>
 
-                                {# HIỂN THỊ THÔNG TIN NGƯỜI MƯỢN TỪ GHI CHÚ (NẾU CÓ) #}
-                                {% if phieu.ghi_chu %}
-                                <div class="mt-3 pt-2 border-top border-white border-opacity-10 small text-white-50 italic">
-                                    <i class="fas fa-user-tag me-1"></i> {{ phieu.ghi_chu }}
+                            <div class="col-md-4 text-end">
+                                <div class="mb-3">
+                                    <span class="small text-muted d-block">Hạn trả:</span>
+                                    <strong class="fs-5 {{ 'text-danger' if phieu.trang_thai.name == 'QUA_HAN' else '' }}">
+                                        {{ phieu.han_tra.strftime('%d/%m/%Y') }}
+                                    </strong>
+                                    <div class="small text-muted">Ngày mượn: {{ phieu.ngay_muon.strftime('%d/%m/%Y') }}</div>
                                 </div>
+
+                                {% if phieu.trang_thai.name != 'DA_TRA' %}
+                                    <button class="btn {% if phieu.trang_thai.name == 'QUA_HAN' %}btn-danger{% else %}btn-dark{% endif %} btn-sm rounded-pill px-4 fw-bold"
+                                            onclick="confirmReturn('{{ phieu.id }}', '{{ phieu.trang_thai.name }}')">
+                                        TRẢ SÁCH
+                                    </button>
+                                {% else %}
+                                    {% set total_fine = phieu.chi_tiet|sum(attribute='tien_phat') %}
+                                    {% if total_fine > 0 %}
+                                        <div class="text-danger small fw-bold mb-2">Tiền phạt: {{ "{:,.0f}".format(total_fine) }} VNĐ</div>
+                                    {% endif %}
+                                    <span class="text-success fw-bold">
+                                        <i class="fas fa-check-circle me-1"></i> HOÀN TẤT
+                                    </span>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
-                </div>
-                {% endif %}
-
-                {% endfor %}
-            </div>
-
-            {% if pagination and pagination.pages > 1 %}
-            <nav class="mt-5">
-                <ul class="pagination glass-pagination justify-content-center border-0">
-                    <li class="page-item {{ 'disabled' if not pagination.has_prev }}">
-                        <a class="page-link border-0" href="{{ url_for('lich_su_muon', page=pagination.prev_num) if pagination.has_prev else '#' }}">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-
-                    {% for page_num in pagination.iter_pages() %}
-                        {% if page_num %}
-                            <li class="page-item {{ 'active' if page_num == pagination.page else '' }}">
-                                <a class="page-link border-0" href="{{ url_for('lich_su_muon', page=page_num) }}">{{ page_num }}</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link border-0">...</span></li>
-                        {% endif %}
                     {% endfor %}
 
-                    <li class="page-item {{ 'disabled' if not pagination.has_next }}">
-                        <a class="page-link border-0" href="{{ url_for('lich_su_muon', page=pagination.next_num) if pagination.has_next else '#' }}">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            {% endif %}
+                    {% if pagination and pagination.pages > 1 %}
+                    <div class="d-flex justify-content-center mt-5">
+                        <nav>
+                            <ul class="pagination shadow-sm">
+                                <li class="page-item {{ 'disabled' if not pagination.has_prev }}">
+                                    <a class="page-link" href="{{ url_for('lich_su_muon', page=pagination.prev_num, tab=active_tab) }}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                                {% for page_num in pagination.iter_pages() %}
+                                    {% if page_num %}
+                                        <li class="page-item {{ 'active' if page_num == pagination.page else '' }}">
+                                            <a class="page-link" href="{{ url_for('lich_su_muon', page=page_num, tab=active_tab) }}">{{ page_num }}</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    {% endif %}
+                                {% endfor %}
+                                <li class="page-item {{ 'disabled' if not pagination.has_next }}">
+                                    <a class="page-link" href="{{ url_for('lich_su_muon', page=pagination.next_num, tab=active_tab) }}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
 
-        {% else %}
-            <div class="text-center py-5">
-                <i class="fas fa-history fa-4x text-white-50 mb-4 opacity-25"></i>
-                <h3 class="text-white-50">Chưa có dữ liệu mượn sách</h3>
-                <p class="text-white-50 mb-4">Bạn chưa thực hiện giao dịch mượn sách nào trong hệ thống.</p>
-                <a href="/" class="btn btn-warning rounded-pill px-5 py-3 fw-bold shadow-lg text-decoration-none text-dark">KHÁM PHÁ THƯ VIỆN NGAY</a>
+                {% else %}
+                    <div class="text-center py-5">
+                        <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" class="opacity-25 mb-3">
+                        <h4 class="text-muted">Mục này hiện đang trống</h4>
+                        <a href="/" class="btn btn-outline-dark btn-sm rounded-pill mt-2">Mượn sách ngay</a>
+                    </div>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
     </div>
 </div>
+
+<script>
+    function confirmReturn(phieuId, trangThai) {
+        let title = 'Bạn muốn trả sách?';
+        let text = "Sách sẽ được hoàn trả vào kho thư viện.";
+        let icon = 'question';
+        let confirmColor = '#3d2b1f';
+
+        if (trangThai === 'QUA_HAN') {
+            title = 'CHÚ Ý: TRẢ QUÁ HẠN!';
+            text = "Phiếu này đã quá hạn. Bạn sẽ bị tính phí phạt!";
+            icon = 'warning';
+            confirmColor = '#d33';
+        }
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonColor: confirmColor,
+            cancelButtonColor: '#aaa',
+            confirmButtonText: 'Đồng ý trả',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/tra-sach/${phieuId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+</script>
 {% endblock %}

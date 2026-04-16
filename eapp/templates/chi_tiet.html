@@ -1,6 +1,6 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}{{ sach.ten_sach }} | Tinh Hoa Tri Thức Premium{% endblock %}
+{% block title %}{{ sach.ten_sach }} | Pages+ Premium{% endblock %}
 
 {% block content %}
 <div class="book-details-wrapper animate__animated animate__fadeIn">
@@ -9,7 +9,7 @@
 
         <div class="container position-relative z-index-10">
             <nav class="mb-5">
-                <a href="/" class="btn-back-glass animate__animated animate__fadeInLeft text-decoration-none">
+                <a href="/" class="btn-back-glass text-decoration-none">
                     <i class="fas fa-arrow-left me-2"></i> Trở về kho sách
                 </a>
             </nav>
@@ -21,7 +21,6 @@
                             <img src="{{ sach.hinh_anh }}" alt="{{ sach.ten_sach }}" class="book-3d-main"
                                  onerror="this.src='https://via.placeholder.com/300x450?text=Premium+Book'">
                             <div class="book-3d-spine"></div>
-                            <div class="book-3d-shadow"></div>
                         </div>
                     </div>
                 </div>
@@ -36,7 +35,7 @@
 
                         <div class="author-glass-card mb-4">
                             <div class="author-avatar">
-                                <img src="https://ui-avatars.com/api/?name={{ sach.tac_gia }}&background=f8d800&color=121212&bold=true" alt="author">
+                                <img src="https://ui-avatars.com/api/?name={{ sach.tac_gia }}&background=d4a373&color=3d2b1f&bold=true" alt="author">
                             </div>
                             <div class="author-meta">
                                 <small>Tác giả bản in</small>
@@ -45,14 +44,14 @@
                         </div>
 
                         <div class="stats-row-glass mb-5 d-flex align-items-center gap-4">
-                            <div class="stat-item">
-                                <i class="fas fa-star text-warning"></i>
-                                <span>4.9 <small class="opacity-75">(120 reviews)</small></span>
-                            </div>
-                            <div class="stat-divider"></div>
                             <div class="stat-item {{ 'text-success' if sach.so_luong_con > 0 else 'text-danger' }}">
                                 <i class="fas {{ 'fa-check-circle' if sach.so_luong_con > 0 else 'fa-times-circle' }} me-1"></i>
                                 <span>{{ 'Sẵn sàng mượn' if sach.so_luong_con > 0 else 'Đã hết bản in' }}</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item text-white-50">
+                                <i class="fas fa-bookmark me-1"></i>
+                                <span>Mã sách: #BK-{{ 1000 + sach.id }}</span>
                             </div>
                         </div>
 
@@ -64,7 +63,7 @@
                                 </div>
                                 <div class="col-md-5 mt-3 mt-md-0 text-md-end">
                                     {% if sach.so_luong_con > 0 %}
-                                    <button onclick="muonSach({{ sach.id }}, '{{ sach.ten_sach }}')" class="btn-borrow-ultra">
+                                    <button onclick="addToCart({{ sach.id }}, '{{ sach.ten_sach }}')" class="btn-borrow-ultra">
                                         MƯỢN NGAY <i class="fas fa-paper-plane ms-2"></i>
                                     </button>
                                     {% else %}
@@ -79,10 +78,10 @@
         </div>
     </header>
 
-    <main class="container py-6">
+    <main class="container py-6 mt-5">
         <div class="row g-5">
             <div class="col-lg-8">
-                <article class="content-main-card shadow-premium p-5 text-start">
+                <article class="content-main-card shadow-premium p-5 text-start bg-white">
                     <div class="section-heading mb-4">
                         <h3 class="fw-black text-dark"><i class="fas fa-book-open text-primary me-2"></i> Tóm lược nội dung</h3>
                         <div class="h-line"></div>
@@ -93,7 +92,7 @@
                         {% else %}
                             <p class="lead text-muted">
                                 Cuốn sách <strong>{{ sach.ten_sach }}</strong> là một kiệt tác thuộc dòng sách <strong>{{ sach.the_loai.ten_the_loai }}</strong>.
-                                Được chắt lọc từ những tri thức quý báu của tác giả <strong>{{ sach.tac_gia }}</strong>.
+                                Một tài liệu quý giá được biên soạn bởi tác giả <strong>{{ sach.tac_gia }}</strong>.
                             </p>
                         {% endif %}
                     </div>
@@ -106,24 +105,24 @@
                         <h5 class="fw-black text-dark mb-4 border-bottom pb-2 text-start">Thông số kỹ thuật</h5>
                         <div class="spec-list">
                             <div class="spec-row">
-                                <span class="label">Mã sách</span>
-                                <span class="val">#BK-{{ 1000 + sach.id }}</span>
-                            </div>
-                            <div class="spec-row">
-                                <span class="label">Năm XB</span>
-                                <span class="val">2024</span>
+                                <span class="label">Thể loại</span>
+                                <span class="val">{{ sach.the_loai.ten_the_loai }}</span>
                             </div>
                             <div class="spec-row">
                                 <span class="label">Định dạng</span>
                                 <span class="val">Bìa cứng Premium</span>
                             </div>
+                            <div class="spec-row">
+                                <span class="label">Quy định mượn</span>
+                                <span class="val">Tối đa 14 ngày</span>
+                            </div>
                         </div>
 
                         <div class="policy-notice mt-4 text-start">
                             <div class="d-flex align-items-center mb-2 text-primary fw-bold">
-                                <i class="fas fa-shield-alt me-2"></i> Quy định mượn
+                                <i class="fas fa-shield-alt me-2"></i> Chính sách thư viện
                             </div>
-                            <p class="small text-muted mb-0">Hạn trả: 14 ngày. Có thể gia hạn tối đa 1 lần qua hệ thống.</p>
+                            <p class="small text-muted mb-0">Người dùng chỉ được mượn tối đa 5 cuốn sách tại một thời điểm.</p>
                         </div>
                     </div>
                 </aside>
@@ -133,102 +132,94 @@
 </div>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap');
-
     :root {
-        --p-primary: #3b82f6;
-        --p-gold: #fbbf24;
-        --p-dark: #0f172a;
+        --p-primary: #3d2b1f; /* Màu nâu thương hiệu */
+        --p-gold: #d4a373;    /* Màu vàng đồng */
+        --p-dark: #1a1a1a;
         --glass: rgba(255, 255, 255, 0.1);
         --glass-border: rgba(255, 255, 255, 0.2);
     }
 
-    body { background-color: #f8fafc; font-family: 'Lexend', sans-serif; }
+    body { background-color: #fdfcf8; font-family: 'Lexend', sans-serif; }
     .fw-black { font-weight: 800; }
     .text-start { text-align: left !important; }
 
     /* HERO SECTION */
     .premium-hero { position: relative; padding: 100px 0 140px; background: var(--p-dark); overflow: hidden; }
-    .hero-blur-bg { position: absolute; inset: 0; background-image: var(--bg-hero); background-size: cover; background-position: center; filter: blur(80px) brightness(0.3); transform: scale(1.2); }
+    .hero-blur-bg { position: absolute; inset: 0; background-image: var(--bg-hero); background-size: cover; background-position: center; filter: blur(60px) brightness(0.4); transform: scale(1.1); }
     .z-index-10 { z-index: 10; }
 
-    .btn-back-glass { position: relative; display: inline-block; padding: 12px 28px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 50px; color: white; font-weight: 600; transition: 0.3s; }
+    .btn-back-glass { display: inline-block; padding: 12px 28px; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 50px; color: white; font-weight: 600; transition: 0.3s; }
     .btn-back-glass:hover { background: white; color: var(--p-dark); transform: translateX(-5px); }
 
-    .book-main-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -2px; line-height: 1.1; }
+    .book-main-title { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -1px; line-height: 1.2; }
 
-    /* BOOK 3D */
-    .book-3d-container { perspective: 1500px; padding: 20px; }
-    .book-3d-canvas { position: relative; width: 300px; margin: 0 auto; transform: rotateY(-25deg) rotateX(5deg); transform-style: preserve-3d; transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
-    .book-3d-canvas:hover { transform: rotateY(-5deg) rotateX(0deg); }
-    .book-3d-main { width: 100%; height: 450px; object-fit: cover; border-radius: 3px 15px 15px 3px; box-shadow: 10px 20px 50px rgba(0,0,0,0.5); position: relative; z-index: 2; }
-    .book-3d-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 40px; background: #222; transform: rotateY(-90deg) translateX(-20px); transform-origin: left; }
+    /* BOOK 3D EFFECT */
+    .book-3d-container { perspective: 1000px; }
+    .book-3d-canvas { position: relative; width: 280px; margin: 0 auto; transform: rotateY(-20deg); transform-style: preserve-3d; }
+    .book-3d-main { width: 100%; height: 420px; object-fit: cover; border-radius: 3px 12px 12px 3px; box-shadow: 20px 20px 60px rgba(0,0,0,0.5); }
+    .book-3d-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 35px; background: #222; transform: rotateY(-90deg) translateX(-17px); transform-origin: left; }
 
-    /* GLASS COMPONENTS */
-    .premium-badge { display: inline-flex; align-items: center; background: var(--p-primary); color: white; padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
-    .pulsating-dot { width: 8px; height: 8px; background: white; border-radius: 50%; margin-right: 8px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    /* ACTION PANEL */
+    .premium-badge { background: var(--p-gold); color: #3d2b1f; padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
+    .pulsating-dot { width: 8px; height: 8px; background: #3d2b1f; border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
 
-    .author-glass-card { display: flex; align-items: center; background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 10px 20px; border-radius: 20px; width: fit-content; }
+    .author-glass-card { display: flex; align-items: center; background: var(--glass); border: 1px solid var(--glass-border); padding: 10px 20px; border-radius: 20px; width: fit-content; }
     .author-avatar img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--p-gold); margin-right: 15px; }
-    .author-meta small { display: block; opacity: 0.7; font-size: 0.7rem; text-transform: uppercase; }
 
-    .stat-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
     .action-glass-panel { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--glass-border); }
-
-    .btn-borrow-ultra { width: 100%; padding: 16px; background: var(--p-gold); color: var(--p-dark); border: none; border-radius: 18px; font-weight: 800; transition: 0.3s; box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); cursor: pointer; }
+    .btn-borrow-ultra { width: 100%; padding: 16px; background: var(--p-gold); color: #3d2b1f; border: none; border-radius: 18px; font-weight: 800; transition: 0.3s; box-shadow: 0 10px 20px rgba(212, 163, 115, 0.3); }
     .btn-borrow-ultra:hover { transform: translateY(-3px); background: white; }
 
-    /* CONTENT */
-    .shadow-premium { box-shadow: 0 20px 40px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; border-radius: 30px; }
-    .h-line { width: 50px; height: 4px; background: var(--p-primary); border-radius: 2px; margin-top: 8px; }
-    .book-long-desc { line-height: 2; color: #475569; font-size: 1.1rem; }
+    .shadow-premium { box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-radius: 30px; }
+    .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+    .spec-row .label { color: #888; }
+    .spec-row .val { font-weight: 700; color: #3d2b1f; }
+    .policy-notice { background: #fdfcf8; padding: 15px; border-radius: 15px; border-left: 4px solid var(--p-gold); }
 
-    .spec-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-    .spec-row .label { color: #64748b; font-size: 0.9rem; }
-    .spec-row .val { font-weight: 700; color: var(--p-dark); }
-    .policy-notice { background: #eff6ff; padding: 15px; border-radius: 15px; border-left: 4px solid var(--p-primary); }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 </style>
 
 <script>
-    function muonSach(id, tenSach) {
+    function addToCart(id, name) {
+        // Kiểm tra đăng nhập phía client (Jinja2)
         {% if not current_user.is_authenticated %}
             Swal.fire({
-                title: 'Yêu cầu đăng nhập',
-                text: 'Vui lòng đăng nhập để mượn sách bạn nhé!',
+                title: 'Chào bạn đọc!',
+                text: 'Hãy đăng nhập tài khoản Pages+ để mượn cuốn sách này nhé.',
                 icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3d2b1f',
                 confirmButtonText: 'Đăng nhập ngay',
-                showCancelButton: true
-            }).then((result) => { if (result.isConfirmed) { location.href = "{{ url_for('login_user_process') }}"; } });
+                cancelButtonText: 'Để sau'
+            }).then((result) => { if (result.isConfirmed) { location.href = "{{ url_for('login_user_process') }}?next=" + location.pathname; } });
             return;
         {% endif %}
 
-        Swal.fire({
-            title: 'Xác nhận mượn',
-            html: `Thêm cuốn <b>${tenSach}</b> vào túi mượn?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3b82f6',
-            confirmButtonText: 'Đồng ý',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch('/api/muon-sach', {
-                    method: 'POST',
-                    body: JSON.stringify({ id: id }),
-                    headers: {'Content-Type': 'application/json'}
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire({ title: 'Thành công!', text: data.msg, icon: 'success', timer: 1500, showConfirmButton: false })
-                        .then(() => location.reload());
-                    } else {
-                        Swal.fire('Thông báo', data.msg, 'error');
-                    }
+        // Gửi request API
+        fetch('/api/cart', {
+            method: 'POST',
+            body: JSON.stringify({ "id": id, "name": name }),
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 400 || data.status === 403) {
+                Swal.fire('Thông báo', data.err_msg, 'error');
+            } else {
+                // Cập nhật badge giỏ hàng trên navbar
+                let counters = document.querySelectorAll('.cart-counter');
+                counters.forEach(c => c.innerText = data.total_quantity);
+
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: `Đã thêm cuốn "${name}" vào túi mượn.`,
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
             }
-        });
+        }).catch(err => Swal.fire('Lỗi', 'Không thể kết nối máy chủ', 'error'));
     }
 </script>
 {% endblock %}

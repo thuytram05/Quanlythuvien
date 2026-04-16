@@ -1,6 +1,6 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}Xác Nhận Phiếu Mượn | Premium Library{% endblock %}
+{% block title %}Xác Nhận Phiếu Mượn | Pages+ Trusted Books{% endblock %}
 
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -8,243 +8,250 @@
 <div class="checkout-master-wrapper animate__animated animate__fadeIn">
 
     <style>
-        /* RESET KHOẢNG TRỐNG */
-        :host, .main-content, .container-fluid, .container, body, html {
-            padding-bottom: 0 !important;
-            margin-bottom: 0 !important;
-        }
-
         .checkout-master-wrapper {
-            margin: -24px -15px -50px -15px !important;
-            padding: 0 0 80px 0;
-            min-height: 100vh;
-            display: flex;
-            color: #fff;
-            position: relative;
-            z-index: 1;
-            background: linear-gradient(135deg, rgba(10, 12, 16, 0.45) 0%, rgba(10, 12, 16, 0.9) 100%),
-                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000') no-repeat center center/cover;
-            background-attachment: fixed;
+            margin: 0; padding: 60px 0; min-height: 85vh; display: flex;
+            color: #3d2b1f; background-color: #fdfcf8;
         }
 
+        /* SIDEBAR TỔNG KẾT (TRÁI) */
         .summary-side {
-            width: 420px;
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(40px);
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .list-side {
-            flex-grow: 1;
-            padding: 60px 80px;
-            background: transparent;
-            text-align: left;
+            width: 420px; background: #3d2b1f; color: #fff;
+            padding: 50px 40px; border-radius: 0 40px 40px 0;
+            display: flex; flex-direction: column;
+            box-shadow: 20px 0 50px rgba(0,0,0,0.1);
         }
 
         .receipt-card {
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 40px;
-            padding: 40px;
-            margin-top: 40px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px; padding: 30px; margin-top: 30px; text-align: center;
         }
 
         .total-badge {
-            font-size: 6rem;
-            font-weight: 900;
-            color: #ffc107;
-            line-height: 0.8;
-            text-shadow: 0 0 40px rgba(255, 193, 7, 0.5);
-            margin: 20px 0;
+            font-size: 5.5rem; font-weight: 900; color: #d4a373;
+            line-height: 1; margin: 15px 0;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         .btn-confirm-mega {
-            background: linear-gradient(90deg, #ffc107, #ffdb4d);
-            color: #000; border: none; padding: 22px; border-radius: 20px;
-            font-weight: 900; width: 100%; font-size: 1.1rem;
-            text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s;
-            box-shadow: 0 15px 35px rgba(255, 193, 7, 0.3);
-            cursor: pointer;
+            background: #d4a373; color: #fff; border: none;
+            padding: 20px; border-radius: 15px; font-weight: 800;
+            width: 100%; text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(212, 163, 115, 0.2);
         }
-        .btn-confirm-mega:hover {
-            background: #fff; transform: translateY(-5px);
+        .btn-confirm-mega:hover { background: #fff; color: #3d2b1f; transform: scale(1.03); }
+
+        /* DANH SÁCH SÁCH (PHẢI) */
+        .list-side { flex-grow: 1; padding: 0 60px; }
+
+        .book-item-row {
+            background: white; border-radius: 20px; padding: 15px; margin-bottom: 20px;
+            display: flex; align-items: center; border: 1px solid #eee; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+        .book-item-row:hover { transform: translateX(10px); border-color: #d4a373; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        .book-thumb {
+            width: 75px; height: 110px; border-radius: 10px;
+            object-fit: cover; box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
         }
 
-        .modern-book-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 25px;
-            padding: 20px; margin-bottom: 20px;
-            display: flex; align-items: center;
+        .btn-remove-item {
+            color: #e74c3c; background: #fff1f0; border: none;
+            width: 40px; height: 40px; border-radius: 50%; transition: 0.3s; cursor: pointer;
         }
+        .btn-remove-item:hover { background: #e74c3c; color: #fff; transform: rotate(90deg); }
 
-        /* STYLE Ô NHẬP POPUP */
-        .swal2-input {
-            background: #222 !important;
-            color: #fff !important;
-            border: 1px solid #444 !important;
-            font-size: 0.9rem !important;
+        /* STYLE CHO POPUP SWEETALERT */
+        .swal-label { font-size: 13px; font-weight: 700; color: #3d2b1f; margin-bottom: 5px; display: block; text-align: left;}
+        .swal-input-custom {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
+            margin-bottom: 15px; font-size: 14px; outline: none;
         }
 
         @media (max-width: 992px) {
             .checkout-master-wrapper { flex-direction: column; }
-            .summary-side { width: 100%; }
+            .summary-side { width: 100%; border-radius: 0 0 40px 40px; }
+            .list-side { padding: 40px 20px; }
         }
     </style>
 
     <div class="summary-side">
-        <div class="mb-5 text-start"><span class="fw-black text-warning ls-2 small opacity-75">PREMIUM CHECKOUT</span></div>
+        <h6 class="text-uppercase ls-3 fw-bold text-white-50 mb-4">Quy trình mượn sách</h6>
 
         <div class="receipt-card animate__animated animate__zoomIn">
-            <span class="small fw-bold text-white-50 text-uppercase ls-2">Sách đã chọn</span>
-            <div class="total-badge text-center">{{ total_count }}</div>
+            <span class="small fw-bold text-white-50 text-uppercase">Số lượng sách đã chọn</span>
+            <div class="total-badge">{{ total_count }}</div>
 
-            <div class="date-details my-4 py-3 border-top border-bottom border-white border-opacity-10 text-start">
+            <div class="date-info my-4 text-start border-top border-bottom border-white border-opacity-10 py-3">
                 <div class="d-flex justify-content-between mb-2">
-                    <span class="text-white-50 small">Ngày lập phiếu:</span>
-                    <span class="fw-bold small">Hôm nay</span>
+                    <span class="opacity-50 small">Ngày đăng ký:</span>
+                    <span class="small fw-bold">Hôm nay</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <span class="text-white-50 small">Hạn trả (dự kiến):</span>
-                    <span class="fw-bold text-warning small" id="ngayTraDuKien">--/--/----</span>
+                    <span class="opacity-50 small">Hạn trả (tối đa):</span>
+                    <span class="small fw-bold text-warning" id="sidebarReturnDate">--/--/----</span>
                 </div>
             </div>
 
-            {% if cart_items %}
-                <button class="btn-confirm-mega" onclick="hienPhieuDienThongTin()">XÁC NHẬN MƯỢN</button>
+            {% if total_count > 0 %}
+                <button class="btn-confirm-mega" onclick="hienThiPhieuMuon()">TIẾN HÀNH XÁC NHẬN</button>
             {% else %}
-                <button class="btn btn-secondary w-100 py-4 rounded-4 fw-bold" disabled>TÚI TRỐNG</button>
+                <button class="btn btn-dark w-100 py-3 rounded-4 opacity-50" disabled>TÚI ĐANG TRỐNG</button>
             {% endif %}
         </div>
 
-        <div class="mt-auto d-flex gap-3">
-            <a href="/" class="btn btn-outline-light w-50 py-3 rounded-4 fw-bold small text-decoration-none text-center d-flex align-items-center justify-content-center">TRANG CHỦ</a>
-            <button class="btn btn-outline-danger w-50 py-3 rounded-4 fw-bold small" onclick="xoaTatCaPhieuMuon()">XÓA TÚI</button>
+        <div class="mt-auto d-flex gap-2">
+            <a href="/" class="btn btn-outline-light w-100 rounded-3 small fw-bold py-2 text-decoration-none text-center">QUAY LẠI</a>
+            <button class="btn btn-outline-danger w-100 rounded-3 small fw-bold py-2" onclick="clearFullCart()">XÓA TẤT CẢ</button>
         </div>
     </div>
 
     <div class="list-side">
-        <div class="d-flex justify-content-between align-items-end mb-5">
-            <div>
-                <h2 class="fw-black text-white m-0 display-5 text-start">Danh sách <span class="text-warning">chờ duyệt</span></h2>
-            </div>
-            {% if total_count < 5 %}
-            <a href="/#explore" class="btn btn-outline-warning rounded-pill px-4 fw-bold text-decoration-none">+ MƯỢN THÊM</a>
-            {% endif %}
+        <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
+            <h2 class="fw-bold m-0" style="font-family: 'Playfair Display'; color: #3d2b1f;">
+                Túi sách <span style="color: #d4a373;">đăng ký mượn</span>
+            </h2>
+            <span class="badge bg-light text-dark border rounded-pill px-3">{{ total_count }} cuốn đã chọn</span>
         </div>
 
-        <div id="cart-items-list">
-        {% if cart_items %}
-            {% for item in cart_items %}
-            <div class="modern-book-item animate__animated animate__fadeInRight">
-                <div class="text-white-50 fw-black me-4 fs-3 opacity-20">0{{ loop.index }}</div>
-                <div style="width: 75px; height: 110px; border-radius: 12px; overflow: hidden;">
-                    <img src="{{ item.sach.hinh_anh }}" style="width:100%;height:100%;object-fit:cover;">
+        <div id="cart-list">
+        {% if cart %}
+            {% for key, item in cart.items() %}
+            <div class="book-item-row animate__animated animate__fadeInRight" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                <div class="fw-bold me-4 opacity-25 fs-4">0{{ loop.index }}</div>
+                <img src="{{ item.image }}" class="book-thumb" onerror="this.src='https://via.placeholder.com/100x150'">
+                <div class="ms-4 flex-grow-1">
+                    <h5 class="fw-bold mb-1" style="color: #3d2b1f;">{{ item.name }}</h5>
+                    <p class="text-muted small mb-0">Mã định danh: <span class="fw-bold text-dark">#{{ item.id }}</span></p>
                 </div>
-                <div class="ms-4 flex-grow-1 text-start">
-                    <h4 class="fw-bold text-white mb-1 h5">{{ item.sach.ten_sach }}</h4>
-                    <p class="text-white-50 mb-0 small">{{ item.sach.tac_gia }}</p>
-                </div>
-                <button class="btn btn-link text-white-50 text-decoration-none" onclick="xoaMotCuonSach({{ item.book_id }}, '{{ item.sach.ten_sach }}')">
-                    <i class="fas fa-times fs-5"></i>
+                <button class="btn-remove-item" onclick="removeBook('{{ item.id }}')" title="Xóa cuốn này">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             {% endfor %}
         {% else %}
-            <div class="text-center py-5 opacity-50"><h3 class="text-white">Túi mượn đang trống</h3></div>
+            <div class="text-center py-5">
+                <i class="fas fa-book-open fa-4x opacity-10 mb-4"></i>
+                <h4 class="text-muted">Bạn chưa chọn cuốn sách nào.</h4>
+                <a href="/" class="btn btn-outline-dark mt-3 rounded-pill px-5">Quay lại kho sách</a>
+            </div>
         {% endif %}
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let t = new Date();
-        t.setDate(t.getDate() + 14);
-        const el = document.getElementById('ngayTraDuKien');
-        if (el) el.innerText = t.toLocaleDateString('vi-VN');
+    // Tính toán ngày hôm nay và hạn 14 ngày
+    let minDateStr = "";
+    let maxDateStr = "";
+    let displayMaxDate = "";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        let today = new Date();
+        let maxDate = new Date();
+        maxDate.setDate(today.getDate() + 14);
+
+        // Định dạng YYYY-MM-DD cho input date
+        minDateStr = today.toISOString().split('T')[0];
+        maxDateStr = maxDate.toISOString().split('T')[0];
+
+        // Định dạng DD/MM/YYYY để hiển thị text
+        displayMaxDate = maxDate.toLocaleDateString('vi-VN');
+        document.getElementById('sidebarReturnDate').innerText = displayMaxDate;
     });
 
-    async function hienPhieuDienThongTin() {
+    async function hienThiPhieuMuon() {
         const { value: formValues } = await Swal.fire({
-            title: '<h3 class="text-warning fw-black">PHIẾU THÔNG TIN MƯỢN</h3>',
-            background: '#1a1a1a',
-            color: '#fff',
-            html: `
-                <div class="text-start px-2">
-                    <label class="small fw-bold text-white-50 mb-1">HỌ VÀ TÊN</label>
-                    <input id="swal-name" class="swal2-input m-0 w-100 mb-3" value="{{ current_user.ten }}">
-                    <label class="small fw-bold text-white-50 mb-1">SỐ ĐIỆN THOẠI</label>
-                    <input id="swal-phone" class="swal2-input m-0 w-100 mb-3" placeholder="Nhập SĐT của bạn...">
-                    <label class="small fw-bold text-white-50 mb-1">ĐỊA CHỈ NHẬN SÁCH</label>
-                    <input id="swal-address" class="swal2-input m-0 w-100 mb-3" placeholder="Số nhà, tên đường...">
-                    <label class="small fw-bold text-white-50 mb-1">GMAIL LIÊN HỆ</label>
-                    <input id="swal-email" type="email" class="swal2-input m-0 w-100" placeholder="example@gmail.com">
-                </div>`,
+            title: '<span style="font-family: Playfair Display; font-weight: 700;">PHIẾU XÁC NHẬN MƯỢN</span>',
+            background: '#fff',
+            confirmButtonColor: '#3d2b1f',
+            confirmButtonText: 'XÁC NHẬN LẬP PHIẾU',
+            cancelButtonText: 'QUAY LẠI',
             showCancelButton: true,
-            confirmButtonText: 'XÁC NHẬN OK',
-            confirmButtonColor: '#ffc107',
-            cancelButtonText: 'HỦY',
+            html: `
+                <div style="padding: 10px;">
+                    <p class="text-muted small mb-4">Lưu ý: Bạn chỉ được chọn ngày trả tối đa 14 ngày kể từ hôm nay.</p>
+
+                    <label class="swal-label">Tên độc giả</label>
+                    <input id="sw-name" class="swal-input-custom" value="{{ current_user.ten }}" readonly style="background: #f8f9fa;">
+
+                    <label class="swal-label">Số điện thoại liên hệ</label>
+                    <input id="sw-phone" class="swal-input-custom" placeholder="Nhập SĐT để liên hệ...">
+
+                    <label class="swal-label">Ngày trả dự kiến (Hạn tối đa: ${displayMaxDate})</label>
+                    <input id="sw-date" type="date" class="swal-input-custom"
+                           value="${maxDateStr}"
+                           min="${minDateStr}"
+                           max="${maxDateStr}">
+
+                    <label class="swal-label">Ghi chú (nếu có)</label>
+                    <textarea id="sw-note" class="swal-input-custom" style="height: 70px" placeholder="Lời nhắn..."></textarea>
+                </div>
+            `,
             preConfirm: () => {
-                const name = document.getElementById('swal-name').value;
-                const phone = document.getElementById('swal-phone').value;
-                const address = document.getElementById('swal-address').value;
-                const email = document.getElementById('swal-email').value;
-                if (!name || !phone || !address || !email) {
-                    Swal.showValidationMessage('Vui lòng điền đủ 4 thông tin!');
+                const phone = document.getElementById('sw-phone').value;
+                const returnDate = document.getElementById('sw-date').value;
+                if (!phone) {
+                    Swal.showValidationMessage('Vui lòng nhập Số điện thoại!');
                     return false;
                 }
-                return { name, phone, address, email };
+                return { phone, returnDate, note: document.getElementById('sw-note').value };
             }
         });
 
         if (formValues) {
-            fetch('/api/xac-nhan-muon', {
+            Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            fetch('/api/pay', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formValues)
             })
             .then(res => res.json())
-            .then(d => {
-                if (d.status === 'success') {
-                    // HIỆN THÔNG BÁO THÀNH CÔNG VỚI 2 NÚT BẤM CHỌN
+            .then(data => {
+                if (data.status === 200) {
                     Swal.fire({
-                        title: 'MƯỢN SÁCH THÀNH CÔNG!',
-                        text: 'Phiếu mượn đã được lưu vào lịch sử.',
                         icon: 'success',
-                        background: '#1a1a1a',
-                        color: '#fff',
+                        title: 'ĐĂNG KÝ THÀNH CÔNG',
+                        text: 'Phiếu mượn đã được tạo. Bạn muốn làm gì tiếp theo?',
                         showCancelButton: true,
-                        confirmButtonColor: '#ffc107',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'TRỞ VỀ TRANG CHỦ',
+                        confirmButtonColor: '#d4a373',
+                        cancelButtonColor: '#3d2b1f',
+                        confirmButtonText: 'VỀ TRANG CHỦ',
                         cancelButtonText: 'XEM LỊCH SỬ MƯỢN',
                         allowOutsideClick: false
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href = '/';
-                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        } else {
                             window.location.href = '/lich-su-muon';
                         }
                     });
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Lỗi!', text: d.msg, background: '#1a1a1a', color: '#fff' });
+                    Swal.fire('THẤT BẠI', data.err_msg, 'error');
                 }
             });
         }
     }
 
-    function xoaMotCuonSach(id, ten) {
-        fetch(`/api/borrow-cart/${id}`, { method: 'DELETE' }).then(() => location.reload());
+    function removeBook(id) {
+        fetch(`/api/cart/${id}`, { method: 'DELETE' }).then(() => location.reload());
     }
-    function xoaTatCaPhieuMuon() {
-        fetch('/api/borrow-cart/clear', { method: 'POST' }).then(() => location.reload());
+
+    function clearFullCart() {
+        Swal.fire({
+            title: 'Làm trống túi?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            confirmButtonText: 'XÓA'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/api/cart/clear', { method: 'POST' }).then(() => location.reload());
+            }
+        });
     }
 </script>
 {% endblock %}

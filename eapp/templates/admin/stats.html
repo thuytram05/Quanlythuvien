@@ -3,6 +3,12 @@
 {% block body %}
 <div class="stats-page-wrapper animate__animated animate__fadeIn p-4">
     
+    {# 1. TÍNH TỔNG SỐ QUYỂN TRƯỚC ĐỂ DÙNG CHO TỶ TRỌNG #}
+    {% set total_books = namespace(value=0) %}
+    {% for s in stats %}
+        {% set total_books.value = total_books.value + s[2] %}
+    {% endfor %}
+
     <div class="row mb-5 text-start">
         <div class="col-md-8">
             <h1 class="fw-black text-dark display-5 mb-1">Thống Kê <span class="text-primary">Kho Sách</span></h1>
@@ -34,14 +40,18 @@
                             <tbody>
                                 {% for s in stats %}
                                 <tr>
-                                    <td class="ps-4 fw-bold text-dark">{{ s[0] }}</td>
+                                    {# s[1] là tên thể loại, s[2] là số lượng sách từ dao.count_sach_by_theloai #}
+                                    <td class="ps-4 fw-bold text-dark">{{ s[1] }}</td>
                                     <td>
-                                        <span class="fs-5 fw-black text-primary">{{ s[1] }}</span>
+                                        <span class="fs-5 fw-black text-primary">{{ s[2] }}</span>
                                         <small class="text-muted ms-1">quyển</small>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <span class="small fw-bold me-2">{{ (s[1] * 100 / (stats|sum(attribute=1) if stats|sum(attribute=1) > 0 else 1))|round(1) }}%</span>
+                                            {# Tính tỷ trọng dựa trên tổng đã tính ở đầu file #}
+                                            <span class="small fw-bold me-2">
+                                                {{ (s[2] * 100 / (total_books.value if total_books.value > 0 else 1))|round(1) }}%
+                                            </span>
                                         </div>
                                     </td>
                                 </tr>
@@ -51,7 +61,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-soft-primary border-0 py-3 text-center">
-                    <span class="fw-bold text-primary">TỔNG CỘNG: {{ stats|sum(attribute=1) }} QUYỂN</span>
+                    <span class="fw-bold text-primary text-uppercase">TỔNG CỘNG: {{ total_books.value }} QUYỂN</span>
                 </div>
             </div>
         </div>
@@ -74,8 +84,6 @@
 <script>
     function renderChart(labels, data) {
         const ctx = document.getElementById('statsChart').getContext('2d');
-        
-        // Tạo hiệu ứng Gradient cho các cột
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, '#0d6efd');
         gradient.addColorStop(1, 'rgba(13, 110, 253, 0.1)');
@@ -90,24 +98,15 @@
                     backgroundColor: gradient,
                     borderColor: '#0d6efd',
                     borderWidth: 2,
-                    borderRadius: 10,
-                    hoverBackgroundColor: '#000'
+                    borderRadius: 10
                 }]
             },
             options: {
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { weight: '600', family: 'Plus Jakarta Sans' } }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: '#f1f5f9' }
-                    }
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } }
                 }
             }
         });
@@ -116,29 +115,20 @@
     window.onload = function() {
         let labels = [];
         let data = [];
-
         {% for s in stats %}
-            labels.push('{{ s[0] }}');
-            data.push({{ s[1] }});
+            labels.push('{{ s[1] }}');
+            data.push({{ s[2] }});
         {% endfor %}
-
         renderChart(labels, data);
     }
 </script>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-    
     .stats-page-wrapper { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
     .fw-black { font-weight: 800; }
     .text-start { text-align: left !important; }
     .rounded-5 { border-radius: 2rem !important; }
     .bg-soft-primary { background-color: #eef2ff; }
-    
-    @media print {
-        .btn, .navbar, .admin-sidebar { display: none !important; }
-        .card { box-shadow: none !important; border: 1px solid #eee !important; }
-        body { background: white; }
-    }
 </style>
 {% endblock %}

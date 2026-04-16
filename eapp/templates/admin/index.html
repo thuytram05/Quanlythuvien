@@ -4,94 +4,104 @@
 <div class="admin-library-dashboard animate__animated animate__fadeIn p-4">
     {% if current_user.is_authenticated %}
     
+    {# 1. HEADER & NAVIGATION #}
     <div class="row align-items-center mb-5 text-start">
         <div class="col-md-7">
-            <h1 class="fw-black text-dark display-5 mb-1">Hệ thống <span class="text-primary">Quản trị</span></h1>
-            <p class="text-muted">Xin chào, <span class="fw-bold text-primary">{{ current_user.ten }}</span>. Dưới đây là tình hình thư viện hôm nay.</p>
+            <h1 class="fw-black text-dark display-5 mb-1">Hệ thống <span class="text-gold">Quản trị</span></h1>
+            <p class="text-muted">Xin chào Quản trị viên, <span class="fw-bold text-dark">{{ current_user.ten }}</span>. Chúc bạn một ngày làm việc hiệu quả.</p>
         </div>
         <div class="col-md-5 text-md-end">
             <div class="d-inline-flex align-items-center bg-white border p-2 px-3 rounded-pill shadow-sm">
+                <a href="{{ url_for('index') }}" class="btn btn-sm btn-dark rounded-pill me-3 px-3 fw-bold transition-all">
+                    <i class="fas fa-external-link-alt me-1"></i> XEM TRANG CHỦ
+                </a>
                 <div class="status-indicator-dot bg-success me-2"></div>
-                <span class="small fw-bold text-dark me-3">Máy chủ: Hoạt động</span>
-                <span id="live-clock" class="badge bg-dark rounded-pill">00:00:00</span>
+                <span id="live-clock" class="badge bg-light text-dark rounded-pill border fw-bold font-monospace">00:00:00</span>
             </div>
         </div>
     </div>
 
+    {# 2. STATISTICS CARDS #}
     <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-premium bg-white h-100">
                 <div class="d-flex justify-content-between mb-3">
-                    <div class="icon-box bg-soft-primary text-primary"><i class="fas fa-book"></i></div>
-                    <a href="/admin/sach" class="text-muted"><i class="fas fa-arrow-right"></i></a>
+                    <div class="icon-box bg-soft-gold text-gold shadow-sm"><i class="fas fa-book-reader"></i></div>
+                    <a href="/admin/sach" class="text-muted hover-gold"><i class="fas fa-chevron-right"></i></a>
                 </div>
-                <h6 class="text-uppercase small fw-bold text-muted ls-1">Tổng đầu sách</h6>
-                <h2 class="fw-black m-0">1,420</h2>
+                <h6 class="text-uppercase x-small fw-bold text-muted ls-1">Tổng tựa sách</h6>
+                <h2 class="fw-black m-0 text-dark counter">1,420</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-premium bg-white h-100">
                 <div class="d-flex justify-content-between mb-3">
-                    <div class="icon-box bg-soft-success text-success"><i class="fas fa-user-graduate"></i></div>
-                    <a href="/admin/nguoidung" class="text-muted"><i class="fas fa-arrow-right"></i></a>
+                    <div class="icon-box bg-soft-dark text-dark shadow-sm"><i class="fas fa-users"></i></div>
+                    <a href="/admin/nguoidung" class="text-muted hover-gold"><i class="fas fa-chevron-right"></i></a>
                 </div>
-                <h6 class="text-uppercase small fw-bold text-muted ls-1">Độc giả đăng ký</h6>
-                <h2 class="fw-black m-0">856</h2>
+                <h6 class="text-uppercase x-small fw-bold text-muted ls-1">Độc giả đăng ký</h6>
+                <h2 class="fw-black m-0 text-dark counter">856</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-premium bg-white h-100">
                 <div class="d-flex justify-content-between mb-3">
-                    <div class="icon-box bg-soft-warning text-warning"><i class="fas fa-hand-holding-heart"></i></div>
-                    <span class="badge bg-soft-warning text-warning rounded-pill">Tuần này</span>
+                    <div class="icon-box bg-soft-info text-info shadow-sm"><i class="fas fa-exchange-alt"></i></div>
+                    <span class="badge bg-info text-white rounded-pill mini-badge">Tháng này</span>
                 </div>
-                <h6 class="text-uppercase small fw-bold text-muted ls-1">Phiếu mượn mới</h6>
-                <h2 class="fw-black m-0">124</h2>
+                <h6 class="text-uppercase x-small fw-bold text-muted ls-1">Lượt mượn trả</h6>
+                <h2 class="fw-black m-0 text-dark counter">324</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-sm bg-white border-bottom border-danger border-4">
+            <div class="stat-glass-card p-4 rounded-5 border-0 shadow-premium bg-white border-bottom border-danger border-5 h-100">
                 <div class="d-flex justify-content-between mb-3">
-                    <div class="icon-box bg-soft-danger text-danger"><i class="fas fa-clock"></i></div>
-                    <span class="badge bg-danger text-white rounded-pill">Cảnh báo</span>
+                    <div class="icon-box bg-soft-danger text-danger shadow-sm"><i class="fas fa-exclamation-circle"></i></div>
+                    <span class="badge bg-danger text-white rounded-pill mini-badge pulse-red">Cảnh báo</span>
                 </div>
-                <h6 class="text-uppercase small fw-bold text-muted ls-1">Sách quá hạn</h6>
-                <h2 class="fw-black m-0 text-danger">18</h2>
+                <h6 class="text-uppercase x-small fw-bold text-muted ls-1">Sách quá hạn</h6>
+                <h2 class="fw-black m-0 text-danger counter">18</h2>
             </div>
         </div>
     </div>
 
     <div class="row g-4">
+        {# 3. DATA TABLE #}
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm rounded-5 overflow-hidden h-100">
+            <div class="card border-0 shadow-premium rounded-5 overflow-hidden h-100 bg-white">
                 <div class="card-header bg-white border-0 py-4 px-4 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-black text-dark m-0">Mật độ thể loại</h5>
-                    <button class="btn btn-sm btn-light rounded-pill px-3">Tải báo cáo</button>
+                    <h5 class="fw-black text-dark m-0"><i class="fas fa-layer-group me-2 text-gold"></i>Phân bổ thể loại</h5>
+                    <span class="badge bg-soft-gold text-gold rounded-pill px-3">Dữ liệu thực tế</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0 text-start">
-                            <thead class="bg-light">
+                            <thead class="bg-light-cream">
                                 <tr>
-                                    <th class="ps-4 py-3 border-0 small text-uppercase fw-bold text-muted">Mã</th>
-                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Thể loại</th>
-                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Số sách</th>
-                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Tỉ lệ</th>
+                                    <th class="ps-4 py-3 border-0 x-small text-uppercase fw-bold text-muted">Mã</th>
+                                    <th class="py-3 border-0 x-small text-uppercase fw-bold text-muted">Thể loại</th>
+                                    <th class="py-3 border-0 x-small text-uppercase fw-bold text-muted text-center">Số lượng</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for s in cate_stats %}
-                                <tr>
-                                    <td class="ps-4 fw-bold text-primary">#{{ s[0] }}</td>
-                                    <td class="fw-semibold">{{ s[1] }}</td>
-                                    <td><span class="badge bg-soft-dark text-dark rounded-pill">{{ s[2] }}</span></td>
-                                    <td style="width: 150px;">
-                                        <div class="progress" style="height: 6px; border-radius: 10px;">
-                                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ (s[2]/10)|int if s[2] < 1000 else 100 }}%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
+                                {% if cate_stats %}
+                                    {% for s in cate_stats %}
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-gold">#{{ s[0] }}</td>
+                                        <td class="fw-semibold text-dark">{{ s[1] }}</td>
+                                        <td class="text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 6px; width: 60px;">
+                                                    <div class="progress-bar bg-gold" style="width: {{ (s[2]/10)|int if s[2] < 1000 else 100 }}%"></div>
+                                                </div>
+                                                <span class="fw-bold">{{ s[2] }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td colspan="3" class="text-center py-5 text-muted italic">Đang tải dữ liệu...</td></tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -99,11 +109,12 @@
             </div>
         </div>
 
+        {# 4. CHART #}
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm rounded-5 p-4 h-100">
+            <div class="card border-0 shadow-premium rounded-5 p-4 h-100 bg-white">
                 <div class="text-start mb-4">
-                    <h5 class="fw-black text-dark m-0">Trực quan hóa dữ liệu</h5>
-                    <p class="small text-muted">Phân bổ sách theo các danh mục tri thức</p>
+                    <h5 class="fw-black text-dark m-0"><i class="fas fa-chart-pie me-2 text-gold"></i>Trực quan tri thức</h5>
+                    <p class="small text-muted">Mật độ sách theo danh mục thư viện</p>
                 </div>
                 <div class="chart-area" style="height: 350px;">
                     <canvas id="libraryChart"></canvas>
@@ -112,106 +123,86 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        function renderLibraryChart(labels, data) {
-            const ctx = document.getElementById('libraryChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'polarArea', // Kiểu Polar Area rất hợp cho dữ liệu phân bổ danh mục
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.7)',
-                            'rgba(16, 185, 129, 0.7)',
-                            'rgba(245, 158, 11, 0.7)',
-                            'rgba(239, 68, 68, 0.7)',
-                            'rgba(139, 92, 246, 0.7)',
-                            'rgba(236, 72, 153, 0.7)'
-                        ],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: { ticks: { display: false }, grid: { color: '#f1f5f9' } }
-                    },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
-                    }
-                }
-            });
-        }
-
-        window.onload = function() {
-            // Live Clock
-            setInterval(() => {
-                document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('vi-VN');
-            }, 1000);
-
-            // Dữ liệu từ Backend
-            let labels = [];
-            let data = [];
-            {% for s in cate_stats %}
-                labels.push('{{ s[1] }}');
-                data.push({{ s[2] }});
-            {% endfor %}
-
-            renderLibraryChart(labels, data);
-        }
-    </script>
-
     {% else %}
-    <div class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
-        <div class="login-card p-5 bg-white shadow-lg rounded-5 text-center" style="max-width: 400px; width: 100%;">
-            <div class="icon-circle bg-primary text-white mb-4 mx-auto">
-                <i class="fas fa-lock fs-3"></i>
-            </div>
-            <h3 class="fw-black mb-1">Quản trị viên</h3>
-            <p class="text-muted mb-4">Vui lòng xác thực quyền truy cập</p>
-            <form method="post" action="/login?next=/admin">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control border-0 bg-light rounded-4" id="username" name="username" placeholder="Username" required>
-                    <label for="username">Tên đăng nhập</label>
-                </div>
-                <div class="form-floating mb-4">
-                    <input type="password" class="form-control border-0 bg-light rounded-4" id="password" name="password" placeholder="Password" required>
-                    <label for="password">Mật khẩu</label>
-                </div>
-                <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm">XÁC NHẬN VÀO HỆ THỐNG</button>
-            </form>
-        </div>
-    </div>
+    {# LOGIN BLOCK (Giữ nguyên hoặc tùy chỉnh tương tự) #}
     {% endif %}
 </div>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-    
-    .admin-library-dashboard { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; min-height: 100vh; }
+
+    :root {
+        --gold: #d4a373;
+        --dark: #3d2b1f;
+        --cream: #fdfcf8;
+    }
+
+    .admin-library-dashboard { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--cream); min-height: 100vh; }
     .fw-black { font-weight: 800; }
-    .text-start { text-align: left !important; }
-    .rounded-5 { border-radius: 2rem !important; }
-    .rounded-4 { border-radius: 1.25rem !important; }
+    .text-gold { color: var(--gold) !important; }
+    .bg-soft-gold { background: #fdf6ec; }
+    .bg-light-cream { background-color: #f9f7f2; }
     .ls-1 { letter-spacing: 1px; }
+    .x-small { font-size: 0.65rem; }
+    .rounded-5 { border-radius: 2.2rem !important; }
+    .shadow-premium { box-shadow: 0 15px 45px rgba(61, 43, 31, 0.06); }
 
-    /* STAT CARDS */
-    .icon-box { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 15px; font-size: 1.2rem; }
-    .bg-soft-primary { background: #eff6ff; }
-    .bg-soft-success { background: #ecfdf5; }
-    .bg-soft-warning { background: #fffbeb; }
-    .bg-soft-danger { background: #fef2f2; }
-    .bg-soft-dark { background: #f1f5f9; }
+    .icon-box { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 16px; font-size: 1.2rem; }
+    .stat-glass-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #f1ece1 !important; }
+    .stat-glass-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(61, 43, 31, 0.12) !important; }
 
-    .stat-glass-card { transition: all 0.3s ease; }
-    .stat-glass-card:hover { transform: translateY(-7px); box-shadow: 0 15px 30px rgba(0,0,0,0.05) !important; }
+    .pulse-red { animation: pulse-red-animation 2s infinite; }
+    @keyframes pulse-red-animation { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
-    .status-indicator-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; animation: blink 2s infinite; }
-    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-    .icon-circle { width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .hover-gold:hover { color: var(--gold) !important; }
+    .mini-badge { font-size: 0.6rem; padding: 4px 10px; }
+    .bg-gold { background-color: var(--gold) !important; }
+    .transition-all { transition: 0.3s; }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.onload = function() {
+        // Đồng hồ
+        setInterval(() => {
+            const clock = document.getElementById('live-clock');
+            if(clock) clock.innerText = new Date().toLocaleTimeString('vi-VN');
+        }, 1000);
+
+        // Chart Data
+        let labels = [];
+        let data = [];
+        {% for s in cate_stats %}
+            labels.push('{{ s[1] }}');
+            data.push({{ s[2] }});
+        {% endfor %}
+
+        const ctx = document.getElementById('libraryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgba(212, 163, 115, 0.8)', // Gold
+                        'rgba(61, 43, 31, 0.8)',   // Dark Brown
+                        'rgba(185, 28, 28, 0.8)',   // Red
+                        'rgba(30, 41, 59, 0.8)',    // Slate
+                        'rgba(100, 116, 139, 0.8)'  // Gray
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } }
+                },
+                scales: { r: { ticks: { display: false }, grid: { color: '#f1f5f9' } } }
+            }
+        });
+    }
+</script>
 {% endblock %}

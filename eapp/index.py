@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import render_template, request, jsonify, redirect, url_for, flash, session
 from flask_login import current_user, login_user, logout_user, login_required
 from eapp import login, dao, utils
+from eapp.models import PhieuMuon
 
 
 def register_routes(app):
@@ -20,6 +21,27 @@ def register_routes(app):
             'total_count': stats['total_quantity']
         }
 
+    @app.route('/')
+    def index():
+        kw = request.args.get('kw', '').strip()
+        category_id = request.args.get('category_id')
+        page = request.args.get('page', 1, type=int)
+
+        per_page = app.config.get('PAGE_SIZE', 50)
+
+        # Ràng buộc: Từ khóa phải >= 2 ký tự
+        if kw and len(kw) < 2:
+            flash("Từ khóa tìm kiếm phải từ 2 ký tự trở lên!", "warning")
+            kw = ""
+
+        books = dao.load_books(category_id=category_id, kw=kw, page=page)
+        total_books = dao.count_books_filtered(kw=kw, category_id=category_id)
+
+        return render_template('index.html',
+                               books=books,
+                               pages=math.ceil(total_books / per_page),
+                               page=page,
+                               current_kw=kw)
 
 
     @app.route('/phieu-muon')
@@ -129,6 +151,47 @@ def register_routes(app):
                                pagination=pagination,
                                active_tab=tab)
 
+    @app.route('/login', methods=['get', 'post'])
+    def login_user_process():
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+
+        if request.method == 'POST':
+            user = dao.auth_user(request.form.get('username'), request.form.get('password'))
+            if user:
+                login_user(user)
+                return redirect(request.args.get('next', url_for('index')))
+            flash("Tên đăng nhập hoặc mật khẩu không đúng!", "danger")
+        return render_template('login.html')
+
+    @app.route('/register', methods=['get', 'post'])
+    def register_process():
+        err_msg = ""
+        if request.method == 'POST':
+            name = request.form.get('name')
+            username = request.form.get('username')
+            password = request.form.get('password')
+            confirm = request.form.get('confirm')
+            avatar = request.files.get('avatar')
+
+            if password != confirm:
+                err_msg = "Mật khẩu xác nhận không khớp!"
+            elif dao.check_username(username):
+                err_msg = "Tên tài khoản này đã được sử dụng!"
+            else:
+                try:
+                    dao.add_user(name=name, username=username, password=password, avatar=avatar)
+                    flash("Đăng ký thành công! Mời bạn đăng nhập.", "success")
+                    return redirect(url_for('login_user_process'))
+                except Exception as ex:
+                    err_msg = "Lỗi hệ thống: " + str(ex)
+
+        return render_template('register.html', err_msg=err_msg)
+
+    @app.route('/logout')
+    def logout_process():
+        logout_user()
+        return redirect(url_for('index'))
 
 
     # --- 7. CÁC ROUTE PHỤ ---

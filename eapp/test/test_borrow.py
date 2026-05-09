@@ -169,3 +169,45 @@ def test_api_remove_cart_item(test_client, sample_data):
 
     with test_client.session_transaction() as sess:
         assert book_id not in sess.get('cart', {})
+
+
+def test_add_to_cart_limit_mix_db_and_session(test_client, test_session, sample_data):
+    """
+    RÀNG BUỘC: Tổng 5 cuốn bao gồm sách đang mượn (DB) và sách trong giỏ (Session).
+    Kịch bản: Đang mượn 3 cuốn + Giỏ có 2 cuốn -> Thêm cuốn thứ 3 vào giỏ (tổng 6) phải bị chặn.
+    """
+    user = sample_data['users'][0]
+    books = sample_data['books']
+
+    # 1. SETUP: Giả lập User đang mượn thực tế 3 cuốn trong Database
+    from eapp.models import PhieuMuon, ChiTietMuon, TrangThaiMuon
+    from datetime import datetime, timedelta
+
+    phieu = PhieuMuon(ma_nguoi_dung=user.id,
+                      han_tra=datetime.now() + timedelta(days=14),
+                      trang_thai=TrangThaiMuon.DANG_MUON)
+    test_session.add(phieu)
+    test_session.commit()
+
+    # Thêm 3 cuốn vào phiếu mượn này
+    for i in range(10, 13):
+        test_session.add(ChiTietMuon(ma_phieu=phieu.id, ma_sach=books[i].id))
+    test_session.commit()
+
+    # 2. SESSION: Giả lập giỏ hàng đang có 2 cuốn khác
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+        sess['cart'] = {
+            str(books[20].id): {'id': books[20].id, 'name': 'Sách giỏ 1'},
+            str(books[21].id): {'id': books[21].id, 'name': 'Sách giỏ 2'}
+        }
+
+    # 3. ACTION: Thêm cuốn tiếp theo (Cuốn thứ 6 tính tổng cộng)
+    res = test_client.post('/api/cart', json={
+        'id': books[22].id,
+        'name': books[22].ten_sach
+    })
+
+    # 4. ASSERT: Phải bị chặn với lỗi tối đa 5 cuốn
+    assert res.status_code == 400
+    assert "tối đa 5 cuốn" in res.get_json().get('err_msg', '').lower()

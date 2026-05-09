@@ -92,3 +92,19 @@ def test_filter_by_category(test_client, sample_data):
     assert res.status_code == 200
     # Đảm bảo kết quả thuộc đúng thể loại (nếu giao diện có hiện tên thể loại)
     assert sample_data['categories'][0].ten_the_loai in data
+
+def test_search_combined_filter(test_client, sample_data, test_session):
+    """BỔ SUNG: Kiểm tra kết hợp cả Thể loại và Từ khóa tìm kiếm"""
+    from eapp.models import Sach
+    tl_vanhoc = sample_data['categories'][1] # Giả sử là Văn học
+
+    # Thêm sách vào thể loại Văn học
+    test_session.add(Sach(ten_sach="Chi Pheo", tac_gia="Nam Cao", ma_the_loai=tl_vanhoc.id))
+    test_session.commit()
+
+    # Hành động: Lọc Thể loại 2 + Từ khóa "Chi Pheo"
+    res = test_client.get(f'/?category_id={tl_vanhoc.id}&kw=Chi Pheo')
+    data = res.get_data(as_text=True)
+
+    assert "Chi Pheo" in data
+    assert res.status_code == 200

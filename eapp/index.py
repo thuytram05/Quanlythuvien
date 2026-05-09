@@ -58,6 +58,10 @@ def register_routes(app):
         if current_user.bi_khoa:
             return jsonify({'status': 403, 'err_msg': 'Tài khoản của bạn đang bị khóa!'}), 403
 
+        # Thêm mới: Ràng buộc chặn chọn thêm sách nếu đang có nợ quá hạn
+        if dao.check_overdue(current_user.id):
+            return jsonify({'status': 400, 'err_msg': 'Bạn đang nợ sách quá hạn, vui lòng trả sách trước!'}), 400
+
         data = request.json
         book_id = str(data.get('id'))
         cart = session.get('cart', {})

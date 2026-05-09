@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 from eapp.test.test_base import test_client, test_session, sample_data, test_app
-from eapp.models import PhieuMuon, ChiTietMuon, TrangThaiMuon
+from eapp.models import PhieuMuon, ChiTietMuon, TrangThaiMuon, Sach
 
 
 def test_return_book_success(test_client, test_session, sample_data):
@@ -97,3 +97,38 @@ def test_return_book_late_fee(test_client, test_session, sample_data):
     # Logic trong dao.py tính: 3 ngày trễ x 5000 = 15000 VNĐ.
     # Kiểm tra xem flash message in ra có nhắc đến phí phạt không.
     assert "15,000" in data or "phí phạt" in data
+
+
+def test_return_book_inventory_increase(test_client, test_session, sample_data):
+    """Bổ sung: Trả sách xong thì tồn kho (so_luong_con) phải tăng lên 1"""
+    user = sample_data['users'][0]
+    book = sample_data['books'][1]
+
+    # Đảm bảo lấy giá trị thực tế nhất từ DB trước khi mượn
+    test_session.refresh(book)
+    current_stock = book.so_luong_con
+
+    p = PhieuMuon(ma_nguoi_dung=user.id, han_tra=datetime.now() + timedelta(days=7))
+    test_session.add(p)
+    test_session.commit()
+    test_session.add(ChiTietMuon(ma_phieu=p.id, ma_sach=book.id))
+    test_session.commit()
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+
+    test_client.post(f'/tra-sach/{p.id}', follow_redirects=True)
+
+    # Truy vấn lại sách từ DB để kiểm tra stock
+    test_session.refresh(book)  # Làm mới dữ liệu sau khi route xử lý xong
+    assert book.so_luong_con == current_stock + 1
+
+def test_return_invalid_id(test_client, sample_data):
+    """Bổ sung: Trả phiếu mượn với ID không tồn tại phải báo lỗi"""
+    user = sample_data['users'][0]
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+
+    res = test_client.post('/tra-sach/9999', follow_redirects=True)
+    assert "không tìm thấy" in res.get_data(as_text=True).lower()
+

@@ -79,7 +79,7 @@ class ChiTietMuon(db.Model):
     tien_phat = Column(Float, default=0.0)
 
 
-# --- HÀM NẠP DỮ LIỆU TỰ ĐỘNG (Chỉnh sửa: Chỉ 6 quyển) ---
+# --- HÀM NẠP DỮ LIỆU TỰ ĐỘNG ---
 if __name__ == "__main__":
     with app.app_context():
         # db.drop_all() # Mở comment nếu muốn làm sạch DB cũ
@@ -95,7 +95,7 @@ if __name__ == "__main__":
             )
             db.session.add(admin_user)
 
-        # 2. Tạo Thể loại và nạp đúng 6 cuốn sách
+        # 2. Tạo Thể loại và nạp hơn 50 cuốn sách
         if not TheLoai.query.first():
             tl1 = TheLoai(ten_the_loai="Công nghệ thông tin")
             tl2 = TheLoai(ten_the_loai="Kỹ năng sống")
@@ -103,35 +103,42 @@ if __name__ == "__main__":
             db.session.add_all([tl1, tl2, tl3])
             db.session.commit()
 
-            # Danh sách 6 cuốn sách độc bản
             danh_sach_sach = [
-                # Nhóm CNTT
+                # 6 Sách gốc
                 Sach(ten_sach="Python Crash Course", tac_gia="Eric Matthes", ma_the_loai=tl1.id,
-                     hinh_anh="https://bizweb.dktcdn.net/100/197/269/products/python-crash-course.jpg",
+                     hinh_anh="https://images-na.ssl-images-amazon.com/images/I/71pys4B4OVL.jpg",
                      mo_ta="Cuốn sách bán chạy nhất thế giới về lập trình Python dành cho người mới bắt đầu."),
                 Sach(ten_sach="Clean Code", tac_gia="Robert C. Martin", ma_the_loai=tl1.id,
                      hinh_anh="https://m.media-amazon.com/images/I/41xShlnTZTL.jpg",
                      mo_ta="Cẩm nang về tư duy viết mã sạch và bảo trì phần mềm chuyên nghiệp."),
-
-                # Nhóm Kỹ năng
                 Sach(ten_sach="Đắc Nhân Tâm", tac_gia="Dale Carnegie", ma_the_loai=tl2.id,
-                     hinh_anh="https://salt.tikicdn.com/cache/w1200/ts/product/d1/20/d5/06fdc3004c7fd9d39999b1062991901a.jpg",
+                     hinh_anh="https://cdn1.fahasa.com/media/flashmagazine/images/page_images/dac_nhan_tam/2024_06_10_11_08_00_1-390x510.jpg",
                      mo_ta="Tác phẩm kinh điển về nghệ thuật giao tiếp và thu phục lòng người."),
                 Sach(ten_sach="Nhà Giả Kim", tac_gia="Paulo Coelho", ma_the_loai=tl2.id,
-                     hinh_anh="https://salt.tikicdn.com/ts/product/45/3d/81/8f8b2d436a94ec0ade3764459f4215f1.jpg",
+                     hinh_anh="https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/nhagiakimnew03-e44cc6d6-6dad-4377-9d4d-744142f4f4ca.jpg?v=1768805136420",
                      mo_ta="Hành trình theo đuổi vận mệnh và khám phá tâm hồn của chàng chăn cừu Santiago."),
-
-                # Nhóm Ngoại ngữ
                 Sach(ten_sach="English Grammar in Use", tac_gia="Raymond Murphy", ma_the_loai=tl3.id,
-                     hinh_anh="https://salt.tikicdn.com/ts/product/f4/78/39/3a8d46101c57e841285499292b35d8fc.jpg",
+                     hinh_anh="https://m.media-amazon.com/images/I/51a+XisfDsL._AC_UF1000,1000_QL80_.jpg",
                      mo_ta="Tài liệu tự học ngữ pháp tiếng Anh phổ biến nhất trên toàn thế giới."),
                 Sach(ten_sach="Hacking Your English", tac_gia="Hoàng Ngọc Quỳnh", ma_the_loai=tl3.id,
-                     hinh_anh="https://salt.tikicdn.com/ts/product/3e/26/51/9d53347c6e6443d07747e4b971a06901.jpg",
+                     hinh_anh="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAuM6yFA-WGRdwZhXODcDYl7cO93mXPXkALg&s",
                      mo_ta="Phương pháp đột phá để nghe nói tiếng Anh trôi chảy dành cho người bận rộn.")
             ]
 
+            for i in range(1, 60):
+                the_loai_id = tl1.id if i % 3 == 0 else (tl2.id if i % 3 == 1 else tl3.id)
+                sach_tu_dong = Sach(
+                    ten_sach=f"Sách Tự Động Sinh Số {i}",
+                    tac_gia=f"Tác Giả Ẩn Danh {i}",
+                    mo_ta=f"Mô tả cho cuốn sách giả lập số {i} phục vụ test hệ thống phân trang.",
+                    # Link ảnh mới được cập nhật ở đây
+                    hinh_anh="https://static.ybox.vn/2017/10/4/ec8747f8-a8d7-11e7-b445-2e995a9a3302.jpg",
+                    ma_the_loai=the_loai_id
+                )
+                danh_sach_sach.append(sach_tu_dong)
+
             db.session.add_all(danh_sach_sach)
             db.session.commit()
-            print(">>> Đã nạp thành công 06 cuốn sách tinh hoa.")
+            print(f">>> Đã nạp thành công {len(danh_sach_sach)} cuốn sách vào DB.")
 
-        print(">>> Hệ thống database Pages+ đã sẵn sàng.")
+        print(">>> Hệ thống database Thư Viện đã sẵn sàng.")

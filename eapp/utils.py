@@ -12,7 +12,7 @@ def stats_cart(cart):
 
 def check_borrow_limit(currently_borrowed_count, in_cart_count, limit=5):
 
-    return (currently_borrowed_count + in_cart_count) < limit
+    return (currently_borrowed_count + in_cart_count) <= limit
 
 
 def get_total_potential_borrow(currently_borrowed_count, in_cart_count):

@@ -6,7 +6,8 @@ from flask import Flask
 from flask_login import current_user
 from eapp import db,login
 from eapp.models import Sach, TheLoai, NguoiDung, VaiTro, TrangThaiMuon, PhieuMuon
-
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 
 def create_app():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -119,3 +120,20 @@ def mock_cloudinary(monkeypatch):
         return {'secure_url': 'https://fake-library-image.png'}
 
     monkeypatch.setattr('cloudinary.uploader.upload', fake_upload)
+
+
+@pytest.fixture
+def driver():
+    """Tạo trình duyệt Chrome ảo để test UI"""
+    # Lấy đường dẫn thư mục gốc của project (Quanlythuvien)
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+    # Nối thành đường dẫn tuyệt đối tới file chromedriver.exe
+    driver_path = os.path.join(base_dir, '.venv', 'chromedriver.exe')
+
+    service = Service(executable_path=driver_path)
+    driver = webdriver.Chrome(service=service)
+
+    yield driver
+
+    driver.quit()

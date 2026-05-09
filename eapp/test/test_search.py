@@ -63,12 +63,12 @@ def test_pagination_logic(test_client, test_app, sample_data):
     # Trang 1: Kiểm tra xem có dữ liệu sách không
     res_p1 = test_client.get('/?page=1')
     data_p1 = res_p1.get_data(as_text=True)
-    assert 'Sách Test' in data_p1
+    assert data_p1.count('Sách Test') == 50
 
     # Trang 2: sample_data tạo 52 cuốn, trang 2 phải có nốt các cuốn còn lại
     res_p2 = test_client.get('/?page=2')
     data_p2 = res_p2.get_data(as_text=True)
-    assert 'Sách Test 50' in data_p2 or 'Sách Test 51' in data_p2
+    assert data_p2.count('Sách Test') == 2
 
 
 def test_pagination_empty_page(test_client, sample_data):
@@ -94,17 +94,16 @@ def test_filter_by_category(test_client, sample_data):
     assert sample_data['categories'][0].ten_the_loai in data
 
 def test_search_combined_filter(test_client, sample_data, test_session):
-    """BỔ SUNG: Kiểm tra kết hợp cả Thể loại và Từ khóa tìm kiếm"""
     from eapp.models import Sach
-    tl_vanhoc = sample_data['categories'][1] # Giả sử là Văn học
+    tl_vanhoc = sample_data['categories'][1]
 
-    # Thêm sách vào thể loại Văn học
     test_session.add(Sach(ten_sach="Chi Pheo", tac_gia="Nam Cao", ma_the_loai=tl_vanhoc.id))
     test_session.commit()
 
-    # Hành động: Lọc Thể loại 2 + Từ khóa "Chi Pheo"
     res = test_client.get(f'/?category_id={tl_vanhoc.id}&kw=Chi Pheo')
     data = res.get_data(as_text=True)
 
-    assert "Chi Pheo" in data
     assert res.status_code == 200
+    assert "Chi Pheo" in data
+    assert "Nam Cao" in data
+

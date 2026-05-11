@@ -1,10 +1,21 @@
 import pytest
 import hashlib
 import os
+import sys  # 1. Thêm import sys
 from datetime import datetime, timedelta
 from flask import Flask
 from flask_login import current_user
+
+# 2. MẸO QUAN TRỌNG: Thêm thư mục 'eapp' vào đường dẫn hệ thống trước khi import admin
+# Việc này giúp lệnh 'import dao' bên trong admin.py hoạt động được mà không cần sửa file đó.
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if base_dir not in sys.path:
+    sys.path.insert(0, base_dir)
+
 from eapp import db, login
+# 3. Import chính xác ĐỐI TƯỢNG admin (biến admin) từ MODULE admin (file admin.py)
+from eapp.admin import admin as admin_instance
+
 from eapp.models import Sach, TheLoai, NguoiDung, VaiTro, TrangThaiMuon, PhieuMuon
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -12,26 +23,25 @@ from selenium.webdriver.chrome.service import Service
 
 # --- 1. KHỞI TẠO APP TEST ---
 def create_app():
-    # Xác định đường dẫn gốc của project Quanlythuvien
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
     app = Flask(__name__,
                 template_folder=os.path.join(base_dir, 'templates'),
                 static_folder=os.path.join(base_dir, 'static'))
 
-    # Sử dụng SQLite trong bộ nhớ để tốc độ test nhanh nhất
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["PAGE_SIZE"] = 50
     app.config["TESTING"] = True
     app.secret_key = 'library_test_secret_key_123'
 
-    # Khởi tạo db và login chuyên biệt cho môi trường test
     db.init_app(app)
     login.init_app(app)
-    login.login_view = 'login_user_process'  # Đồng bộ route đăng nhập
 
-    # Đăng ký current_user vào context để template không bị lỗi Undefined
+    # 4. GẮN ĐỐI TƯỢNG ADMIN VÀO APP TEST
+    # Vì admin_instance là đối tượng được tạo từ Admin(), nó sẽ có hàm init_app
+    admin_instance.init_app(app)
+
+    login.login_view = 'login_user_process'
+
     @app.context_processor
     def inject_user():
         return dict(current_user=current_user)
@@ -41,8 +51,6 @@ def create_app():
 
     return app
 
-
-# --- 2. CÁC FIXTURE CỐT LÕI ---
 @pytest.fixture
 def test_app():
     app = create_app()

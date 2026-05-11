@@ -70,7 +70,7 @@ def load_books(category_id=None, kw=None, page=None):
 
     if page:
         page_size = current_app.config.get('PAGE_SIZE', 50)
-        start = (page - 1) * page_size
+        start = (int(page) - 1) * page_size
         query = query.offset(start).limit(page_size)
 
     return query.all()

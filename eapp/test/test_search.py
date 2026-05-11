@@ -63,12 +63,12 @@ def test_pagination_logic(test_client, test_app, sample_data):
     # Trang 1: Kiểm tra xem có dữ liệu sách không
     res_p1 = test_client.get('/?page=1')
     data_p1 = res_p1.get_data(as_text=True)
-    assert data_p1.count('Sách Test') == 50
+    assert data_p1.count('book-card-pages') == 50
 
     # Trang 2: sample_data tạo 52 cuốn, trang 2 phải có nốt các cuốn còn lại
     res_p2 = test_client.get('/?page=2')
     data_p2 = res_p2.get_data(as_text=True)
-    assert data_p2.count('Sách Test') == 2
+    assert data_p2.count('book-card-pages') == 2
 
 
 def test_pagination_empty_page(test_client, sample_data):

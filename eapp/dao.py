@@ -185,23 +185,26 @@ def count_sach_by_theloai():
         .group_by(TheLoai.id).all()
 
 def thong_ke_muon_tra(month=None, year=None):
-    """
-    Thống kê tần suất mượn sách theo thể loại trong tháng/năm cụ thể.
-    Trả về: Tên thể loại, Số lượt mượn, Tỉ lệ.
-    """
-    if not month:
-        month = datetime.now().month
-    if not year:
-        year = datetime.now().year
+    if not month: month = datetime.now().month
+    if not year: year = datetime.now().year
 
-    query = db.session.query(
+    # 1. Tính tổng số lượt mượn trong tháng đó làm mẫu số
+    # Cần dùng ma_sach hoặc ma_phieu vì ChiTietMuon không có id
+    total_muon = db.session.query(func.count(ChiTietMuon.ma_sach))\
+        .join(PhieuMuon, ChiTietMuon.ma_phieu == PhieuMuon.id)\
+        .filter(func.extract('month', PhieuMuon.ngay_muon) == month,
+                func.extract('year', PhieuMuon.ngay_muon) == year).scalar() or 0
+
+    if total_muon == 0:
+        return []
+
+    return db.session.query(
         TheLoai.ten_the_loai,
-        func.count(ChiTietMuon.ma_sach)
-    ).join(Sach, Sach.ma_the_loai == TheLoai.id, isouter=True) \
-     .join(ChiTietMuon, ChiTietMuon.ma_sach == Sach.id, isouter=True) \
-     .join(PhieuMuon, ChiTietMuon.ma_phieu == PhieuMuon.id, isouter=True)
-
-    query = query.filter(func.extract('month', PhieuMuon.ngay_muon) == month,
-                         func.extract('year', PhieuMuon.ngay_muon) == year)
-
-    return query.group_by(TheLoai.id).all()
+        func.count(ChiTietMuon.ma_sach),
+        func.round(func.count(ChiTietMuon.ma_sach) * 100.0 / total_muon, 2)
+    ).join(Sach, Sach.ma_the_loai == TheLoai.id)\
+     .join(ChiTietMuon, ChiTietMuon.ma_sach == Sach.id)\
+     .join(PhieuMuon, ChiTietMuon.ma_phieu == PhieuMuon.id)\
+     .filter(func.extract('month', PhieuMuon.ngay_muon) == month,
+             func.extract('year', PhieuMuon.ngay_muon) == year)\
+     .group_by(TheLoai.id).all()

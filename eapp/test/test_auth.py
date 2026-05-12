@@ -86,7 +86,7 @@ def test_register_username_too_short(test_session):
 ])
 def test_register_invalid_username(test_session, invalid_username):
     with pytest.raises(ValueError):
-        add_user(name='Lỗi Username', username='invalid_username', password='Password123', avatar=None)
+        add_user(name='Lỗi Username', username=invalid_username, password='Password123', avatar=None)
 
 def test_auth_user_not_found(test_session):
     user_authenticated = auth_user(username = 'ghost_user_99', password = 'some_password')

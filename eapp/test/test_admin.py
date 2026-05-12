@@ -1,5 +1,8 @@
 import pytest
 import hashlib
+
+from flask_login import current_user
+
 from eapp.models import NguoiDung, VaiTro, Sach, TheLoai,PhieuMuon,TrangThaiMuon
 from eapp.test.test_base import test_client, test_app, test_session, sample_data
 from datetime import datetime,timedelta
@@ -160,3 +163,95 @@ def test_admin_delete_category_with_books_integrity(test_session, sample_data):
         test_session.commit()
 
     test_session.rollback()
+
+def test_admin_stats_data_accuracy(test_session, sample_data):
+    from eapp.dao import count_sach_by_theloai
+
+    stats = count_sach_by_theloai()
+
+    assert len(stats) > 0
+
+    assert stats[0][1] == sample_data['categories'][0].ten_the_loai
+
+def test_admin_unblock_user_logic(test_session, sample_data):
+    user = sample_data['users'][1]
+    user.bi_khoa = False
+    test_session.commit()
+
+    test_session.refresh(user)
+    assert user.bi_khoa is False
+
+def test_admin_delete_book_transaction_rollback(test_session, sample_data):
+    book = sample_data['books'][0]
+    book_id = book.id
+
+    try:
+        test_session.delete(book)
+        test_session.commit()
+    except:
+        test_session.rollback()
+
+    check_book = test_session.get(Sach, book_id)
+    assert check_book is None
+
+def test_admin_export_books_csv(test_client, test_session):
+    """BỔ SUNG: Kiểm tra Admin có thể xuất file báo cáo sách"""
+    pass_hash = hashlib.md5("123".encode('utf-8')).hexdigest()
+    admin = NguoiDung(ten="Admin Export", ten_dang_nhap="admin_export",
+                      mat_khau=pass_hash, vai_tro=VaiTro.QUAN_TRI)
+    test_session.add(admin); test_session.commit()
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(admin.id)
+
+    # Route mặc định của Flask-Admin cho export là /export/<type>
+    res = test_client.get('/admin/sach/export/csv/')
+    assert res.status_code == 200
+    assert "text/csv" in res.content_type
+
+def test_admin_stats_with_params(test_client, test_session):
+    """BỔ SUNG: Kiểm tra trang thống kê khi truyền tham số tháng/năm"""
+    pass_hash = hashlib.md5("123".encode('utf-8')).hexdigest()
+    admin = NguoiDung(ten="Admin Stats Param", ten_dang_nhap="admin_p",
+                      mat_khau=pass_hash, vai_tro=VaiTro.QUAN_TRI)
+    test_session.add(admin); test_session.commit()
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(admin.id)
+
+    # Test gửi tham số tháng 5 năm 2026
+    res = test_client.get('/admin/statsview/?month=5&year=2026')
+    assert res.status_code == 200
+
+def test_admin_user_form_excludes_password(test_client, test_session):
+    """BỔ SUNG: Đảm bảo mật khẩu không hiển thị trong form Admin để bảo mật"""
+    pass_hash = hashlib.md5("123".encode('utf-8')).hexdigest()
+    admin = NguoiDung(ten="Admin Sec", ten_dang_nhap="admin_sec",
+                      mat_khau=pass_hash, vai_tro=VaiTro.QUAN_TRI)
+    test_session.add(admin); test_session.commit()
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(admin.id)
+
+    res = test_client.get('/admin/nguoidung/new/')
+    # Kiểm tra xem chuỗi 'mat_khau' hoặc 'password' có xuất hiện dưới dạng input không
+    assert 'name="mat_khau"' not in res.get_data(as_text=True)
+
+def test_admin_logout_view(test_client, test_session):
+    """BỔ SUNG: Kiểm tra tính năng đăng xuất từ giao diện Admin"""
+    pass_hash = hashlib.md5("123".encode('utf-8')).hexdigest()
+    admin = NguoiDung(ten="Admin Out", ten_dang_nhap="admin_out",
+                      mat_khau=pass_hash, vai_tro=VaiTro.QUAN_TRI)
+    test_session.add(admin); test_session.commit()
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(admin.id)
+
+    res = test_client.get('/admin/logoutview/', follow_redirects=True)
+    assert res.status_code == 200
+
+    with test_client.session_transaction() as sess:
+        assert '_user_id' not in sess
+
+    data = res.get_data(as_text=True)
+    assert "ĐĂNG NHẬP" in data

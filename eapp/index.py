@@ -100,21 +100,77 @@ def register_routes(app):
     @app.route('/api/pay', methods=['post'])
     @login_required
     def pay():
+        if current_user.bi_khoa:
+            return jsonify({
+                'status': 403,
+                'err_msg': 'Tài khoản của bạn đã bị khóa, không thể thực hiện giao dịch!'
+            }), 403
+        # 1. Chặn nợ quá hạn
         if dao.check_overdue(current_user.id):
             return jsonify({'status': 400, 'err_msg': 'Bạn đang nợ sách quá hạn, vui lòng trả sách trước!'}), 400
 
         data = request.json
+        # Lấy dữ liệu và xử lý khoảng trắng
+        phone = data.get('phone', '').strip()
+        note = data.get('note', '')
+        return_date_str = data.get('returnDate')
+
+        # 2. RÀNG BUỘC: Số điện thoại không được trống
+        if not phone:
+            return jsonify({
+                'status': 400,
+                'err_msg': 'Số điện thoại không được để trống.'
+            }), 400
+
+        # 3. RÀNG BUỘC: Số điện thoại phải là định dạng số (isdigit)
+        if not phone.isdigit():
+            return jsonify({
+                'status': 400,
+                'err_msg': 'Định dạng số điện thoại không hợp lệ.'
+            }), 400
+
+        # 4. RÀNG BUỘC: Độ dài ghi chú (Giới hạn String(255) của Database)
+        if note and len(note) > 255:
+            return jsonify({
+                'status': 400,
+                'err_msg': 'Ghi chú không được vượt quá 255 ký tự.'
+            }), 400
+
+        # 5. KIỂM TRA RÀNG BUỘC NGÀY TRẢ
+        if return_date_str:
+            try:
+                return_date = datetime.strptime(return_date_str, '%Y-%m-%d').date()
+                today = datetime.now().date()
+                delta = (return_date - today).days
+
+                if delta < 0:
+                    return jsonify({
+                        'status': 400,
+                        'err_msg': 'Ngày trả không được nhỏ hơn ngày hiện tại.'
+                    }), 400
+
+                if delta > 14:
+                    return jsonify({
+                        'status': 400,
+                        'err_msg': 'Ngày trả không được quá 14 ngày kể từ hôm nay.'
+                    }), 400
+
+            except ValueError:
+                return jsonify({'status': 400, 'err_msg': 'Định dạng ngày không hợp lệ.'}), 400
+
+        # 6. Kiểm tra giỏ hàng
         cart = session.get('cart')
         if not cart:
             return jsonify({'status': 400, 'err_msg': 'Túi mượn đang trống!'}), 400
 
+        # 7. Thực thi qua DAO
         try:
             dao.create_borrow_receipt(
                 user_id=current_user.id,
                 cart_items=cart.values(),
-                phone=data.get('phone'),
-                return_date=data.get('returnDate'),
-                note=data.get('note')
+                phone=phone,  # Sử dụng biến phone đã strip()
+                return_date=return_date_str,
+                note=note
             )
             session['cart'] = {}
             return jsonify({'status': 200})
@@ -208,6 +264,51 @@ def register_routes(app):
     @login_required
     def profile():
         return render_template('profile.html', user=current_user)
+
+    @app.route('/api/cart/<book_id>', methods=['delete'])  # Xóa 1 cuốn
+    @app.route('/api/cart', methods=['delete'])  # Xóa sạch túi
+    @login_required
+    def delete_cart(book_id=None):
+        cart = session.get('cart')
+
+        if cart:
+            if book_id:
+                # Xóa một cuốn cụ thể nếu tồn tại
+                if book_id in cart:
+                    del cart[book_id]
+            else:
+                # Xóa sạch toàn bộ túi mượn
+                cart = {}
+
+            session['cart'] = cart
+
+        return jsonify({'status': 200})
+
+    @app.route('/api/stats')
+    @login_required
+    def get_stats_json():
+        # Kiểm tra quyền Admin (QUAN_TRI)
+        from eapp.models import VaiTro
+        if current_user.vai_tro != VaiTro.QUAN_TRI:
+            return jsonify({'err_msg': 'Không có quyền truy cập'}), 403
+
+        month = request.args.get('month', datetime.now().month, type=int)
+        year = request.args.get('year', datetime.now().year, type=int)
+
+        # Lấy dữ liệu thô từ DAO
+        data = dao.thong_ke_muon_tra(month=month, year=year)
+
+        # Chuyển đổi sang định dạng JSON mà bài test đang mong đợi (labels và datasets)
+        labels = [row[0] for row in data]
+        values = [row[1] for row in data]
+
+        return jsonify({
+            "labels": labels,
+            "datasets": [{
+                "label": "Số lượt mượn",
+                "data": values
+            }]
+        })
 
 
 from eapp import app

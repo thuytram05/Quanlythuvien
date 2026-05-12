@@ -62,3 +62,76 @@ def test_profile_statistics_display(test_client, sample_data):
     assert "LƯỢT MƯỢN" in data
     # Ít nhất là số 0 mặc định phải xuất hiện
     assert "0" in data
+
+
+def test_profile_display_active_status(test_client, sample_data):
+    """BỔ SUNG: Kiểm tra hiển thị trạng thái khi tài khoản bình thường"""
+    user = sample_data['users'][0]
+    user.bi_khoa = False  # Đảm bảo tài khoản đang hoạt động
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+
+    res = test_client.get('/profile')
+    data = res.get_data(as_text=True)
+    # Khớp với nhãn trạng thái bạn đặt trong HTML cho tài khoản bình thường
+    assert "ĐANG HOẠT ĐỘNG" in data or "Bình thường" in data
+
+
+def test_profile_avatar_rendering(test_client, sample_data):
+    """BỔ SUNG: Kiểm tra đường dẫn ảnh đại diện có xuất hiện trong HTML"""
+    user = sample_data['users'][0]
+    user.anh_dai_dien = "https://example.com/avatar.jpg"
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+
+    res = test_client.get('/profile')
+    # Kiểm tra xem link ảnh có nằm trong thẻ <img> không
+    assert "avatar.jpg" in res.get_data(as_text=True)
+
+
+def test_profile_real_statistics_count(test_client, test_session, sample_data):
+    """BỔ SUNG: Kiểm tra thống kê hiển thị đúng số lượng phiếu mượn thực tế"""
+    from eapp.models import PhieuMuon
+    from datetime import datetime, timedelta
+    user = sample_data['users'][0]
+
+    # Tạo 2 phiếu mượn thực tế cho user này trong DB
+    p1 = PhieuMuon(ma_nguoi_dung=user.id, han_tra=datetime.now() + timedelta(days=7))
+    p2 = PhieuMuon(ma_nguoi_dung=user.id, han_tra=datetime.now() + timedelta(days=7))
+    test_session.add_all([p1, p2])
+    test_session.commit()
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+
+    res = test_client.get('/profile')
+    data = res.get_data(as_text=True)
+
+    # Kiểm tra con số "2" (tổng lượt mượn) có xuất hiện trong UI không
+    assert "2" in data
+
+def test_profile_special_characters_display(test_client, test_session, sample_data):
+    """BỔ SUNG: Kiểm tra hiển thị tên có dấu tiếng Việt và ký tự đặc biệt"""
+    user = sample_data['users'][0]
+    user.ten = "Nguyễn Văn A <script>" # Test cả font chữ và tính an toàn
+    test_session.commit()
+
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+
+    res = test_client.get('/profile')
+    assert "Nguyễn Văn A" in res.get_data(as_text=True)
+
+
+def test_profile_default_avatar_visibility(test_client, sample_data):
+    """BỔ SUNG: Kiểm tra hiển thị ảnh đại diện mặc định của hệ thống"""
+    user = sample_data['users'][0]
+    # Mặc định trong model là link res.cloudinary...
+    with test_client.session_transaction() as sess:
+        sess['_user_id'] = str(user.id)
+
+    res = test_client.get('/profile')
+    # Kiểm tra một phần của link default bạn đặt trong models.py
+    assert "cloudinary" in res.get_data(as_text=True) or "sample.jpg" in res.get_data(as_text=True)

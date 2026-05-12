@@ -25,6 +25,12 @@ def auth_user(username, password):
 
 def add_user(name, username, password, avatar):
     # Áp dụng ràng buộc bảo mật từ saleappv1
+    username = username.strip() if username else ""
+
+    if not username:
+        raise ValueError("Tên đăng nhập không được để trống!")
+    if not re.fullmatch(r"^[a-zA-Z0-9_]{5,}$", username):
+        raise ValueError("Username không hợp lệ (phải ít nhất 5 ký tự, không khoảng trắng/ký tự đặc biệt)")
     if len(username) < 5:
         raise ValueError('Tên đăng nhập phải ít nhất 5 ký tự!')
     if len(password) < 6:
@@ -58,12 +64,15 @@ def load_categories():
 
 def load_books(category_id=None, kw=None, page=None):
     # Join với TheLoai để tìm kiếm theo tên thể loại (Yêu cầu đề bài)
-    query = db.session.query(Sach).join(TheLoai, Sach.ma_the_loai == TheLoai.id)
+    query = db.session.query(Sach).join(TheLoai, Sach.ma_the_loai == TheLoai.id).filter(Sach.hoat_dong.is_(True))
 
     if kw and len(kw.strip()) >= 2:
-        query = query.filter(Sach.ten_sach.contains(kw) |
-                             Sach.tac_gia.contains(kw) |
-                             TheLoai.ten_the_loai.contains(kw))
+        keyword = kw.lower().strip()
+        query = query.filter(
+            func.lower(Sach.ten_sach).contains(keyword) |
+            func.lower(Sach.tac_gia).contains(keyword) |
+            func.lower(TheLoai.ten_the_loai).contains(keyword)
+        )
 
     if category_id:
         query = query.filter(Sach.ma_the_loai == category_id)

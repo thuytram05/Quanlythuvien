@@ -14,7 +14,6 @@ def check_borrow_limit(currently_borrowed_count, in_cart_count, limit=5):
 
     return (currently_borrowed_count + in_cart_count) <= limit
 
-
 def get_total_potential_borrow(currently_borrowed_count, in_cart_count):
-
-    return currently_borrowed_count + in_cart_count
+    # Sử dụng float() để giữ lại phần thập phân khi tính toán
+    return float(currently_borrowed_count) + float(in_cart_count)

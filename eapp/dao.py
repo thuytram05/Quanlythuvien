@@ -162,7 +162,10 @@ def process_return_book(phieu_id, user_id):
     try:
         phieu.trang_thai = TrangThaiMuon.DA_TRA
         for ct in phieu.chi_tiet:
-            ct.sach.so_luong_con += 1
+            # Kiểm tra nếu sách vẫn còn tồn tại trong hệ thống
+            if ct.sach:
+                ct.sach.so_luong_con += 1
+
             ct.ngay_tra_thuc_te = now
             ct.tien_phat = phi_phat
         db.session.commit()
@@ -173,6 +176,7 @@ def process_return_book(phieu_id, user_id):
 
 def check_username(username):
     return NguoiDung.query.filter(NguoiDung.ten_dang_nhap == username.strip()).first() is not None
+
 
 # --- 4. THỐNG KÊ ---
 

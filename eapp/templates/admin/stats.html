@@ -2,57 +2,53 @@
 
 {% block body %}
 <div class="stats-page-wrapper animate__animated animate__fadeIn p-4">
-    
-    {# 1. TÍNH TỔNG SỐ QUYỂN TRƯỚC ĐỂ DÙNG CHO TỶ TRỌNG #}
-    {% set total_books = namespace(value=0) %}
-    {% for s in stats %}
-        {% set total_books.value = total_books.value + s[2] %}
-    {% endfor %}
 
-    <div class="row mb-5 text-start">
+    {# 1. TIÊU ĐỀ & NÚT XUẤT BÁO CÁO #}
+    <div class="row mb-5 align-items-center">
         <div class="col-md-8">
-            <h1 class="fw-black text-dark display-5 mb-1">Thống Kê <span class="text-primary">Kho Sách</span></h1>
-            <p class="text-muted">Phân tích số lượng đầu sách hiện có dựa trên từng danh mục thể loại.</p>
+            <h1 class="fw-bold text-dark display-5 mb-1">Báo Cáo <span class="text-primary">Thống Kê</span></h1>
+            <p class="text-muted lead">Phân tích chuyên sâu về mật độ mượn trả và hiện trạng kho sách.</p>
         </div>
-        <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end">
-            <button class="btn btn-dark rounded-pill px-4 shadow-sm" onclick="window.print()">
-                <i class="fas fa-file-pdf me-2"></i> Xuất Báo Cáo
+        <div class="col-md-4 text-md-right">
+            <button onclick="window.print()" class="btn btn-outline-dark rounded-pill px-4 shadow-sm">
+                <i class="fas fa-print mr-2"></i> IN BÁO CÁO (PDF)
             </button>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-5 overflow-hidden">
-                <div class="card-header bg-white border-0 py-4 px-4">
-                    <h5 class="fw-black text-dark m-0">Chi tiết số liệu</h5>
+    {# 2. PHẦN 1: THỐNG KÊ SỐ LƯỢNG SÁCH HIỆN CÓ TRONG KHO #}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
+                <div class="card-header bg-dark text-white p-4">
+                    <h5 class="mb-0"><i class="fas fa-warehouse mr-3 text-warning"></i>HIỆN TRẠNG KHO SÁCH THEO THỂ LOẠI</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0 text-start">
-                            <thead class="bg-light">
+                        <table class="table table-hover mb-0 text-center">
+                            <thead class="bg-light text-uppercase small font-weight-bold">
                                 <tr>
-                                    <th class="ps-4 py-3 border-0 small text-uppercase fw-bold text-muted">Thể loại</th>
-                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Số lượng</th>
-                                    <th class="py-3 border-0 small text-uppercase fw-bold text-muted">Tỷ trọng</th>
+                                    <th>Mã TL</th>
+                                    <th class="text-left">Tên Thể Loại</th>
+                                    <th>Số Lượng Đầu Sách</th>
+                                    <th>Trạng Thái</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for s in stats %}
                                 <tr>
-                                    {# s[1] là tên thể loại, s[2] là số lượng sách từ dao.count_sach_by_theloai #}
-                                    <td class="ps-4 fw-bold text-dark">{{ s[1] }}</td>
+                                    <td class="text-muted">#0{{ s[0] }}</td>
+                                    <td class="text-left font-weight-bold text-dark">{{ s[1] }}</td>
                                     <td>
-                                        <span class="fs-5 fw-black text-primary">{{ s[2] }}</span>
-                                        <small class="text-muted ms-1">quyển</small>
+                                        <span class="h5 mb-0 font-weight-bold text-primary">{{ s[2] }}</span>
+                                        <small class="text-muted ml-1">cuốn</small>
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            {# Tính tỷ trọng dựa trên tổng đã tính ở đầu file #}
-                                            <span class="small fw-bold me-2">
-                                                {{ (s[2] * 100 / (total_books.value if total_books.value > 0 else 1))|round(1) }}%
-                                            </span>
-                                        </div>
+                                        {% if s[2] > 0 %}
+                                            <span class="badge badge-success-soft px-3 py-2 text-success">Đang khả dụng</span>
+                                        {% else %}
+                                            <span class="badge badge-danger-soft px-3 py-2 text-danger">Hết hàng</span>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -60,20 +56,70 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer bg-soft-primary border-0 py-3 text-center">
-                    <span class="fw-bold text-primary text-uppercase">TỔNG CỘNG: {{ total_books.value }} QUYỂN</span>
+            </div>
+        </div>
+    </div>
+
+    {# 3. PHẦN 2: THỐNG KÊ HIỆU SUẤT MƯỢN TRẢ #}
+    <div class="card border-0 shadow-sm rounded-lg mb-4">
+        <div class="card-body p-4">
+            <form class="form-inline justify-content-center">
+                <label class="font-weight-bold text-dark mr-3">LỌC HIỆU SUẤT THÁNG:</label>
+                <select name="month" class="form-control border-0 bg-light rounded-pill px-4 mr-3 shadow-none">
+                    {% for i in range(1, 13) %}
+                    <option value="{{ i }}" {% if i == request.args.get('month', 1)|int %}selected{% endif %}>Tháng {{ i }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="year" value="{{ request.args.get('year', 2026) }}"
+                       class="form-control border-0 bg-light rounded-pill px-4 mr-3 shadow-none" style="width: 120px;">
+                <button type="submit" class="btn btn-primary rounded-pill px-5 shadow-sm font-weight-bold">
+                    <i class="fas fa-sync-alt mr-2"></i> CẬP NHẬT DỮ LIỆU
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Bảng mật độ mượn #}
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-lg h-100">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h6 class="font-weight-bold text-uppercase text-muted small mb-0">Chi tiết mật độ mượn</h6>
+                </div>
+                <div class="card-body px-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-borderless">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="px-4">Thể Loại</th>
+                                    <th class="text-center">Lượt</th>
+                                    <th class="px-4 text-right">Tỷ Lệ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if borrow_stats %}
+                                    {% for s in borrow_stats %}
+                                    <tr>
+                                        <td class="px-4 font-weight-bold">{{ s[0] }}</td>
+                                        <td class="text-center"><span class="badge badge-pill badge-primary-soft px-3">{{ s[1] }}</span></td>
+                                        <td class="px-4 text-right text-info font-weight-bold">{{ s[2] }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td colspan="3" class="text-center py-5 text-muted">Không có dữ liệu mượn trong thời gian này.</td></tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
+        {# Biểu đồ trực quan #}
         <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-5 p-4 h-100">
-                <div class="text-start mb-4">
-                    <h5 class="fw-black text-dark m-0">Biểu đồ so sánh</h5>
-                    <p class="small text-muted">Trực quan hóa sự chênh lệch giữa các nhóm sách</p>
-                </div>
-                <div class="chart-container" style="height: 400px; position: relative;">
-                    <canvas id="statsChart"></canvas>
+            <div class="card border-0 shadow-sm rounded-lg h-100 p-4">
+                <div style="height: 400px;">
+                    <canvas id="borrowStatsChart"></canvas>
                 </div>
             </div>
         </div>
@@ -82,53 +128,49 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    function renderChart(labels, data) {
-        const ctx = document.getElementById('statsChart').getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, '#0d6efd');
-        gradient.addColorStop(1, 'rgba(13, 110, 253, 0.1)');
+    const bCtx = document.getElementById('borrowStatsChart').getContext('2d');
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Số lượng sách',
-                    data: data,
-                    backgroundColor: gradient,
-                    borderColor: '#0d6efd',
-                    borderWidth: 2,
-                    borderRadius: 10
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false } },
-                    y: { beginAtZero: true, grid: { color: '#f1f5f9' } }
-                }
+    // Gradient cho biểu đồ thêm đẹp
+    const gradient = bCtx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(0, 123, 255, 0.9)');
+    gradient.addColorStop(1, 'rgba(0, 123, 255, 0.3)');
+
+    new Chart(bCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for s in borrow_stats %}'{{ s[0] }}',{% endfor %}],
+            datasets: [{
+                label: 'Lượt mượn',
+                data: [{% for s in borrow_stats %}{{ s[1] }},{% endfor %}],
+                backgroundColor: gradient,
+                borderColor: '#007bff',
+                borderWidth: 2,
+                borderRadius: 15,
+                barThickness: 45
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f0f0f0', drawBorder: false } },
+                x: { grid: { display: false } }
             }
-        });
-    }
-
-    window.onload = function() {
-        let labels = [];
-        let data = [];
-        {% for s in stats %}
-            labels.push('{{ s[1] }}');
-            data.push({{ s[2] }});
-        {% endfor %}
-        renderChart(labels, data);
-    }
+        }
+    });
 </script>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-    .stats-page-wrapper { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-    .fw-black { font-weight: 800; }
-    .text-start { text-align: left !important; }
-    .rounded-5 { border-radius: 2rem !important; }
-    .bg-soft-primary { background-color: #eef2ff; }
+    body { background-color: #f8f9fa; }
+    .rounded-lg { border-radius: 1.25rem !important; }
+    .badge-success-soft { background-color: #e6fffa; color: #28a745; }
+    .badge-danger-soft { background-color: #fff5f5; color: #dc3545; }
+    .badge-primary-soft { background-color: #eef6ff; color: #007bff; }
+    .table thead th { border-top: none; }
+    .table td { vertical-align: middle; }
+    @media print {
+        .admin-sidebar, .card-header select, .btn, .card-body form { display: none !important; }
+        .card { box-shadow: none !important; border: 1px solid #eee !important; }
+    }
 </style>
 {% endblock %}

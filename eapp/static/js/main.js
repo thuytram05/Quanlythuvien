@@ -1,25 +1,17 @@
-/**
- * Pages+ Premium Library - Core JavaScript
- * Chứa logic xử lý mượn sách, cập nhật túi mượn và thanh toán
- */
 
-// 1. Hàm cập nhật con số hiển thị trên túi mượn (Badge)
 const updateCartBadge = (stats) => {
     const counters = document.querySelectorAll('.cart-counter');
     counters.forEach(counter => {
         if (counter) {
             counter.innerText = stats.total_quantity;
-            // Hiệu ứng Bounce khi con số thay đổi
             counter.classList.remove('animate__bounceIn');
-            void counter.offsetWidth; // Trigger reflow
+            void counter.offsetWidth;
             counter.classList.add('animate__animated', 'animate__bounceIn');
         }
     });
 };
 
-// 2. Nghiệp vụ: THÊM SÁCH VÀO TÚI MƯỢN
 async function muonSach(id, name) {
-    // Visual feedback: Đổi trạng thái nút bấm
     const btn = event.currentTarget;
     const originalContent = btn.innerHTML;
 
@@ -36,7 +28,6 @@ async function muonSach(id, name) {
         const data = await response.json();
 
         if (response.status === 200) {
-            // Thông báo thành công kiểu Toast sang trọng
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -52,7 +43,6 @@ async function muonSach(id, name) {
 
             updateCartBadge(data);
         } else {
-            // Hiển thị lỗi từ Backend (Hết sách, Quá hạn, Đã có trong túi...)
             Swal.fire({
                 icon: 'warning',
                 title: 'Thông báo',
@@ -69,7 +59,6 @@ async function muonSach(id, name) {
     }
 }
 
-// 3. Nghiệp vụ: XÓA SÁCH KHỎI TÚI MƯỢN
 async function removeItem(bookId) {
     const result = await Swal.fire({
         title: 'Bỏ mượn cuốn này?',
@@ -84,16 +73,14 @@ async function removeItem(bookId) {
             const res = await fetch(`/api/cart/${bookId}`, { method: 'DELETE' });
             const data = await res.json();
             updateCartBadge(data);
-            location.reload(); // Load lại trang phieu_muon để cập nhật danh sách
+            location.reload();
         } catch (err) {
             Swal.fire('Lỗi', 'Không thể xóa mục này', 'error');
         }
     }
 }
 
-// 4. Nghiệp vụ: XÁC NHẬN MƯỢN (THANH TOÁN)
 function xacNhanMuon() {
-    // Hiện Popup thu thập thông tin bổ sung theo đề bài
     Swal.fire({
         title: '<h3 class="fw-black">Thông tin mượn sách</h3>',
         html: `
@@ -126,7 +113,6 @@ function xacNhanMuon() {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                // Hiển thị loading
                 Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
                 const response = await fetch('/api/pay', {

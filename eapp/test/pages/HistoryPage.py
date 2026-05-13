@@ -12,7 +12,6 @@ class HistoryPage(BasePage):
 
     def click_return_book(self):
         self.click(*self.RETURN_BTN)
-        # Xác nhận trên popup
         ok_btn = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.swal2-confirm')))
         ok_btn.click()
 

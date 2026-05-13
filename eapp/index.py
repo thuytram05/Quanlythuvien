@@ -54,11 +54,9 @@ def register_routes(app):
     @app.route('/api/cart', methods=['post'])
     @login_required
     def add_to_cart():
-        # Ràng buộc: Tài khoản không bị khóa
         if current_user.bi_khoa:
             return jsonify({'status': 403, 'err_msg': 'Tài khoản của bạn đang bị khóa!'}), 403
 
-        # Thêm mới: Ràng buộc chặn chọn thêm sách nếu đang có nợ quá hạn
         if dao.check_overdue(current_user.id):
             return jsonify({'status': 400, 'err_msg': 'Bạn đang nợ sách quá hạn, vui lòng trả sách trước!'}), 400
 
@@ -69,12 +67,10 @@ def register_routes(app):
         if book_id in cart:
             return jsonify({'status': 400, 'err_msg': 'Cuốn sách này đã có trong danh sách chờ!'}), 400
 
-        # Ràng buộc: Kiểm tra sách còn hay hết
         s = dao.get_book_by_id(int(book_id))
         if not s or s.so_luong_con <= 0:
             return jsonify({'status': 400, 'err_msg': 'Sách này hiện đã hết bản trong thư viện!'}), 400
 
-        # Ràng buộc: Tối đa 5 cuốn (đang mượn + đang chọn)
         borrowed_count = dao.count_books_currently_borrowed(current_user.id)
         if borrowed_count + len(cart) >= 5:
             return jsonify({'status': 400, 'err_msg': 'Bạn chỉ được mượn tối đa 5 cuốn sách!'}), 400
@@ -105,38 +101,34 @@ def register_routes(app):
                 'status': 403,
                 'err_msg': 'Tài khoản của bạn đã bị khóa, không thể thực hiện giao dịch!'
             }), 403
-        # 1. Chặn nợ quá hạn
+
         if dao.check_overdue(current_user.id):
             return jsonify({'status': 400, 'err_msg': 'Bạn đang nợ sách quá hạn, vui lòng trả sách trước!'}), 400
 
         data = request.json
-        # Lấy dữ liệu và xử lý khoảng trắng
+
         phone = data.get('phone', '').strip()
         note = data.get('note', '')
         return_date_str = data.get('returnDate')
 
-        # 2. RÀNG BUỘC: Số điện thoại không được trống
         if not phone:
             return jsonify({
                 'status': 400,
                 'err_msg': 'Số điện thoại không được để trống.'
             }), 400
 
-        # 3. RÀNG BUỘC: Số điện thoại phải là định dạng số (isdigit)
         if not phone.isdigit():
             return jsonify({
                 'status': 400,
                 'err_msg': 'Định dạng số điện thoại không hợp lệ.'
             }), 400
 
-        # 4. RÀNG BUỘC: Độ dài ghi chú (Giới hạn String(255) của Database)
         if note and len(note) > 255:
             return jsonify({
                 'status': 400,
                 'err_msg': 'Ghi chú không được vượt quá 255 ký tự.'
             }), 400
 
-        # 5. KIỂM TRA RÀNG BUỘC NGÀY TRẢ
         if return_date_str:
             try:
                 return_date = datetime.strptime(return_date_str, '%Y-%m-%d').date()
@@ -158,17 +150,15 @@ def register_routes(app):
             except ValueError:
                 return jsonify({'status': 400, 'err_msg': 'Định dạng ngày không hợp lệ.'}), 400
 
-        # 6. Kiểm tra giỏ hàng
         cart = session.get('cart')
         if not cart:
             return jsonify({'status': 400, 'err_msg': 'Túi mượn đang trống!'}), 400
 
-        # 7. Thực thi qua DAO
         try:
             dao.create_borrow_receipt(
                 user_id=current_user.id,
                 cart_items=cart.values(),
-                phone=phone,  # Sử dụng biến phone đã strip()
+                phone=phone,
                 return_date=return_date_str,
                 note=note
             )
@@ -253,8 +243,6 @@ def register_routes(app):
         logout_user()
         return redirect(url_for('index'))
 
-
-    # --- 7. CÁC ROUTE PHỤ ---
     @app.route('/sach/<int:sach_id>')
     def chi_tiet_sach(sach_id):
         sach = dao.get_book_by_id(sach_id)
@@ -273,11 +261,9 @@ def register_routes(app):
 
         if cart:
             if book_id:
-                # Xóa một cuốn cụ thể nếu tồn tại
                 if book_id in cart:
                     del cart[book_id]
             else:
-                # Xóa sạch toàn bộ túi mượn
                 cart = {}
 
             session['cart'] = cart
@@ -287,7 +273,6 @@ def register_routes(app):
     @app.route('/api/stats')
     @login_required
     def get_stats_json():
-        # Kiểm tra quyền Admin (QUAN_TRI)
         from eapp.models import VaiTro
         if current_user.vai_tro != VaiTro.QUAN_TRI:
             return jsonify({'err_msg': 'Không có quyền truy cập'}), 403
@@ -295,10 +280,8 @@ def register_routes(app):
         month = request.args.get('month', datetime.now().month, type=int)
         year = request.args.get('year', datetime.now().year, type=int)
 
-        # Lấy dữ liệu thô từ DAO
         data = dao.thong_ke_muon_tra(month=month, year=year)
 
-        # Chuyển đổi sang định dạng JSON mà bài test đang mong đợi (labels và datasets)
         labels = [row[0] for row in data]
         values = [row[1] for row in data]
 

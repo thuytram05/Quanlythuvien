@@ -1,7 +1,8 @@
 import pytest
 from eapp.test.test_base import test_client, test_app, sample_data, test_session
-from eapp.models import VaiTro, NguoiDung,PhieuMuon, TrangThaiMuon, ChiTietMuon
+from eapp.models import VaiTro, NguoiDung, PhieuMuon, TrangThaiMuon, ChiTietMuon
 from datetime import datetime, timedelta
+from eapp.dao import create_borrow_receipt
 
 def test_admin_access_unauthenticated_redirect(test_client):
     res = test_client.get('/admin/', follow_redirects=True)
@@ -30,7 +31,6 @@ def test_admin_access_denied_for_regular_user(test_client, sample_data):
             assert "Thống Kê" not in res.get_data(as_text=True)
 
 def test_admin_access_granted_for_admin_user(test_client, sample_data, test_session):
-    from eapp.models import NguoiDung
     admin_user = NguoiDung(
         ten='Admin Test',
         ten_dang_nhap='admin_secure',
@@ -189,7 +189,6 @@ def test_security_blocked_user_cannot_pay(test_client, test_session, sample_data
     assert "đã bị khóa" in res.get_json()['err_msg']
 
 def test_security_dao_create_receipt_blocked_user_exception(test_session, sample_data):
-    from eapp.dao import create_borrow_receipt
     user = sample_data['users'][0]
     user.bi_khoa = True
     test_session.commit()

@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 from eapp.dao import count_sach_by_theloai, thong_ke_muon_tra
-from eapp.models import PhieuMuon, ChiTietMuon, TrangThaiMuon, Sach, VaiTro
+from eapp.models import PhieuMuon, ChiTietMuon, TrangThaiMuon, Sach, VaiTro, TheLoai
 from eapp.test.test_base import test_session, test_app, sample_data, test_client
 
 def test_count_sach_by_theloai(test_session, sample_data):
@@ -121,7 +121,6 @@ def test_thong_ke_muon_tra_boundary_dates_full(test_session, sample_data):
     assert count_val == 2
 
 def test_count_sach_by_theloai_empty_category(test_session, sample_data):
-    from eapp.models import TheLoai
     new_tl = TheLoai(ten_the_loai="Thể loại mới tinh")
     test_session.add(new_tl)
     test_session.commit()

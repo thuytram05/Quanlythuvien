@@ -10,7 +10,6 @@
           <a class="nav-link px-3 active" href="/"><i class="fas fa-home me-1"></i> HOME</a>
         </li>
 
-        {# HIỂN THỊ QUẢN TRỊ CHO ADMIN #}
         {% if current_user.is_authenticated and current_user.vai_tro.name == 'QUAN_TRI' %}
         <li class="nav-item">
           <a class="nav-link nav-admin px-3" href="/admin">
@@ -39,7 +38,6 @@
         </li>
       </ul>
 
-      {# SEARCH BOX: Đã thêm minlength="2" để chặn lỗi tìm kiếm 1 ký tự #}
       <form class="d-flex mx-lg-4 my-2 my-lg-0 search-container flex-grow-1" style="max-width: 400px;" method="get" action="/">
           <div class="search-box">
             <input type="text"
@@ -55,7 +53,6 @@
       </form>
 
       <ul class="navbar-nav align-items-center gap-2">
-        {# TÚI MƯỢN SÁCH #}
         <li class="nav-item position-relative me-lg-2">
           {% if current_user.is_authenticated %}
             <a class="nav-link cart-btn" href="/phieu-muon" title="Túi mượn sách">
@@ -68,8 +65,6 @@
             </a>
           {% endif %}
         </li>
-
-        {# USER PROFILE #}
         {% if current_user.is_authenticated %}
         <li class="nav-item dropdown ms-lg-2">
           <a class="nav-link user-pill d-flex align-items-center" href="#" data-bs-toggle="dropdown">
@@ -96,8 +91,6 @@
     </div>
   </div>
 </nav>
-
-{# HIỂN THỊ THÔNG BÁO FLASH (NẾU CÓ) #}
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="container mt-2">
@@ -137,8 +130,6 @@
         background-color: var(--lib-gold);
         color: white !important;
     }
-
-    /* SEARCH BOX */
     .search-box {
         display: flex; width: 100%;
         background: rgba(255, 255, 255, 0.08);
@@ -158,7 +149,6 @@
     .search-box:focus-within input { color: var(--lib-brown); }
     .search-box button { background: transparent; border: none; color: var(--lib-gold); }
 
-    /* AVATAR */
     .avatar-ring {
         width: 36px; height: 36px; border-radius: 50%; padding: 2px;
         border: 2px solid var(--lib-gold); overflow: hidden;
@@ -166,7 +156,6 @@
     .avatar-ring img { width: 100%; height: 100%; object-fit: cover; }
     .user-name-text { font-size: 11px; font-weight: 700; color: #fff; text-transform: uppercase; }
 
-    /* DROPDOWN */
     .custom-dropdown {
         background: #ffffff; border-radius: 0; border: none;
         border-top: 5px solid var(--lib-gold);
@@ -174,14 +163,11 @@
     .dropdown-item { color: var(--lib-brown); font-size: 12px; font-weight: 600; text-transform: uppercase; }
     .dropdown-item:hover { background: #fdfcf8; color: var(--lib-gold); }
 
-    /* BADGE */
     .badge-custom {
         position: absolute; top: 10px; right: 0; background: var(--lib-gold);
         color: var(--lib-brown); font-size: 10px; font-weight: 800;
         padding: 2px 6px; border-radius: 50px; border: 2px solid var(--lib-brown);
     }
-
-    /* ALERT PREMIUM */
     .alert-premium {
         background: #fdfcf8; border: none; border-left: 5px solid var(--lib-gold);
         color: var(--lib-brown); font-weight: 600; font-size: 13px;

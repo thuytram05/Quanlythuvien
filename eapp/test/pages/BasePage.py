@@ -11,11 +11,9 @@ class BasePage:
         self.driver.get(url)
 
     def find(self, by, value):
-        """Đợi phần tử hiển thị trên màn hình"""
         return self.wait.until(EC.visibility_of_element_located((by, value)))
 
     def find_present(self, by, value):
-        """Đợi phần tử hiện diện trong code (dùng cho phần tử bị ẩn CSS)"""
         return self.wait.until(EC.presence_of_element_located((by, value)))
 
     def click(self, by, value):
@@ -23,7 +21,6 @@ class BasePage:
         element.click()
 
     def js_click(self, by, value):
-        """Ép click bằng JavaScript để vượt qua các lớp phủ UI"""
         element = self.find_present(by, value)
         self.driver.execute_script("arguments[0].click();", element)
 

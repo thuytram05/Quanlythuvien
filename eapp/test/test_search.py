@@ -67,7 +67,6 @@ def test_filter_by_category(test_client, sample_data):
     assert sample_data['categories'][0].ten_the_loai in data
 
 def test_search_combined_filter(test_client, sample_data, test_session):
-    from eapp.models import Sach
     tl_vanhoc = sample_data['categories'][1]
 
     test_session.add(Sach(ten_sach="Chi Pheo", tac_gia="Nam Cao", ma_the_loai=tl_vanhoc.id))
@@ -113,7 +112,6 @@ def test_search_whitespace_only(test_client, sample_data):
     assert "2 ký tự" in data or res.status_code == 200
 
 def test_search_exclude_inactive_books(test_client, test_session, sample_data):
-    from eapp.models import Sach
     tl_id = sample_data['categories'][0].id
 
     hidden_book = Sach(ten_sach="Sach Bi An", hoat_dong=False, ma_the_loai=tl_id, tac_gia="Tester")
@@ -148,7 +146,6 @@ def test_pagination_invalid_page_type(test_client, sample_data):
 
 
 def test_pagination_boundary_exact_limit(test_client, test_app, test_session, sample_data):
-    from eapp.models import Sach
     test_session.query(Sach).delete()
     tl_id = sample_data['categories'][0].id
     for i in range(50):

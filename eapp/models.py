@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from eapp import db, app
 from flask_login import UserMixin
 from enum import Enum as UserEnum
-from datetime import datetime
+from datetime import datetime,timedelta
 import hashlib
 
 
@@ -142,3 +142,58 @@ if __name__ == "__main__":
             print(f">>> Đã nạp thành công {len(danh_sach_sach)} cuốn sách vào DB.")
 
         print(">>> Hệ thống database Thư Viện đã sẵn sàng.")
+
+if __name__ == '__main__':
+    with app.app_context():
+        u_overdue = NguoiDung(
+            ten="Người Dùng Quá Hạn",
+            ten_dang_nhap="overdue_user",
+            mat_khau=str(hashlib.md5("123456".encode('utf-8')).hexdigest()),
+            vai_tro=VaiTro.NGUOI_DUNG
+        )
+        db.session.add(u_overdue)
+        db.session.commit()
+
+        ngay_muon_gia_lap = datetime.now() - timedelta(days=30)
+        han_tra_gia_lap = datetime.now() - timedelta(days=15)
+
+        p_overdue = PhieuMuon(
+            ma_nguoi_dung=u_overdue.id,
+            ngay_muon=ngay_muon_gia_lap,
+            han_tra=han_tra_gia_lap,
+            trang_thai=TrangThaiMuon.QUA_HAN  # Đặt trạng thái là QUÁ HẠN
+        )
+
+        db.session.add(p_overdue)
+        db.session.commit()
+
+        ct = ChiTietMuon(ma_phieu=p_overdue.id, ma_sach=1)
+        db.session.add(ct)
+
+        db.session.commit()
+        print("Đã tạo thành công user 'overdue_user' với phiếu mượn quá hạn!")
+
+if __name__ == '__main__':
+    with app.app_context():
+        the_loai = TheLoai.query.first()
+
+        if the_loai:
+            sach_het_hang = Sach(
+                ten_sach="Sách Test Hết Hàng",
+                tac_gia="Tác Giả Kiểm Thử",
+                mo_ta="Cuốn sách này được tạo ra với số lượng bằng 0 để test case mượn sách khi hết hàng.",
+                hinh_anh="https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
+                so_luong_con=0,
+                tong_so_luong=0,
+                ma_the_loai=the_loai.id
+            )
+
+            db.session.add(sach_het_hang)
+            try:
+                db.session.commit()
+                print(f"Đã tạo thành công sách: {sach_het_hang.ten_sach} với số lượng = 0")
+            except Exception as e:
+                db.session.rollback()
+                print(f"Lỗi khi tạo sách: {e}")
+        else:
+            print("Lỗi: Cần tạo Thể Loại trước khi tạo Sách!")

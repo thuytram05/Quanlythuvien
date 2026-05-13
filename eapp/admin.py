@@ -1,7 +1,7 @@
 from flask_admin import Admin, AdminIndexView, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user, logout_user
-from flask import redirect, request, url_for
+from flask import redirect, request, url_for,flash
 from eapp.models import Sach, TheLoai, NguoiDung, VaiTro
 from eapp import db, app
 import dao
@@ -34,7 +34,6 @@ class TheLoaiView(AdminBaseView):
 
 
 class SachView(AdminBaseView):
-    # Hiển thị các cột theo đúng nghiệp vụ Thư viện (Đề tài 5)
     column_list = ['id', 'ten_sach', 'tac_gia', 'so_luong_con', 'tong_so_luong', 'the_loai']
     column_labels = {
         'ten_sach': 'Tên Sách',
@@ -43,14 +42,27 @@ class SachView(AdminBaseView):
         'tong_so_luong': 'Tổng Số',
         'the_loai': 'Thể Loại'
     }
-    # Tìm kiếm theo Tên sách và Tác giả như yêu cầu đề bài
     column_searchable_list = ['ten_sach', 'tac_gia']
     column_filters = ['ten_sach', 'tac_gia', 'so_luong_con', 'the_loai.ten_the_loai']
 
-    can_export = True  # Cho phép xuất báo cáo sách
-    edit_modal = True  # Sửa thông tin qua popup
+    can_export = True
+    edit_modal = True
     column_editable_list = ['ten_sach', 'so_luong_con', 'tong_so_luong']
     page_size = 20
+
+    # --- PHẦN SỬA LỖI: CHẶN XÓA KHI CÓ DỮ LIỆU LIÊN QUAN ---
+    def delete_model(self, model):
+        try:
+            self.session.delete(model)
+            self.session.commit()
+            return True
+        except Exception:
+            # Tự động thực hiện Rollback để bảo vệ dữ liệu Primary Key
+            self.session.rollback()
+            flash(f"Lỗi: Không thể xóa sách '{model.ten_sach}' vì đang có thông tin trong phiếu mượn của độc giả!", "error")
+            return False
+
+
 
 
 class NguoiDungView(AdminBaseView):
@@ -94,6 +106,8 @@ class LogoutView(BaseView):
         return current_user.is_authenticated
 
 
+
+
 # --- 4. TRANG CHỦ ADMIN (Bảo vệ nghiêm ngặt) ---
 class MyAdminIndexView(AdminIndexView):
     @expose('/')
@@ -106,7 +120,6 @@ class MyAdminIndexView(AdminIndexView):
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('login_user_process'))
-
 
 # --- 5. KHỞI TẠO HỆ THỐNG ADMIN ---
 admin = Admin(app=app, name="HỆ THỐNG THƯ VIỆN", index_view=MyAdminIndexView())

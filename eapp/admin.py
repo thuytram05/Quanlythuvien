@@ -4,7 +4,7 @@ from flask_login import current_user, logout_user
 from flask import redirect, request, url_for,flash
 from eapp.models import Sach, TheLoai, NguoiDung, VaiTro
 from eapp import db, app
-import dao
+from eapp import dao
 from datetime import datetime
 
 

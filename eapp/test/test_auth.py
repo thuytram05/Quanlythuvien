@@ -3,7 +3,7 @@ import hashlib
 
 import  pytest
 from eapp.dao import add_user, auth_user
-from eapp.models import NguoiDung
+from eapp.models import NguoiDung,VaiTro
 from eapp.test.test_base import test_session, test_app, mock_cloudinary
 
 def test_register_success(test_app, test_session, mock_cloudinary):
@@ -110,6 +110,22 @@ def test_register_duplicate__username_case_insensitive(test_session):
     with pytest.raises(ValueError):
         add_user(name='Người 2', username='LibraryUser', password='Password123', avatar=None)
 
+
+def test_user_locked_logic(test_session):
+
+    pass_hash = hashlib.md5("123456".encode('utf-8')).hexdigest()
+
+    locked_user = NguoiDung(
+        ten="Tài Khoản Bị Khóa",
+        ten_dang_nhap="locked_user_test",
+        mat_khau=pass_hash,
+        vai_tro=VaiTro.NGUOI_DUNG,
+        bi_khoa=True
+    )
+
+    test_session.add(locked_user)
+    test_session.commit()
+    return locked_user
 
 
 

@@ -46,20 +46,15 @@ class SachView(AdminBaseView):
     column_editable_list = ['ten_sach', 'so_luong_con', 'tong_so_luong']
     page_size = 20
 
-    # --- PHẦN SỬA LỖI: CHẶN XÓA KHI CÓ DỮ LIỆU LIÊN QUAN ---
     def delete_model(self, model):
         try:
             self.session.delete(model)
             self.session.commit()
             return True
         except Exception:
-            # Tự động thực hiện Rollback để bảo vệ dữ liệu Primary Key
             self.session.rollback()
             flash(f"Lỗi: Không thể xóa sách '{model.ten_sach}' vì đang có thông tin trong phiếu mượn của độc giả!", "error")
             return False
-
-
-
 
 class NguoiDungView(AdminBaseView):
     column_list = ['id', 'ten', 'ten_dang_nhap', 'vai_tro', 'bi_khoa']

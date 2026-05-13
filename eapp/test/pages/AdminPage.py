@@ -48,6 +48,3 @@ class AdminPage(BasePage):
         except:
             return False
 
-
-
-

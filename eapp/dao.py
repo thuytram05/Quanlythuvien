@@ -8,9 +8,6 @@ from eapp import db
 from eapp.models import Sach, TheLoai, NguoiDung, PhieuMuon, ChiTietMuon, TrangThaiMuon
 from flask import current_app
 
-
-# --- 1. QUẢN LÝ NGƯỜI DÙNG ---
-
 def get_user_by_id(user_id):
     return NguoiDung.query.get(user_id)
 
@@ -24,7 +21,6 @@ def auth_user(username, password):
 
 
 def add_user(name, username, password, avatar):
-    # Áp dụng ràng buộc bảo mật từ saleappv1
     username = username.strip() if username else ""
 
     if not username:
@@ -55,15 +51,11 @@ def add_user(name, username, password, avatar):
         db.session.rollback()
         raise Exception('Lỗi hệ thống: Tên đăng nhập đã tồn tại!')
 
-
-# --- 2. QUẢN LÝ SÁCH ---
-
 def load_categories():
     return TheLoai.query.all()
 
 
 def load_books(category_id=None, kw=None, page=None):
-    # Join với TheLoai để tìm kiếm theo tên thể loại (Yêu cầu đề bài)
     query = db.session.query(Sach).join(TheLoai, Sach.ma_the_loai == TheLoai.id).filter(Sach.hoat_dong.is_(True))
 
     if kw and len(kw.strip()) >= 2:
@@ -99,11 +91,7 @@ def count_books_filtered(kw=None, category_id=None):
 def get_book_by_id(book_id):
     return Sach.query.get(book_id)
 
-
-# --- 3. NGHIỆP VỤ MƯỢN TRẢ ---
-
 def count_books_currently_borrowed(user_id):
-    """Đếm tổng số sách đang chiếm dụng (DANG_MUON hoặc QUA_HAN)"""
     return db.session.query(func.count(ChiTietMuon.ma_sach)) \
         .join(PhieuMuon) \
         .filter(PhieuMuon.ma_nguoi_dung == user_id,
@@ -111,8 +99,6 @@ def count_books_currently_borrowed(user_id):
 
 
 def check_overdue(user_id):
-    """Cập nhật và kiểm tra sách quá hạn (Ràng buộc đề bài)"""
-    # Tự động cập nhật các phiếu DANG_MUON nhưng đã quá han_tra sang QUA_HAN
     PhieuMuon.query.filter(PhieuMuon.ma_nguoi_dung == user_id,
                            PhieuMuon.trang_thai == TrangThaiMuon.DANG_MUON,
                            PhieuMuon.han_tra < datetime.now()) \
@@ -129,8 +115,6 @@ def create_borrow_receipt(user_id, cart_items, phone=None, return_date=None, not
         raise Exception("Tài khoản đang bị khóa hoặc không tồn tại!")
     if check_overdue(user_id):
         raise Exception("Bạn đang nợ sách quá hạn, vui lòng trả trước khi mượn mới!")
-
-    # Ràng buộc tối đa 5 cuốn
     current_total = count_books_currently_borrowed(user_id)
     if current_total + len(cart_items) > 5:
         raise Exception(f"Bạn đang mượn {current_total} cuốn. Chỉ được mượn thêm {5 - current_total} cuốn!")
@@ -171,7 +155,6 @@ def process_return_book(phieu_id, user_id):
     try:
         phieu.trang_thai = TrangThaiMuon.DA_TRA
         for ct in phieu.chi_tiet:
-            # Kiểm tra nếu sách vẫn còn tồn tại trong hệ thống
             if ct.sach:
                 ct.sach.so_luong_con += 1
 
@@ -186,13 +169,7 @@ def process_return_book(phieu_id, user_id):
 def check_username(username):
     return NguoiDung.query.filter(NguoiDung.ten_dang_nhap == username.strip()).first() is not None
 
-
-# --- 4. THỐNG KÊ ---
-
-# --- 4. THỐNG KÊ ---
-
 def count_sach_by_theloai():
-    """Thống kê số lượng sách theo từng thể loại"""
     return db.session.query(TheLoai.id, TheLoai.ten_the_loai, func.count(Sach.id)) \
         .join(Sach, Sach.ma_the_loai == TheLoai.id, isouter=True) \
         .group_by(TheLoai.id).all()
@@ -201,8 +178,6 @@ def thong_ke_muon_tra(month=None, year=None):
     if not month: month = datetime.now().month
     if not year: year = datetime.now().year
 
-    # 1. Tính tổng số lượt mượn trong tháng đó làm mẫu số
-    # Cần dùng ma_sach hoặc ma_phieu vì ChiTietMuon không có id
     total_muon = db.session.query(func.count(ChiTietMuon.ma_sach))\
         .join(PhieuMuon, ChiTietMuon.ma_phieu == PhieuMuon.id)\
         .filter(func.extract('month', PhieuMuon.ngay_muon) == month,

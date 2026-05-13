@@ -13,14 +13,13 @@
 
     <style>
         :root {
-            --primary-brown: #3d2b1f; /* Màu gỗ */
-            --accent-gold: #d4a373;   /* Màu vàng đồng */
-            --bg-paper: #fdfcf8;      /* Màu giấy kem */
+            --primary-brown: #3d2b1f;
+            --accent-gold: #d4a373;
+            --bg-paper: #fdfcf8;
         }
 
         body {
             background-color: #e9e4d9;
-            /* Tạo texture giấy cũ cho toàn trang */
             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
             font-family: 'Montserrat', sans-serif;
             color: #2d2d2d;
@@ -28,7 +27,6 @@
             overflow-x: hidden;
         }
 
-        /* KHỐI LOGO (Trắng hoàn toàn, nằm trên cùng) */
         .logo-section {
             background: #ffffff;
             padding: 40px 0 30px 0;
@@ -55,7 +53,6 @@
             margin-top: 5px;
         }
 
-        /* Icon cuốn sách trang trí dưới logo */
         .logo-decoration {
             width: 120px;
             height: 1px;
@@ -77,11 +74,10 @@
             font-size: 18px;
         }
 
-        /* KHUNG NỘI DUNG CHÍNH */
         .main-content-wrapper {
             background: var(--bg-paper);
             min-height: 80vh;
-            margin-top: -2px; /* Khớp sát với header/navbar */
+            margin-top: -2px;
             padding: 60px 40px;
             box-shadow: 0 0 30px rgba(0,0,0,0.08);
             border-radius: 2px;
@@ -89,7 +85,6 @@
             border-right: 1px solid #eee;
         }
 
-        /* Tùy chỉnh các nút bấm chung cho toàn bộ site */
         .btn-custom {
             background-color: var(--accent-gold);
             color: white;
@@ -107,7 +102,6 @@
             transform: translateY(-2px);
         }
 
-        /* Hiệu ứng loading nhẹ khi chuyển trang */
         .page-fade-in {
             animation: fadeIn 0.8s ease-in;
         }

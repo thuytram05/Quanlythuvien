@@ -6,8 +6,6 @@ from enum import Enum as UserEnum
 from datetime import datetime,timedelta
 import hashlib
 
-
-# 1. Mô hình cơ bản dùng chung
 class MoHinhCoBan(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -78,14 +76,10 @@ class ChiTietMuon(db.Model):
     ngay_tra_thuc_te = Column(DateTime, nullable=True)
     tien_phat = Column(Float, default=0.0)
 
-
-# --- HÀM NẠP DỮ LIỆU TỰ ĐỘNG ---
 if __name__ == "__main__":
     with app.app_context():
-        # db.drop_all() # Mở comment nếu muốn làm sạch DB cũ
         db.create_all()
 
-        # 1. Tạo Admin mặc định
         if not NguoiDung.query.filter_by(ten_dang_nhap='admin').first():
             admin_user = NguoiDung(
                 ten='Quản trị viên',
@@ -95,7 +89,6 @@ if __name__ == "__main__":
             )
             db.session.add(admin_user)
 
-        # 2. Tạo Thể loại và nạp hơn 50 cuốn sách
         if not TheLoai.query.first():
             tl1 = TheLoai(ten_the_loai="Công nghệ thông tin")
             tl2 = TheLoai(ten_the_loai="Kỹ năng sống")
@@ -104,7 +97,6 @@ if __name__ == "__main__":
             db.session.commit()
 
             danh_sach_sach = [
-                # 6 Sách gốc
                 Sach(ten_sach="Python Crash Course", tac_gia="Eric Matthes", ma_the_loai=tl1.id,
                      hinh_anh="https://images-na.ssl-images-amazon.com/images/I/71pys4B4OVL.jpg",
                      mo_ta="Cuốn sách bán chạy nhất thế giới về lập trình Python dành cho người mới bắt đầu."),
@@ -131,7 +123,6 @@ if __name__ == "__main__":
                     ten_sach=f"Sách Tự Động Sinh Số {i}",
                     tac_gia=f"Tác Giả Ẩn Danh {i}",
                     mo_ta=f"Mô tả cho cuốn sách giả lập số {i} phục vụ test hệ thống phân trang.",
-                    # Link ảnh mới được cập nhật ở đây
                     hinh_anh="https://static.ybox.vn/2017/10/4/ec8747f8-a8d7-11e7-b445-2e995a9a3302.jpg",
                     ma_the_loai=the_loai_id
                 )

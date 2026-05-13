@@ -12,8 +12,6 @@
             margin: 0; padding: 60px 0; min-height: 85vh; display: flex;
             color: #3d2b1f; background-color: #fdfcf8;
         }
-
-        /* SIDEBAR TỔNG KẾT (TRÁI) */
         .summary-side {
             width: 420px; background: #3d2b1f; color: #fff;
             padding: 50px 40px; border-radius: 0 40px 40px 0;
@@ -42,7 +40,6 @@
         }
         .btn-confirm-mega:hover { background: #fff; color: #3d2b1f; transform: scale(1.03); }
 
-        /* DANH SÁCH SÁCH (PHẢI) */
         .list-side { flex-grow: 1; padding: 0 60px; }
 
         .book-item-row {
@@ -143,7 +140,6 @@
 </div>
 
 <script>
-    // Tính toán ngày hôm nay và hạn 14 ngày
     let minDateStr = "";
     let maxDateStr = "";
     let displayMaxDate = "";
@@ -152,12 +148,8 @@
         let today = new Date();
         let maxDate = new Date();
         maxDate.setDate(today.getDate() + 14);
-
-        // Định dạng YYYY-MM-DD cho input date
         minDateStr = today.toISOString().split('T')[0];
         maxDateStr = maxDate.toISOString().split('T')[0];
-
-        // Định dạng DD/MM/YYYY để hiển thị text
         displayMaxDate = maxDate.toLocaleDateString('vi-VN');
         document.getElementById('sidebarReturnDate').innerText = displayMaxDate;
     });

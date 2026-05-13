@@ -1,4 +1,4 @@
-import pytest
+git pull origin mainimport pytest
 import hashlib
 import os
 import sys  # 1. Thêm import sys

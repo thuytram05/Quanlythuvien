@@ -174,8 +174,8 @@ if __name__ == '__main__':
                 tac_gia="Tác Giả Kiểm Thử",
                 mo_ta="Cuốn sách này được tạo ra với số lượng bằng 0 để test case mượn sách khi hết hàng.",
                 hinh_anh="https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
-                so_luong_con=0,
-                tong_so_luong=0,
+                so_luong_con=1,
+                tong_so_luong=10,
                 ma_the_loai=the_loai.id
             )
 
